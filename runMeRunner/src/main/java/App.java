@@ -1,4 +1,4 @@
-package runMeRunner;
+import runMeRunner.Cli;
 
 public class App {
 
