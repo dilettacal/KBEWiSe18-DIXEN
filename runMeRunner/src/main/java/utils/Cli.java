@@ -45,38 +45,19 @@ public class Cli {
 				System.exit(1);
 			}
 
-			String argument2 = "";
-			String filePathString = "src/main/resources/";
+			String c, o;
+			
 			if (cmd.hasOption("o")) {		
 				try {
-					argument2= cmd.getOptionValue("o"); 
+					o = cmd.getOptionValue("o"); 
 					//MissingArgumentException
 				}catch(Exception ex) {
-					argument2 = "report.txt";
+					o = "report.txt";
 				}	
-			} else {
-				filePathString += "report.txt";
-				System.out.println(filePathString);
 			}
-			String path = filePathString+"report.txt";
-			System.out.println(path);
-			
-			//File creation
-//			URL url = this.getClass().getResource("/main/resources");
-//			File parentDirectory;
-//			try {
-//				parentDirectory = new File(new URI(url.toString()));
-//				System.out.println(parentDirectory);
-//				new File(parentDirectory, argument2);
-//			} catch (URISyntaxException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-			
 			
 			//wird nicht angelegt, warum auch immer
-			File f = new File(path);
-			
+			File f = new File("report.txt");
 			
 			System.out.println(f.exists());
 			if (f.exists() && !f.isDirectory()) {
