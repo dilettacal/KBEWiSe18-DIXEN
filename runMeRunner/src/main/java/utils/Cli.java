@@ -3,6 +3,9 @@ package utils;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -27,17 +30,19 @@ public class Cli {
 		//Oder 3: 1 Option (c) + Argument (className) + Option (o) mit leerem Argument
 	}
 
-	public void parse() {
+	public String[] parse() {
 
 		CommandLineParser parser = new DefaultParser();
 
 		CommandLine cmd = null;
+		String[] returnValues = new String[2];
 		try {
 			cmd = parser.parse(options, args);
 
 			if (cmd.hasOption("c")) {
-				String argument = cmd.getOptionValue("c");
-				System.out.println(argument);
+				String className = cmd.getOptionValue("c");
+				System.out.println(className);
+				returnValues[0] = className;
 
 			} else {
 				System.out.println(
@@ -45,28 +50,39 @@ public class Cli {
 				System.exit(1);
 			}
 
-			String c, o;
+			String out = null;
 			
 			if (cmd.hasOption("o")) {		
 				try {
-					o = cmd.getOptionValue("o"); 
+					out = cmd.getOptionValue("o"); 
 					//MissingArgumentException
 				}catch(Exception ex) {
-					o = "report.txt";
+					out = "report.txt";
 				}	
 			}
-			
-			//wird nicht angelegt, warum auch immer
+			returnValues[1] = out;
+
 			File f = new File("report.txt");
+			
+//			FileWriter ausgabestrom = null;
+//			try {
+//				ausgabestrom = new FileWriter(f);
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//            PrintWriter ausgabe = new PrintWriter(ausgabestrom);
+//            ausgabe.println("bla bla bla schrei in die datei");
+//            ausgabe.close();
 			
 			System.out.println(f.exists());
 			if (f.exists() && !f.isDirectory()) {
-				System.out.println("Path: " + f.getPath());
+				System.out.println("Path: " + f.getAbsolutePath());
 			}
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		return returnValues;
 	}
 }

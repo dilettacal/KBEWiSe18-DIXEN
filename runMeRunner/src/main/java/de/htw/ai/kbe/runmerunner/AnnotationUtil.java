@@ -12,7 +12,7 @@ import java.util.List;
  *
  */
 public class AnnotationUtil {
-	
+		
 	/**
 	 * Analysiert die Annotationen der übergebenen Klasse
 	 * @param classToOpen
@@ -53,6 +53,7 @@ public class AnnotationUtil {
 		ArrayList<String> methodsWithoutRunMesAnnos = new ArrayList<String>();
 		//Liste der Methoden ohne Annotationen ueberhaupt
 		ArrayList<String> methodsWithOutAnnos = new ArrayList<String>();
+		//
 		
 		ArrayList[] group = new ArrayList[4];
 		//group[0] = methodsWithRunMesAnnos;

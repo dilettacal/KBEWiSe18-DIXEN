@@ -1,6 +1,8 @@
-package de.htw.ai.kbe.runmerunner;
+package de.htw.ai.kbe;
 
 import java.text.DecimalFormat;
+
+import de.htw.ai.kbe.runmerunner.RunMe;
 
 public class ClassWithRunMes {
 
@@ -27,19 +29,18 @@ public class ClassWithRunMes {
 	}
 
 	@RunMe
-	public boolean method2() {
+	public boolean method2(int a) {
 		System.out.println("In method2: ich bin public!");
 		return true;
 	}
 	
 	@RunMe
-	private boolean method3(String input) {
+	public boolean method3() throws NullPointerException {
 		System.out.println("In method3: ich bin privat!");
 		return true;
 	}
 	
     boolean method4(String input, Integer inti) {
-        System.out.println("In method4: ich bekomme einen Parameter!");
         return true;
     }
 	
