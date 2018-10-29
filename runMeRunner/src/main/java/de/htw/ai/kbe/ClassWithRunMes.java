@@ -18,25 +18,25 @@ public class ClassWithRunMes {
     
     @RunMe
     public static String method() {
-        System.out.println("In method: ich bin public und static!");
+        System.out.println("In method");
         return "method".toUpperCase();
     }
     
     @Deprecated
 	String method1() {
-		System.out.println("In method1: ich bin package-private!");
+		System.out.println("In method1: package-private");
 		return "method1".toUpperCase();
 	}
 
 	@RunMe
 	public boolean method2(int a) {
-		System.out.println("In method2: ich bin public!");
+		System.out.println("In method2: public");
 		return true;
 	}
 	
 	@RunMe
-	public boolean method3() throws NullPointerException {
-		System.out.println("In method3: ich bin privat!");
+	public boolean method3() {
+		System.out.println("In method3: private");
 		return true;
 	}
 	
