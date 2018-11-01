@@ -76,24 +76,27 @@ public class AnnotationUtil {
 							try {
 								Parameter[] params = m.getParameters();
 								Object [] objs = params;
-								System.out.println(m.getName());
+								//System.out.println(m.getName());
 								m.invoke(obj,objs);
 								methodsWithRunMesAnnos.add(m.getName());
+								System.out.println("Keine Exception fuer annotierte Methode mit RunMe: " + m.getName());
 							}  catch (InvocationTargetException e) {
+								System.out.println("Invocation Problem mit " + m.getName());
 								
 								methodsWithRunMesAnnosNotRunnable.add(m.getName());
-								System.out.println(e.getMessage());
+								//System.out.println(e.getTargetException());
+								e.printStackTrace();
 							}
 							catch (IllegalAccessException e) {
-							
+								System.out.println("IllegalAccess Problem mit " + m.getName());
 								methodsWithRunMesAnnos.add(m.getName());
 								System.out.println(e.getMessage());
 							} catch (IllegalArgumentException e) {
-								
+								System.out.println("IllegalArgument Problem mit " + m.getName());
 								methodsWithRunMesAnnos.add(m.getName());
 								System.out.println(e.getMessage());
 							}
-							System.out.println("annotierte Methode mit RunMe: " + m.getName());
+							
 							//methodsWithRunMesAnnos.add(m.getName());
 							//runMeCounter += 1;
 						}

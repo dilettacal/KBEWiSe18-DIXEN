@@ -29,13 +29,13 @@ public class ClassWithRunMes {
 	}
 
 	@RunMe
-	public boolean method2(int a) {
+	public boolean method2(){
 		System.out.println("In method2: public");
-		return true;
+		throw new NullPointerException();
 	}
 	
 	@RunMe
-	public boolean method3() {
+	private boolean method3(int b) {
 		System.out.println("In method3: private");
 		return true;
 	}
