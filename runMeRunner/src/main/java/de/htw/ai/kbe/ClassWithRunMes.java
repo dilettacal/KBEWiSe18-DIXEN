@@ -4,6 +4,11 @@ import java.text.DecimalFormat;
 
 import de.htw.ai.kbe.runmerunner.RunMe;
 
+/**
+ * Class with Annotations
+ * @author dixen
+ *
+ */
 public class ClassWithRunMes {
 
     private String fieldPrivate;

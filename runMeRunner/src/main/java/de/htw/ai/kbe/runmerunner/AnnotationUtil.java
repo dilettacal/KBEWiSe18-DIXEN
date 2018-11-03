@@ -9,15 +9,14 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Klasse zur Analyse der Annotationen
+ * Class to analyze annotations
  * @author Dixen
  *
  */
 public class AnnotationUtil {	
 	/**
-	 * Analysiert die Annotationen der übergebenen Klasse
-	 * @param classToOpen
-	 * @param javaClass
+	 * Analyses annotations of the given class
+	 * @param classToOpen - class with annos
 	 */
 	public static boolean analyzeClass(String classToOpen) throws InstantiationException, IllegalAccessException{
 		Method[] methods = null;
@@ -39,10 +38,6 @@ public class AnnotationUtil {
 		}		
 		
 		ArrayList[] countMethods = getAnnotatedMethods(methods, obj);
-		
-		//System.out.println("Anzahl annotierter Methoden: " + countMethods.get(0));
-		//System.out.println("Anzahl nicht annotierter Methoden " + countMethods.get(1));
-
 		return true;
 	}
 	

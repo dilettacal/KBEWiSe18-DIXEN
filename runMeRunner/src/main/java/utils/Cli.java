@@ -16,7 +16,11 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.MissingArgumentException;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-
+/**
+ * Class for parsing argument from terminal (Uebungsblatt 1)
+ * @author dixen
+ *
+ */
 public class Cli {
 
 	private String[] args = null;
