@@ -37,12 +37,14 @@ public class TestClassWithRunMes {
 
 	@RunMe
 	public boolean method2(){
+		//Diese Methode soll als nicht invokierbare Methode gelten
 		System.out.println("In method2: public");
 		throw new NullPointerException();
 	}
 	
 	@RunMe
 	private boolean method3(int b) {
+		//Diese methode soll als nicht invokierbare Methode gelten
 		System.out.println("In method3: private");
 		return true;
 	}

@@ -108,11 +108,8 @@ public class AnnotationUtilTest {
 			
 			//TODO: Das muss noch geklaert werden
 			//Was wird als nicht ausfuehrbare Methode betrachtet?
-			//Assert.assertTrue(results[3].size()==??);
-			
-			fail("Not implemented!");
-			
-			
+			int notrunnableMethods = results[3].size();
+			Assert.assertEquals(2, notrunnableMethods);			
 		}
 		
 		/*
