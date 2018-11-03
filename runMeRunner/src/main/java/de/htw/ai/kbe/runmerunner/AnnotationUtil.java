@@ -30,7 +30,7 @@ public class AnnotationUtil {
 			System.out.println(clazz.getName());
 			methods = clazz.getDeclaredMethods();
 		} catch (ClassNotFoundException e) {
-			System.out.println("Klasse nicht gefunden");
+			System.out.println("Klasse nicht gefunden. Pfad: " + classToOpen);
 			return false;
 		} catch(NullPointerException e) {
 			System.out.println("Ein Fehler ist aufgetreten!");

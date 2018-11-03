@@ -4,6 +4,13 @@ import java.text.DecimalFormat;
 
 import de.htw.ai.kbe.runmerunner.RunMe;
 
+/**
+ * Test class with RunMes
+ * Total annotations- RunMes: 3
+ * Total other annotations: 1
+ * @author dixen
+ *
+ */
 public class TestClassWithRunMes {
 
     private String fieldPrivate;
