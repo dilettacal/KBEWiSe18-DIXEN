@@ -33,16 +33,18 @@ public class TestClassWithoutRunMes {
 	}
 	
 	
+	@SuppressWarnings(value = { "" })
 	private boolean method3(int b) {
 		System.out.println("In method3: private");
 		return true;
 	}
-	
-    boolean method4(String input, Integer inti) {
-        return true;
-    }
-	
-	public void method5() {
-		System.out.println("Ich werde nicht gefunden!");
+
+	@Override
+	public String toString() {
+		return "TestClassWithoutRunMes [fieldPrivate=" + fieldPrivate + ", integerFieldProtected="
+				+ integerFieldProtected + ", dfFieldPublic=" + dfFieldPublic + ", integerFieldDontRunMe="
+				+ integerFieldDontRunMe + "]";
 	}
+
 }
+    
