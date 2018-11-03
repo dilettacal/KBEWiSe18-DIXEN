@@ -1,5 +1,9 @@
 package de.htw.ai.kbe.runmerunner;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -38,7 +42,71 @@ public class AnnotationUtil {
 		}		
 		
 		ArrayList[] countMethods = getAnnotatedMethods(methods, obj);
+		writeMethodsToFile(countMethods);
 		return true;
+	}
+	
+	public static void writeMethodsToFile(ArrayList[] allMethods) {
+		//Liste der Methoden mit Annotation RunMe
+		ArrayList<String> methodsWithRunMesAnnos = new ArrayList<String>();
+		//Liste der Methoden Mit Annotation aber kein RunMe
+		ArrayList<String> methodsWithoutRunMesAnnos = new ArrayList<String>();
+		//Liste der Methoden ohne Annotationen ueberhaupt
+		ArrayList<String> methodsWithOutAnnos = new ArrayList<String>();
+		//Liste der Methoden mit Annotation RunMe, welche aber nicht ausfuehrbar sind
+		ArrayList<String> methodsWithRunMesAnnosNotRunnable = new ArrayList<String>();
+		
+		methodsWithRunMesAnnos = allMethods[0];
+		methodsWithoutRunMesAnnos = allMethods[1];
+		methodsWithOutAnnos = allMethods[2];
+		methodsWithRunMesAnnosNotRunnable = allMethods[3];
+		
+		
+		File f = new File("report.txt");
+		
+		FileWriter fw = null;
+		BufferedWriter bw = null;
+		try {
+			fw = new FileWriter(f);
+			bw = new BufferedWriter(fw);
+			bw.write("Methodennamen ohne @RunMe: ");
+			bw.newLine();
+			for(String m: methodsWithoutRunMesAnnos) {
+				bw.write(m);
+				bw.newLine();
+			}
+			for(String m: methodsWithOutAnnos) {
+				bw.write(m);
+				bw.newLine();
+			}
+			bw.newLine();
+			
+			bw.write("Methodennamen mit @RunMe: ");
+			bw.newLine();
+			for(String m: methodsWithRunMesAnnos) {
+				bw.write(m);
+				bw.newLine();
+			}
+			bw.newLine();
+			
+			bw.write("Nicht-invokierbare Methoden mit @RunMe: ");
+			bw.newLine();
+			for(String m: methodsWithRunMesAnnosNotRunnable) {
+				bw.write(m);
+				bw.newLine();
+			}
+			bw.newLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		
+	    try {
+			bw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static ArrayList[] getAnnotatedMethods(Method[] methods, Object obj) {
