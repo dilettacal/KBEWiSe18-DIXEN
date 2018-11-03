@@ -28,10 +28,8 @@ public class Cli {
 
 	public Cli(String[] args) {
 		this.args = args;
-		options.addOption("c", "className", true, "show help.");
-		options.addOption("o", "output", true, "Output if required");
-		//Mindestens 2 Sachen: 1 Option + Argument: Die Klasse!
-		//Oder 3: 1 Option (c) + Argument (className) + Option (o) mit leerem Argument
+		options.addOption("c", "className", true, "Class name");
+		options.addOption("o", "output", true, "Report file name");
 	}
 
 	public String[] parse() {
