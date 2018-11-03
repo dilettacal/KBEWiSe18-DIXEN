@@ -1,1 +1,12 @@
-bla bla bla schrei in die datei
+Methodennamen ohne @RunMe: 
+method1
+method5
+method4
+
+Methodennamen mit @RunMe: 
+method
+method3
+
+Nicht-invokierbare Methoden mit @RunMe: 
+method2
+
