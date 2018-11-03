@@ -4,30 +4,45 @@ import static org.junit.Assert.*;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class CliTest {
 	
-	private String className;
-	private String reportName;
-	private Cli testCli;
+	private String validClassname, notValidClassname;
+	private String validReportname, notValidReportname;
+	private Cli testValidCli, testNotValidCli;
+	
+
 
 	@Before
 	public void setUp() throws Exception {
-		className = "EineKlasse.java";
-		reportName= "EinReport";
-		String[] args = {className,reportName};
-		testCli = new Cli(args);		
+		//Valid data
+		String validInput = "-c de.htw.ai.runMeRunner -o report.txt";
+		String[] inputParameters = validInput.split(" ");
+		validClassname = inputParameters[1];
+		validReportname= inputParameters[3];
+		testValidCli = new Cli(inputParameters);	
+		
+		//Not valid data
+		String notvalidInput = "-c -o report.txt";
+		String[] notValidInputParams = notvalidInput.split(" ");
+		testNotValidCli = new Cli(notValidInputParams);
 	}
 
 	@Test
 	public void testParseMethodShouldReturnSetUpValues() {
-		String [] results = testCli.parse();
-		Assert.assertEquals(className, results[0]);
-//		Assert.assertEquals(className, results[1]);
-//		Assert.assertEquals("o", results[2]);
-//		Assert.assertEquals(reportName, results[3]);
+		String [] results = testValidCli.parse();
+		Assert.assertEquals(validClassname, results[0]);
+		Assert.assertEquals(validReportname, results[1]);
+	}
+	
+	@Test(expected=org.apache.commons.cli.MissingArgumentException.class)
+	public void testParseMethodNotValidInputShouldExitSystem() {
+		String [] results = null;
+		String exception = "MissingArgumentException";
+		testNotValidCli.parse();
 	}
 
 }
