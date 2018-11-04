@@ -140,6 +140,8 @@ public class AnnotationUtil {
 								Parameter[] params = m.getParameters();
 								Object [] objs = params;
 								//System.out.println(m.getName());
+								if(params.length > 0)
+									throw new InvocationTargetException(null, "nicht invokierbar");
 								m.invoke(obj,objs);
 								methodsWithRunMesAnnos.add(m.getName());
 								System.out.println("Keine Exception fuer annotierte Methode mit RunMe: " + m.getName());

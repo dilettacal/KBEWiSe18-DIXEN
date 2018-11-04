@@ -72,7 +72,11 @@ public class Cli {
 				System.out.println("Path: " + f.getAbsolutePath());
 			}
 		} catch (ParseException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			return null;
+		} catch(Exception e) {
+			//e.printStackTrace();
+			return null;
 		}
 		return returnValues;
 	}

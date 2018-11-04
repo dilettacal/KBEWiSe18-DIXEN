@@ -52,4 +52,9 @@ public class ClassWithRunMes {
 	public void method5() {
 		System.out.println("Ich werde nicht gefunden!");
 	}
+	
+	@RunMe
+	public void method6() {
+		System.out.println("method6 hat RunMe");
+	}
 }

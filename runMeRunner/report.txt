@@ -5,8 +5,9 @@ method4
 
 Methodennamen mit @RunMe: 
 method
-method3
+method6
 
 Nicht-invokierbare Methoden mit @RunMe: 
 method2
+method3
 
