@@ -54,8 +54,13 @@ public class ClassWithRunMes {
 	}
 	
 	@RunMe
-	public void method6() {
+	private void method6() {
 		System.out.println("method6 hat RunMe");
+	}
+	
+	@RunMe
+	protected void method7() {
+		System.out.println("method7 hat RunMe");
 	}
 
 	@Override
