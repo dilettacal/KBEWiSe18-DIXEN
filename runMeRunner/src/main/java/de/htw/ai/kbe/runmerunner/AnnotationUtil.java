@@ -22,7 +22,7 @@ public class AnnotationUtil {
 	 * Analyses annotations of the given class
 	 * @param classToOpen - class with annos
 	 */
-	public static boolean analyzeClass(String classToOpen) throws InstantiationException, IllegalAccessException{
+	public static boolean analyzeClass(String classToOpen, String filename) throws InstantiationException, IllegalAccessException{
 		Method[] methods = null;
 		Class clazz = null;
 		Object obj = null;
@@ -42,11 +42,11 @@ public class AnnotationUtil {
 		}		
 		
 		ArrayList[] countMethods = getAnnotatedMethods(methods, obj);
-		writeMethodsToFile(countMethods);
+		writeMethodsToFile(countMethods, filename);
 		return true;
 	}
 	
-	public static void writeMethodsToFile(ArrayList[] allMethods) {
+	public static void writeMethodsToFile(ArrayList[] allMethods, String filename) {
 		//Liste der Methoden mit Annotation RunMe
 		ArrayList<String> methodsWithRunMesAnnos = new ArrayList<String>();
 		//Liste der Methoden Mit Annotation aber kein RunMe
@@ -62,7 +62,7 @@ public class AnnotationUtil {
 		methodsWithRunMesAnnosNotRunnable = allMethods[3];
 		
 		
-		File f = new File("report.txt");
+		File f = new File(filename);
 		
 		FileWriter fw = null;
 		BufferedWriter bw = null;
@@ -139,42 +139,34 @@ public class AnnotationUtil {
 							try {
 								Parameter[] params = m.getParameters();
 								Object [] objs = params;
-								//System.out.println(m.getName());
 								if(params.length > 0)
 									throw new InvocationTargetException(null, "nicht invokierbar");
 								m.invoke(obj,objs);
 								methodsWithRunMesAnnos.add(m.getName());
-								System.out.println("Keine Exception fuer annotierte Methode mit RunMe: " + m.getName());
+								//System.out.println("Keine Exception fuer annotierte Methode mit RunMe: " + m.getName());
 							}  catch (InvocationTargetException e) {
 								System.out.println("Invocation Problem mit " + m.getName());
 								
 								methodsWithRunMesAnnosNotRunnable.add(m.getName());
-								//System.out.println(e.getTargetException());
-								e.printStackTrace();
+								//e.printStackTrace();
 							}
 							catch (IllegalAccessException e) {
-								System.out.println("IllegalAccess Problem mit " + m.getName());
+								//System.out.println("IllegalAccess Problem mit " + m.getName());
 								methodsWithRunMesAnnos.add(m.getName());
-								System.out.println(e.getMessage());
+								//System.out.println(e.getMessage());
 							} catch (IllegalArgumentException e) {
-								System.out.println("IllegalArgument Problem mit " + m.getName());
+								//System.out.println("IllegalArgument Problem mit " + m.getName());
 								methodsWithRunMesAnnos.add(m.getName());
-								System.out.println(e.getMessage());
+								//System.out.println(e.getMessage());
 							}
-							
-							//methodsWithRunMesAnnos.add(m.getName());
-							//runMeCounter += 1;
 						}
 						//Deprecated oder andere Annos
 						else {
-							System.out.println("annotierte Methode ohne RunMe: " + m.getName());
+							//System.out.println("annotierte Methode ohne RunMe: " + m.getName());
 							methodsWithoutRunMesAnnos.add(m.getName());
-							//withoutRunMeCounter+=1;
 						}
 					}
 				}
-				
-				//methodWithoutAnnos = methods.length - runMeCounter - withoutRunMeCounter;
 			}
 		}
 		

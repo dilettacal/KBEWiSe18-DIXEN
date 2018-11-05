@@ -1,14 +1,12 @@
 Methodennamen ohne @RunMe: 
 method1
-toString
 method4
 method5
 
 Methodennamen mit @RunMe: 
 method
-method6
 
 Nicht-invokierbare Methoden mit @RunMe: 
-method2
 method3
+method2
 
