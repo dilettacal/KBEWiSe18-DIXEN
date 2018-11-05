@@ -38,11 +38,5 @@ public class CliTest {
 		Assert.assertEquals(validReportname, results[1]);
 	}
 	
-	@Test(expected=org.apache.commons.cli.MissingArgumentException.class)
-	public void testParseMethodNotValidInputShouldExitSystem() {
-		String [] results = null;
-		String exception = "MissingArgumentException";
-		testNotValidCli.parse();
-	}
 
 }

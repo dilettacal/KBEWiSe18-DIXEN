@@ -1,9 +1,9 @@
 Methodennamen ohne @RunMe: 
 method1
-toString
 method
 method3
 method2
+toString
 
 Methodennamen mit @RunMe: 
 
