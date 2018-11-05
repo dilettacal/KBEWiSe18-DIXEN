@@ -11,11 +11,11 @@ public class App {
 	public static void main(String[] args) {
 		String[] arguments = new Cli(args).parse();
 		if (arguments == null) {
-			System.out.println("Ein Fehler ist aufgetreten. Überprüfen Sie bitte die Inputeingabe oder die zu parsende Klasse.");
+			System.out.println("Ein Fehler ist aufgetreten. Ueberpruefen Sie bitte die Inputeingabe oder die zu parsende Klasse.");
 		}
 		else {
 			try {
-				AnnotationUtil.analyzeClass(arguments[0]);
+				AnnotationUtil.analyzeClass(arguments[0], arguments[1]);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {

@@ -27,14 +27,14 @@ public class AnnotationUtilTest {
 		
 		@Test
 		public void testOpenExistingClassShouldReturnTrue() throws InstantiationException, IllegalAccessException {
-			boolean result1 = AnnotationUtil.analyzeClass(classWithRunMes);
-			boolean result2 = AnnotationUtil.analyzeClass(classWithoutRunMes);
+			boolean result1 = AnnotationUtil.analyzeClass(classWithRunMes, "");
+			boolean result2 = AnnotationUtil.analyzeClass(classWithoutRunMes, "");
 			Assert.assertTrue((result1 == true) && (result2 == true));
 		}
 
 		@Test 
 		public void testOpenNotExistingClassShouldReturnFalse() throws InstantiationException, IllegalAccessException {
-			boolean result = AnnotationUtil.analyzeClass(notExistingClass);
+			boolean result = AnnotationUtil.analyzeClass(notExistingClass, "");
 			Assert.assertFalse(result);
 		}
 		
@@ -55,9 +55,9 @@ public class AnnotationUtilTest {
 			System.out.println(clazz.getName());
 			methods = clazz.getDeclaredMethods();
 			results = AnnotationUtil.getAnnotatedMethods(methods, obj);
-			
+			int result = results[0].size();
 			//annotated method that are runnable
-			Assert.assertTrue(results[0].size() == 2);
+			Assert.assertEquals(2,result);
 		}
 		
 		

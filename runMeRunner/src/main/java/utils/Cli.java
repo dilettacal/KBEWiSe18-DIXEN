@@ -53,24 +53,21 @@ public class Cli {
 				System.exit(1);
 			}
 
-			String out = null;
+			String out = "report.txt";
 			
 			if (cmd.hasOption("o")) {		
 				try {
 					out = cmd.getOptionValue("o"); 
-					//MissingArgumentException
+					System.out.println("OUT: "+ out);
 				}catch(Exception ex) {
 					out = "report.txt";
 				}	
 			}
 			returnValues[1] = out;
 
-			File f = new File("report.txt");
+			File f = new File(out);
+			f.createNewFile();
 			
-			System.out.println(f.exists());
-			if (f.exists() && !f.isDirectory()) {
-				System.out.println("Path: " + f.getAbsolutePath());
-			}
 		} catch (ParseException e) {
 			//e.printStackTrace();
 			return null;

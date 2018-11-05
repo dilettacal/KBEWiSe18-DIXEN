@@ -57,4 +57,10 @@ public class ClassWithRunMes {
 	public void method6() {
 		System.out.println("method6 hat RunMe");
 	}
+
+	@Override
+	public String toString() {
+		return super.toString();
+	}
+	
 }
