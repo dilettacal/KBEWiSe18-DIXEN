@@ -16,6 +16,8 @@ public class AnnotationUtilTest {
 		private String classWithoutRunMes;
 		private String notExistingClass;
 		private List[] results;
+		private String file = "testreport.txt";
+		private String fileNoRunMe ="testreportNo.txt";
 
 		@Before
 		public void setUp() throws Exception {
@@ -27,14 +29,14 @@ public class AnnotationUtilTest {
 		
 		@Test
 		public void testOpenExistingClassShouldReturnTrue() throws InstantiationException, IllegalAccessException {
-			boolean result1 = AnnotationUtil.analyzeClass(classWithRunMes, "");
-			boolean result2 = AnnotationUtil.analyzeClass(classWithoutRunMes, "");
+			boolean result1 = AnnotationUtil.analyzeClass(classWithRunMes, file);
+			boolean result2 = AnnotationUtil.analyzeClass(classWithoutRunMes, fileNoRunMe);
 			Assert.assertTrue((result1 == true) && (result2 == true));
 		}
 
 		@Test 
 		public void testOpenNotExistingClassShouldReturnFalse() throws InstantiationException, IllegalAccessException {
-			boolean result = AnnotationUtil.analyzeClass(notExistingClass, "");
+			boolean result = AnnotationUtil.analyzeClass(notExistingClass, file);
 			Assert.assertFalse(result);
 		}
 		
