@@ -1,19 +1,11 @@
 package utils;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.MissingArgumentException;
+//import org.apache.commons.cli.MissingArgumentException;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 /**
@@ -25,6 +17,7 @@ public class Cli {
 
 	private String[] args = null;
 	private Options options = new Options();
+	private String zusatz = "de.htw.ai.kbe.";
 
 	public Cli(String[] args) {
 		this.args = args;
@@ -43,7 +36,7 @@ public class Cli {
 			cmd = parser.parse(options, args);
 
 			if (cmd.hasOption("c")) {
-				String className = cmd.getOptionValue("c");
+				String className = zusatz + cmd.getOptionValue("c");
 				System.out.println(className);
 				returnValues[0] = className;
 
