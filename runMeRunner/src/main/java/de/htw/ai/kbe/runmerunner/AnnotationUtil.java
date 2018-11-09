@@ -54,12 +54,16 @@ public class AnnotationUtil {
 		//Liste der Methoden ohne Annotationen ueberhaupt
 		ArrayList<String> methodsWithOutAnnos = new ArrayList<String>();
 		//Liste der Methoden mit Annotation RunMe, welche aber nicht ausfuehrbar sind
+		//Grund: Exception
 		ArrayList<String> methodsWithRunMesAnnosNotRunnable = new ArrayList<String>();
+		//Grund: Parameter in Methodendeklaration
+		ArrayList<String> methodsWithRunMesAnnosNotRunnable2 = new ArrayList<String>();
 		
 		methodsWithRunMesAnnos = allMethods[0];
 		methodsWithoutRunMesAnnos = allMethods[1];
 		methodsWithOutAnnos = allMethods[2];
 		methodsWithRunMesAnnosNotRunnable = allMethods[3];
+		methodsWithRunMesAnnosNotRunnable2 = allMethods[4];
 		
 		
 		File f = new File(filename);
@@ -91,7 +95,16 @@ public class AnnotationUtil {
 			
 			bw.write("Nicht-invokierbare Methoden mit @RunMe: ");
 			bw.newLine();
+			bw.write("(Grund: eine Exception wurde geworfen)");
+			bw.newLine();
 			for(String m: methodsWithRunMesAnnosNotRunnable) {
+				bw.write(m);
+				bw.newLine();
+			}
+			bw.newLine();
+			bw.write("(Grund: Parameter in der Methodendeklaration)");
+			bw.newLine();
+			for(String m: methodsWithRunMesAnnosNotRunnable2) {
 				bw.write(m);
 				bw.newLine();
 			}
@@ -113,6 +126,10 @@ public class AnnotationUtil {
 		int runMeCounter = 0;
 		int withoutRunMeCounter = 0;
 		int methodWithoutAnnos = 0;
+		//Char ist entweder e (Exception) oder p (Params) als Ermittlung der Ursache der nicht invozierbaren Methode 
+		//-> Methode der jeweiligen Liste hinzugefügt
+		char reasonNotIvoke = 'e';
+		
 		//Liste der Methoden mit Annotation RunMe
 		ArrayList<String> methodsWithRunMesAnnos = new ArrayList<String>();
 		//Liste der Methoden Mit Annotation aber kein RunMe
@@ -120,14 +137,18 @@ public class AnnotationUtil {
 		//Liste der Methoden ohne Annotationen ueberhaupt
 		ArrayList<String> methodsWithOutAnnos = new ArrayList<String>();
 		//Liste der Methoden mit Annotation RunMe, welche aber nicht ausfuehrbar sind
+		//Grund: Exception innerhalb der Methode aufgerufen
 		ArrayList<String> methodsWithRunMesAnnosNotRunnable = new ArrayList<String>();
+		//Grund: Parameter in Methodendeklaration
+		ArrayList<String> methodsWithRunMesAnnosNotRunnable2 = new ArrayList<String>();
 		
-		ArrayList[] group = new ArrayList[4];
+		ArrayList[] group = new ArrayList[5];
 		//group[0] = methodsWithRunMesAnnos;
 		
 		// Methoden
 		if (methods.length != 0) {
 			for (Method m : methods) {
+				reasonNotIvoke = 'e';
 				// ==== Annotationen der METHODEN ====//
 				Annotation[] methodAnnos = m.getDeclaredAnnotations();
 				if (methodAnnos.length == 0)
@@ -139,15 +160,21 @@ public class AnnotationUtil {
 							try {
 								Parameter[] params = m.getParameters();
 								Object [] objs = params;
-								if(params.length > 0)
+								if(params.length > 0) {
+									reasonNotIvoke = 'p';
 									throw new InvocationTargetException(null, "nicht invokierbar");
+								}				
 								m.invoke(obj,objs);
 								methodsWithRunMesAnnos.add(m.getName());
 								//System.out.println("Keine Exception fuer annotierte Methode mit RunMe: " + m.getName());
 							}  catch (InvocationTargetException e) {
 								System.out.println("Invocation Problem mit " + m.getName());
 								
-								methodsWithRunMesAnnosNotRunnable.add(m.getName());
+								if(reasonNotIvoke == 'p')
+									methodsWithRunMesAnnosNotRunnable2.add(m.getName());
+								else if(reasonNotIvoke == 'e')
+									methodsWithRunMesAnnosNotRunnable.add(m.getName());
+									
 								//e.printStackTrace();
 							}
 							catch (IllegalAccessException e) {
@@ -174,6 +201,7 @@ public class AnnotationUtil {
 		group[1] = methodsWithoutRunMesAnnos;
 		group[2] = methodsWithOutAnnos;
 		group[3] = methodsWithRunMesAnnosNotRunnable;
+		group[4] = methodsWithRunMesAnnosNotRunnable2;
 		
 		return group;
 		

@@ -7,6 +7,9 @@ Methodennamen mit @RunMe:
 method
 
 Nicht-invokierbare Methoden mit @RunMe: 
+(Grund: eine Exception wurde geworfen)
 method2
+
+(Grund: Parameter in der Methodendeklaration)
 method3
 
