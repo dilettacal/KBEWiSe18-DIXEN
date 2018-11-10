@@ -1,8 +1,8 @@
 package utils;
 
-import static org.junit.Assert.*;
-
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,25 +14,33 @@ import utils.AnnotationUtil;
 
 public class AnnotationUtilTest {
 	
-		private String classWithRunMes;
-		private String classWithoutRunMes;
+		private String classWithRunMes, classWithInvocatioTargetEx, classWithIllegalArgExc, classWithIllegalAccessExc;
 		private String notExistingClass;
 		private List[] results;
 		private String file = "testreport.txt";
 		private String fileNoRunMe ="testreportNo.txt";
+		private final String path = "de.htw.ai.kbe.runmerunner.";
+		Method[] methods;
+		Class clazz;
+		Object obj;
+		
 
 		@Before
 		public void setUp() throws Exception {
-			classWithRunMes = "de.htw.ai.kbe.TestClassWithRunMes";
-			classWithoutRunMes = "de.htw.ai.kbe.TestClassWithoutRunMes";
-			notExistingClass = "de.htw.ai.kbe.KeineAhnung";
+			classWithRunMes =  path + "TestClassWithRunMes";
+			classWithInvocatioTargetEx = path +"TestClassInvocationTargetException";
+			classWithIllegalArgExc = path +"TestClassIllegalArgumentException";
+			classWithIllegalAccessExc = path +"TestClassIllegalAccessException";
+			notExistingClass = path +"KeineAhnung";
 			results = new ArrayList[4];
 		}
+		
+		//=== Test: Zugriff auf Klasse === //
 		
 		@Test
 		public void testOpenExistingClassShouldReturnTrue() throws InstantiationException, IllegalAccessException {
 			boolean result1 = AnnotationUtil.analyzeClass(classWithRunMes, file);
-			boolean result2 = AnnotationUtil.analyzeClass(classWithoutRunMes, fileNoRunMe);
+			boolean result2 = AnnotationUtil.analyzeClass(classWithInvocatioTargetEx, fileNoRunMe);
 			Assert.assertTrue((result1 == true) && (result2 == true));
 		}
 
@@ -42,122 +50,174 @@ public class AnnotationUtilTest {
 			Assert.assertFalse(result);
 		}
 		
-	/*	
+		//=== Test: Anzahl der Methoden mit, ohne RM und nicht invozierbar ===//
 		@Test
-		public void testCountMethodsWithRunMesInTestClassWithRunMesShouldReturn2() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-			
-			Method[] methods = null;
-			Class clazz = null;
-			Object obj = null;
+		public void testCountMethodsWithRunMesInTestClassWithRunMesShouldReturn8() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 			clazz = Class.forName(classWithRunMes);
 			obj = clazz.newInstance(); 
 			System.out.println(clazz.getName());
 			methods = clazz.getDeclaredMethods();
 			results = AnnotationUtil.getAnnotatedMethods(methods, obj);
+			System.out.println("Test:");
+			results[0].forEach(e -> System.out.println(e));
 			int result = results[0].size();
-			//annotated method that are runnable
-			Assert.assertEquals(2,result);
-		}*/
+			Assert.assertEquals(8,result);
+		}
 		
 		
 		@Test
-		public void testCountAnnotatedMethodsWithoutRunMesInTestClassWithRunMesShouldReturn1() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-			
-			Method[] methods = null;
-			Class clazz = null;
-			Object obj = null;
+		public void testCountMethdosWithOtherAnnosThanRunMeShouldReturn1() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 			clazz = Class.forName(classWithRunMes);
 			obj = clazz.newInstance(); 
 			System.out.println(clazz.getName());
 			methods = clazz.getDeclaredMethods();
-			results = AnnotationUtil.getAnnotatedMethods(methods, obj);		
-		
-			//method with other annotations than RunMe
-			Assert.assertTrue(results[1].size() == 1); //1 Deprecated
+			results = AnnotationUtil.getAnnotatedMethods(methods, obj);	
+			//nur eine Methode mit @Deprecated und ohne RM
+			Assert.assertTrue(results[1].size() == 1);
 		}
 		
 		@Test
-		public void testCountMethodsWithoutAnnotationsInTestClassWithRunMesShouldReturn2() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-			
-			Method[] methods = null;
-			Class clazz = null;
-			Object obj = null;
+		public void testCountMethodsWithoutAnyAnnotationShouldReturn4() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 			clazz = Class.forName(classWithRunMes);
 			obj = clazz.newInstance(); 
 			System.out.println(clazz.getName());
 			methods = clazz.getDeclaredMethods();
 			results = AnnotationUtil.getAnnotatedMethods(methods, obj);
-			
 			//methods that are not annotated 
-			Assert.assertTrue(results[2].size() == 2);			
+			Assert.assertTrue(results[2].size() == 4);			
 		}
 		
 		@Test
-		public void testCountNotRunnableMethodsInTestClassWithRunMesShouldReturnXX() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-			
-			Method[] methods = null;
-			Class clazz = null;
-			Object obj = null;
+		public void testCountNotRunnableMethodsInTestClassWithRunMesShouldReturn5() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 			clazz = Class.forName(classWithRunMes);
 			obj = clazz.newInstance(); 
-			System.out.println(clazz.getName());
 			methods = clazz.getDeclaredMethods();
 			results = AnnotationUtil.getAnnotatedMethods(methods, obj);
 			//methods with RunMe that are not runnable
-			
-			//TODO: Das muss noch geklaert werden
-			//Was wird als nicht ausfuehrbare Methode betrachtet?
 			int notrunnableMethods = results[3].size();
-			Assert.assertEquals(2, notrunnableMethods);			
+			Assert.assertEquals(5, notrunnableMethods);			
 		}
 		
-		/*
-		 * Tests fuer Klassen ohne RunMes
-		 */
+		//=== Test: Exceptions === //
+		
 		@Test
-		public void testCountAnnotationsWithRunMesInTestClassWithoutRunMesShouldReturnZero() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-			Method[] methods = null;
-			Class clazz = null;
-			Object obj = null;
-			clazz = Class.forName(classWithoutRunMes);
+		public void testMethodWithParametersShouldReturnIllegalArgumentException() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+			clazz = Class.forName(classWithIllegalArgExc);
 			obj = clazz.newInstance(); 
-			System.out.println(clazz.getName());
 			methods = clazz.getDeclaredMethods();
-			results = AnnotationUtil.getAnnotatedMethods(methods, obj);
+			boolean invocationTargetException = false;
+			boolean illegalArgsException = false;
+			boolean illegalAccessException =false;
+			for(Method m: methods) {
+				System.out.println(m.getName());
+				Parameter[] params = m.getParameters();
+				Object[] objs = params;
+				try {
+					m.invoke(obj, objs);
+				} catch (IllegalArgumentException e) {
+					illegalArgsException = true;
+				} catch (InvocationTargetException e) {
+					invocationTargetException = true;
+				}  catch (IllegalAccessException e) {
+					illegalAccessException = true;
+				}
+				
+			}
+			Assert.assertFalse(invocationTargetException);
+			Assert.assertTrue(illegalArgsException);
+			Assert.assertFalse(illegalAccessException);
+		}
+		
+		@Test
+		public void testMethodThrowingExceptionShouldReturnInvocationTargetException() throws ClassNotFoundException, InstantiationException {
+			clazz = Class.forName(classWithInvocatioTargetEx);
+			try {
+				obj = clazz.newInstance();
+			} catch (IllegalAccessException e1) {
+				
+			} 
+			methods = clazz.getDeclaredMethods();
+			boolean invocationTargetException = false;
+			boolean illegalArgsException = false;
+			boolean illegalAccessException =false;
+			for(Method m: methods) {
+				System.out.println(m.getName());
+				Parameter[] params = m.getParameters();
+				Object[] objs = params;
+				try {
+					m.invoke(obj, objs);
+				} catch (IllegalArgumentException e) {
+					illegalArgsException = true;
+				} catch (InvocationTargetException e) {
+					invocationTargetException = true;
+				}  catch (IllegalAccessException e) {
+					illegalAccessException = true;
+				}
+				
+			}
+			Assert.assertTrue(invocationTargetException);
+			Assert.assertFalse(illegalArgsException);
+			Assert.assertFalse(illegalAccessException);
 			
-			Assert.assertTrue(results[0].size() == 0);
 		}
 		
-		/*
 		@Test
-		public void testCountAnnotatedMethodsWithoutRunMesInClassWithoutRunMesShouldReturn3() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-			Method[] methods = null;
-			Class clazz = null;
-			Object obj = null;
-			clazz = Class.forName(classWithoutRunMes);
+		public void testPrivateMethodShouldReturnIllegalAccessException() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+			clazz = Class.forName(classWithIllegalAccessExc);
 			obj = clazz.newInstance(); 
-			System.out.println(clazz.getName());
 			methods = clazz.getDeclaredMethods();
-			results = AnnotationUtil.getAnnotatedMethods(methods, obj);
-			int annotatedMethodsNoRunMe = results[1].size();
-			Assert.assertEquals(annotatedMethodsNoRunMe, 3);
-		}*/
+			boolean invocationTargetException = false;
+			boolean illegalArgsException = false;
+			List<Boolean> illegalAccessExc = new ArrayList<Boolean>();
+			for(Method m: methods) {
+				System.out.println(m.getName());
+				Parameter[] params = m.getParameters();
+				Object[] objs = params;
+				try {
+					m.invoke(obj, objs);
+				} catch (IllegalArgumentException e) {
+					illegalArgsException = true;
+				} catch (InvocationTargetException e) {
+					invocationTargetException = true;
+				} catch (IllegalAccessException e) {
+					illegalAccessExc.add(true);
+				}
+			}
+			Assert.assertFalse(invocationTargetException);
+			Assert.assertFalse(illegalArgsException);
+			int count = (int) illegalAccessExc.stream().filter(el -> el==true).count();
+			Assert.assertTrue(count == 3);
+			
+		}
 		
-		/*
 		@Test
-		public void testCountNotAnnotatedMethodsInClassWithoutRunMesShouldReturn3() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-			Method[] methods = null;
-			Class clazz = null;
-			Object obj = null;
-			clazz = Class.forName(classWithoutRunMes);
+		public void testPackagePrivateMethodShouldReturnIllegalAccessException() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+			clazz = Class.forName(classWithIllegalAccessExc);
 			obj = clazz.newInstance(); 
-			System.out.println(clazz.getName());
 			methods = clazz.getDeclaredMethods();
-			results = AnnotationUtil.getAnnotatedMethods(methods, obj);
-			int notAnnotatedMethods = results[2].size();
-			//TODO: Die Methoden mit Override und SuppressWarnings werden als nicht-annotierte Methoden gefangen!
-			Assert.assertEquals(notAnnotatedMethods, 2);
-		}*/
+			boolean invocationTargetException = false;
+			boolean illegalArgsException = false;
+			boolean illegalAccessException =false;
+			for(Method m: methods) {
+				System.out.println(m.getName());
+				Parameter[] params = m.getParameters();
+				Object[] objs = params;
+				try {
+					m.invoke(obj, objs);
+				} catch (IllegalArgumentException e) {
+					illegalArgsException = true;
+				} catch (InvocationTargetException e) {
+					invocationTargetException = true;
+				}  catch (IllegalAccessException e) {
+					illegalAccessException = true;
+				}
+				
+			}
+			Assert.assertFalse(invocationTargetException);
+			Assert.assertFalse(illegalArgsException);
+			Assert.assertTrue(illegalAccessException);
+			
+		}
 		
 		
 

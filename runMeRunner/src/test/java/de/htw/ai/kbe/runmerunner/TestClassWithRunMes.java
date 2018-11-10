@@ -5,55 +5,87 @@ import java.text.DecimalFormat;
 import de.htw.ai.kbe.runmerunner.RunMe;
 
 /**
- * Test class with RunMes
- * Total annotations- RunMes: 3
- * Total other annotations: 1
- * @author dixen
+ * Testklasse mit RunMes
+ * Methodennamen ohne RM: 5
+ * Methodennamen mit RM: 8
+ * Methondennamen mit RM aber nicht invozierbar: 5
  *
  */
 public class TestClassWithRunMes {
 
-    private String fieldPrivate;
-     
-    protected Integer integerFieldProtected;
-    
-    public DecimalFormat dfFieldPublic;
 
-    static Integer integerFieldStatic;
-    
-    Integer integerFieldDontRunMe;
-    
     @RunMe
-    public static String method() {
-        System.out.println("In method");
+    public static String method0() {
+        System.out.println("In method0: ich bin public und static!");
         return "method".toUpperCase();
     }
     
-    @Deprecated
+	@RunMe
 	String method1() {
-		System.out.println("In method1: package-private");
+		System.out.println("In method1: ich bin package-private!");
 		return "method1".toUpperCase();
 	}
 
 	@RunMe
-	public boolean method2(){
-		//Diese Methode soll als nicht invokierbare Methode gelten
-		System.out.println("In method2: public");
-		throw new NullPointerException();
-	}
+	@Deprecated
+    protected String method2() {
+        System.out.println("In method2: ich bin protected und deprecated!");
+        return "method1".toUpperCase();
+    }
 	
 	@RunMe
-	private boolean method3(int b) {
-		//Diese methode soll als nicht invokierbare Methode gelten
-		System.out.println("In method3: private");
+	public boolean method3() {
+		System.out.println("In method3: ich bin public!");
 		return true;
 	}
 	
-    boolean method4(String input, Integer inti) {
+	@RunMe
+	private boolean method4() {
+		//Diese Methode soll durch Reflection IllegalAccessException werfen, da private
+		System.out.println("In method4: ich bin privat!");
+		return true;
+	}
+	
+	@RunMe
+    public boolean method4(String input) {
+		//Diese Methode soll durch Reflection IllegalArgumentException werfen
+        System.out.println("In method4: ich bekomme einen Parameter!");
         return true;
     }
 	
-	public void method5() {
-		System.out.println("Ich werde nicht gefunden!");
+	@Override
+	@RunMe
+    public String toString() {
+        System.out.println("In toString: ");
+        return MyClassWithRunMes.class.getSimpleName();
+    }
+	
+	public void noRmR1() {
+		System.out.println("Ich werde nicht aufgerufen!");
 	}
+	
+	void noRmR2() {
+        System.out.println("Ich werde nicht aufgerufen!");
+    }
+	
+	private void noRmR3() {
+        System.out.println("Ich werde nicht aufgerufen!");
+    }
+		
+	@RunMe
+	public void myMethod() {
+		throw new NullPointerException();
+	}
+	
+	@Deprecated
+	protected void noRmR4() {
+		System.out.println("Ich werde nicht aufgerufen!");
+	}
+
+	@Override
+	public boolean equals(Object arg0) {
+		System.out.println("Ich werde nicht aufgerufen!");
+		return super.equals(arg0);
+	}
+	
 }

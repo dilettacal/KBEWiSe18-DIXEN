@@ -1,14 +1,10 @@
 Methodennamen ohne @RunMe: 
-method1
-toString
-method
-method2
-method3
 
 Methodennamen mit @RunMe: 
+myMethod
 
 Nicht-invokierbare Methoden mit @RunMe: 
-(Grund: eine Exception wurde geworfen)
 
-(Grund: Parameter in der Methodendeklaration)
+myMethod: InvocationTargetException <- java.lang.NullPointerException
+
 
