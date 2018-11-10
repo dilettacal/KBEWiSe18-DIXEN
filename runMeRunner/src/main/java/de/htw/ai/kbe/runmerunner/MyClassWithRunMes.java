@@ -2,7 +2,7 @@ package de.htw.ai.kbe.runmerunner;
 
 import de.htw.ai.kbe.runmerunner.RunMe;
 
-public class ClassWithRunMes {
+public class MyClassWithRunMes {
 
     @RunMe
     public static String method0() {
@@ -37,7 +37,7 @@ public class ClassWithRunMes {
 	}
 	
 	@RunMe
-    public boolean method5(String input) {
+    public boolean method4(String input) {
 		//Diese Methode soll durch Reflection IllegalArgumentException werfen
         System.out.println("In method4: ich bekomme einen Parameter!");
         return true;
@@ -47,13 +47,8 @@ public class ClassWithRunMes {
 	@RunMe
     public String toString() {
         System.out.println("In toString: ");
-        return ClassWithRunMes.class.getSimpleName();
+        return MyClassWithRunMes.class.getSimpleName();
     }
-	
-	@RunMe
-	public void myMethod() {
-		throw new NullPointerException();
-	}
 	
 	public void noRmR1() {
 		System.out.println("Ich werde nicht aufgerufen!");
@@ -66,4 +61,25 @@ public class ClassWithRunMes {
 	private void noRmR3() {
         System.out.println("Ich werde nicht aufgerufen!");
     }
+	
+	//=== Von mir hinzugefuegt zum Testen
+	
+	@RunMe
+	public void myMethod() {
+		throw new NullPointerException();
+	}
+	
+	@Deprecated
+	protected void noRmR4() {
+		System.out.println("Ich werde nicht aufgerufen!");
+	}
+
+	@Override
+	public boolean equals(Object arg0) {
+		System.out.println("Ich werde nicht aufgerufen!");
+		return super.equals(arg0);
+	}
+	
+	
+	
 }
