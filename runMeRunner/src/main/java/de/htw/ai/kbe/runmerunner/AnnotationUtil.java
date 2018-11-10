@@ -19,10 +19,13 @@ import java.util.List;
  */
 public class AnnotationUtil {	
 	/**
-	 * Analyses annotations of the given class
-	 * @param classToOpen - class with annos
+	 * Analyisiert die als Parameter uebergebene Klasse
+	 * @param classToOpen - die zu analysierende Klasse 
+	 * @throws IllegalAccessException wenn gefundene Klasse nicht zugreifbar ist
+	 * @throws InstantiationException wenn gefundene Klasse nicht instanzierbar ist
+	 * @return true wenn Klasse analysierbar ist, false wenn ein Problem auftritt
 	 */
-	public static boolean analyzeClass(String classToOpen, String filename) throws InstantiationException, IllegalAccessException{
+	public static boolean analyzeClass(String classToOpen, String filename) throws InstantiationException, IllegalAccessException {
 		Method[] methods = null;
 		Class clazz = null;
 		Object obj = null;
@@ -34,7 +37,7 @@ public class AnnotationUtil {
 			System.out.println(clazz.getName());
 			methods = clazz.getDeclaredMethods();
 		} catch (ClassNotFoundException e) {
-			System.out.println("Klasse nicht gefunden. Pfad: " + classToOpen);
+			System.out.println("Klasse nicht gefunden im Pfad: " + classToOpen);
 			return false;
 		} catch(NullPointerException e) {
 			System.out.println("Ein Fehler ist aufgetreten!");
@@ -46,6 +49,11 @@ public class AnnotationUtil {
 		return true;
 	}
 	
+	/**
+	 * Schreibt Informationen ueber die Klasse in das Report
+	 * @param allMethods die zu analysierenden Methoden
+	 * @param filename der Filename
+	 */
 	public static void writeMethodsToFile(ArrayList[] allMethods, String filename) {
 		//Liste der Methoden mit Annotation RunMe
 		ArrayList<String> methodsWithRunMesAnnos = new ArrayList<String>();
@@ -110,15 +118,13 @@ public class AnnotationUtil {
 			}
 			bw.newLine();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Ein Problem ist beim Zugriff auf die Datei aufgetreten: " + e.getMessage());
 		}		
 		
 	    try {
 			bw.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Ein Problem ist beim Zugriff auf die Datei aufgetreten: " + e.getMessage());
 		}
 	}
 	
@@ -136,14 +142,14 @@ public class AnnotationUtil {
 		ArrayList<String> methodsWithoutRunMesAnnos = new ArrayList<String>();
 		//Liste der Methoden ohne Annotationen ueberhaupt
 		ArrayList<String> methodsWithOutAnnos = new ArrayList<String>();
+		
 		//Liste der Methoden mit Annotation RunMe, welche aber nicht ausfuehrbar sind
 		//Grund: Exception innerhalb der Methode aufgerufen
-		ArrayList<String> methodsWithRunMesAnnosNotRunnable = new ArrayList<String>();
+		ArrayList<String> methodsNotRunnableException = new ArrayList<String>();
 		//Grund: Parameter in Methodendeklaration
-		ArrayList<String> methodsWithRunMesAnnosNotRunnable2 = new ArrayList<String>();
+		ArrayList<String> methodsNotRunnableParameterInMethodDeclaration = new ArrayList<String>();
 		
 		ArrayList[] group = new ArrayList[5];
-		//group[0] = methodsWithRunMesAnnos;
 		
 		// Methoden
 		if (methods.length != 0) {
@@ -166,30 +172,20 @@ public class AnnotationUtil {
 								}				
 								m.invoke(obj,objs);
 								methodsWithRunMesAnnos.add(m.getName());
-								//System.out.println("Keine Exception fuer annotierte Methode mit RunMe: " + m.getName());
 							}  catch (InvocationTargetException e) {
-								System.out.println("Invocation Problem mit " + m.getName());
-								
 								if(reasonNotIvoke == 'p')
-									methodsWithRunMesAnnosNotRunnable2.add(m.getName());
+									methodsNotRunnableParameterInMethodDeclaration.add(m.getName());
 								else if(reasonNotIvoke == 'e')
-									methodsWithRunMesAnnosNotRunnable.add(m.getName());
-									
-								//e.printStackTrace();
+									methodsNotRunnableException.add(m.getName());
 							}
-							catch (IllegalAccessException e) {
-								//System.out.println("IllegalAccess Problem mit " + m.getName());
+							catch (IllegalAccessException e) {								
 								methodsWithRunMesAnnos.add(m.getName());
-								//System.out.println(e.getMessage());
 							} catch (IllegalArgumentException e) {
-								//System.out.println("IllegalArgument Problem mit " + m.getName());
 								methodsWithRunMesAnnos.add(m.getName());
-								//System.out.println(e.getMessage());
 							}
 						}
 						//Deprecated oder andere Annos
 						else {
-							//System.out.println("annotierte Methode ohne RunMe: " + m.getName());
 							methodsWithoutRunMesAnnos.add(m.getName());
 						}
 					}
@@ -200,8 +196,8 @@ public class AnnotationUtil {
 		group[0] = methodsWithRunMesAnnos;
 		group[1] = methodsWithoutRunMesAnnos;
 		group[2] = methodsWithOutAnnos;
-		group[3] = methodsWithRunMesAnnosNotRunnable;
-		group[4] = methodsWithRunMesAnnosNotRunnable2;
+		group[3] = methodsNotRunnableException;
+		group[4] = methodsNotRunnableParameterInMethodDeclaration;
 		
 		return group;
 		

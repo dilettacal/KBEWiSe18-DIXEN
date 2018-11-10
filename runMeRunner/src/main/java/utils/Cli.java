@@ -17,7 +17,7 @@ public class Cli {
 
 	private String[] args = null;
 	private Options options = new Options();
-	private String zusatz = "de.htw.ai.kbe.";
+	private String zusatz = "de.htw.ai.kbe.runmerunner.";
 
 	public Cli(String[] args) {
 		this.args = args;
@@ -32,12 +32,11 @@ public class Cli {
 		CommandLine cmd = null;
 		String[] returnValues = new String[2];
 		try {
-			//TODO: Das kann org.apache.commons.cli.MissingArgumentException werfen!
 			cmd = parser.parse(options, args);
 
 			if (cmd.hasOption("c")) {
 				String className = zusatz + cmd.getOptionValue("c");
-				System.out.println(className);
+				System.out.println("Pfad: " + className);
 				returnValues[0] = className;
 
 			} else {

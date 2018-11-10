@@ -9,7 +9,7 @@ import de.htw.ai.kbe.runmerunner.RunMe;
  * @author dixen
  *
  */
-public class ClassWithRunMes {
+public class MyClassWithRunMes {
 
     private String fieldPrivate;
      
@@ -55,7 +55,7 @@ public class ClassWithRunMes {
 	
 	@RunMe
 	private void method6() {
-		System.out.println("method6 hat RunMe");
+		System.out.println("method6 hat RunMe und ist private");
 	}
 	
 	@RunMe
