@@ -1,4 +1,4 @@
-import de.htw.ai.kbe.runmerunner.AnnotationUtil;
+import utils.AnnotationUtil;
 import utils.Cli;
 
 /**
