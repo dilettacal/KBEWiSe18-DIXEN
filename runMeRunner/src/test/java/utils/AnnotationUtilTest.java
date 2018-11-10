@@ -1,4 +1,4 @@
-package de.htw.ai.kbe.runmerunner;
+package utils;
 
 import static org.junit.Assert.*;
 

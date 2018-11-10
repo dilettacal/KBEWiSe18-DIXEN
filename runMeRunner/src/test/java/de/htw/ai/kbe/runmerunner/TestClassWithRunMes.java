@@ -1,10 +1,17 @@
-package de.htw.ai.kbe;
+package de.htw.ai.kbe.runmerunner;
 
 import java.text.DecimalFormat;
 
 import de.htw.ai.kbe.runmerunner.RunMe;
 
-public class TestClassWithoutRunMes {
+/**
+ * Test class with RunMes
+ * Total annotations- RunMes: 3
+ * Total other annotations: 1
+ * @author dixen
+ *
+ */
+public class TestClassWithRunMes {
 
     private String fieldPrivate;
      
@@ -16,6 +23,7 @@ public class TestClassWithoutRunMes {
     
     Integer integerFieldDontRunMe;
     
+    @RunMe
     public static String method() {
         System.out.println("In method");
         return "method".toUpperCase();
@@ -27,24 +35,25 @@ public class TestClassWithoutRunMes {
 		return "method1".toUpperCase();
 	}
 
+	@RunMe
 	public boolean method2(){
+		//Diese Methode soll als nicht invokierbare Methode gelten
 		System.out.println("In method2: public");
 		throw new NullPointerException();
 	}
 	
-	
-	@SuppressWarnings(value = { "" })
+	@RunMe
 	private boolean method3(int b) {
+		//Diese methode soll als nicht invokierbare Methode gelten
 		System.out.println("In method3: private");
 		return true;
 	}
-
-	@Override
-	public String toString() {
-		return "TestClassWithoutRunMes [fieldPrivate=" + fieldPrivate + ", integerFieldProtected="
-				+ integerFieldProtected + ", dfFieldPublic=" + dfFieldPublic + ", integerFieldDontRunMe="
-				+ integerFieldDontRunMe + "]";
+	
+    boolean method4(String input, Integer inti) {
+        return true;
+    }
+	
+	public void method5() {
+		System.out.println("Ich werde nicht gefunden!");
 	}
-
 }
-    

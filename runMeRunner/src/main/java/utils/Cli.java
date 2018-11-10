@@ -41,8 +41,9 @@ public class Cli {
 
 			} else {
 				System.out.println(
-						"Fehlerhafte Eingabe! Sie muessen einen Klassennamen angeben und ihn als Klasse kennzeichnen. (Z. Bsp.: -c className)");
-				System.exit(1);
+						"Fehlerhafte Eingabe! "
+						+ "Sie muessen einen Klassennamen angeben und ihn als Klasse kennzeichnen. (Z. Bsp.: -c className)");
+				return null; //testbar
 			}
 
 			String out = "report.txt";
@@ -61,10 +62,8 @@ public class Cli {
 			f.createNewFile();
 			
 		} catch (ParseException e) {
-			//e.printStackTrace();
 			return null;
 		} catch(Exception e) {
-			//e.printStackTrace();
 			return null;
 		}
 		return returnValues;

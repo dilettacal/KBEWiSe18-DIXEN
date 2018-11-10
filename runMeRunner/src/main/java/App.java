@@ -19,9 +19,11 @@ public class App {
 				programRun = AnnotationUtil.analyzeClass(arguments[0], arguments[1]);
 			} catch (InstantiationException e) {
 				System.out.println("Klasse ist nicht instanzierbar!");
+				System.exit(1);
 			} catch (IllegalAccessException e) {
-				//passiert wenn Klasse nicht zugreifbar, z.B. wegen default-Konstruktor usw.
+				//passiert wenn Klasse nicht zugreifbar
 				System.out.println("Klasse ist nicht zugreifbar! Ueberpruefen Sie Ihre Klasse!");
+				System.exit(1);
 			}
 		}
 		if(programRun) {
