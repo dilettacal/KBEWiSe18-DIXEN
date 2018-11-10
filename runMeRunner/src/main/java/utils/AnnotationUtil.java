@@ -39,7 +39,6 @@ public class AnnotationUtil {
 		try {
 			clazz = Class.forName(classToOpen);
 			obj = clazz.newInstance();
-			System.out.println(clazz.getName());
 			methods = clazz.getDeclaredMethods();
 		} catch (ClassNotFoundException e) {
 			System.out.println("Klasse nicht gefunden im Pfad: " + classToOpen);
@@ -137,11 +136,6 @@ public class AnnotationUtil {
 		int runMeCounter = 0;
 		int withoutRunMeCounter = 0;
 		int methodWithoutAnnos = 0;
-		// Char ist entweder e (Exception) oder p (Params) als Ermittlung der Ursache
-		// der nicht invozierbaren Methode
-		// -> Methode der jeweiligen Liste hinzugefügt
-
-		// char reasonNotIvoke = 'e'; //nicht mehr notwendig
 
 		// Liste der Methoden mit Annotation RunMe
 		ArrayList<String> methodsWithRunMesAnnos = new ArrayList<String>();
@@ -151,28 +145,18 @@ public class AnnotationUtil {
 		ArrayList<String> methodsWithOutAnnos = new ArrayList<String>();
 
 		// Liste der Methoden mit Annotation RunMe, welche aber nicht ausfuehrbar sind
-		// Grund: Exception innerhalb der Methode aufgerufen
 		ArrayList<String> methodsNotRunnableException = new ArrayList<String>();
-
-		// Grund: Parameter in Methodendeklaration //nicht mehr notwendig
-		// ArrayList<String> methodsNotRunnableParameterInMethodDeclaration = new
-		// ArrayList<String>();
 
 		ArrayList[] group = new ArrayList[4];
 
 		// Methoden
 		if (methods.length != 0) {
 			for (Method m : methods) {
-				// reasonNotIvoke = 'e'; //nicht mehr notwendig
-
 				// ==== Annotationen der METHODEN ====//
 				Annotation[] methodAnnos = m.getDeclaredAnnotations();
 				if (methodAnnos.length == 0)
 					methodsWithOutAnnos.add(m.getName());
 				else if (m.isAnnotationPresent(RunMe.class)) {
-					// Rueckgabe der Methoden mit Annotation
-					// for (Annotation a : methodAnnos) {
-					// if (a instanceof RunMe) {
 					try {
 						Parameter[] params = m.getParameters();
 						Object[] objs = params;
@@ -215,8 +199,6 @@ public class AnnotationUtil {
 				else {
 					methodsWithoutRunMesAnnos.add(m.getName());
 				}
-				// }
-				// }
 			}
 		}
 
@@ -224,7 +206,8 @@ public class AnnotationUtil {
 		group[1] = methodsWithoutRunMesAnnos;
 		group[2] = methodsWithOutAnnos;
 		group[3] = methodsNotRunnableException;
-		// group[4] = methodsNotRunnableParameterInMethodDeclaration; //nicht mehr  notwendig
+		// group[4] = methodsNotRunnableParameterInMethodDeclaration; //nicht mehr
+		// notwendig
 
 		return group;
 
