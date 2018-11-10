@@ -30,11 +30,10 @@ public class AnnotationUtil {
 		Class clazz = null;
 		Object obj = null;
 
-		// Klassen aufrufen
+		//Klassen aufrufen
 		try {		
 			clazz = Class.forName(classToOpen);
 			obj = clazz.newInstance(); 
-			System.out.println(clazz.getName());
 			methods = clazz.getDeclaredMethods();
 		} catch (ClassNotFoundException e) {
 			System.out.println("Klasse nicht gefunden im Pfad: " + classToOpen);
@@ -44,7 +43,10 @@ public class AnnotationUtil {
 			return false;
 		}		
 		
+		//Klassenmethoden analysieren
 		ArrayList[] countMethods = getAnnotatedMethods(methods, obj);
+		
+		//Report erstellen
 		writeMethodsToFile(countMethods, filename);
 		return true;
 	}
@@ -154,7 +156,7 @@ public class AnnotationUtil {
 		// Methoden
 		if (methods.length != 0) {
 			for (Method m : methods) {
-				reasonNotIvoke = 'e';
+				reasonNotIvoke = 'e'; 
 				// ==== Annotationen der METHODEN ====//
 				Annotation[] methodAnnos = m.getDeclaredAnnotations();
 				if (methodAnnos.length == 0)
@@ -166,10 +168,11 @@ public class AnnotationUtil {
 							try {
 								Parameter[] params = m.getParameters();
 								Object [] objs = params;
+								
 								if(params.length > 0) {
 									reasonNotIvoke = 'p';
-									throw new InvocationTargetException(null, "nicht invokierbar");
-								}				
+									throw new IllegalArgumentException("Methode mit Parametern");
+								}			
 								m.invoke(obj,objs);
 								methodsWithRunMesAnnos.add(m.getName());
 							}  catch (InvocationTargetException e) {
