@@ -1,26 +1,26 @@
 Methodennamen ohne @RunMe: 
 noRmR4
-noRmR1
+equals
 noRmR2
 noRmR3
-equals
+noRmR1
 
 Methodennamen mit @RunMe: 
-method2
-method1
-method3
-myMethod
-method0
-method4
-method4
 toString
+method4
+method4
+method0
+method2
+method3
+method1
+myMethod
 
 Nicht-invokierbare Methoden mit @RunMe: 
 
+method4: IllegalAccessException
+method4: IllegalArgumentException
 method2: IllegalAccessException
 method1: IllegalAccessException
 myMethod: InvocationTargetException <- java.lang.NullPointerException
-method4: IllegalArgumentException
-method4: IllegalAccessException
 
 
