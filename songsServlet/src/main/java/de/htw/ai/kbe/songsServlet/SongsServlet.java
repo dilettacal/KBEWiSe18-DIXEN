@@ -5,7 +5,19 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
 
 //import org.json.JSONObject;
 
@@ -48,4 +60,24 @@ public class SongsServlet extends HttpServlet {
 
 	}
 
+	
+	//Methoden aus jaxJacksonExample
+	// Reads a list of songs from a JSON-file into List<Song>
+		@SuppressWarnings("unchecked")
+		static List<Song> readJSONToSongs(String filename) throws FileNotFoundException, IOException {
+			//TODO: Wir bekommen ein ServletInputStream!
+			ObjectMapper objectMapper = new ObjectMapper();
+			try (InputStream is = new BufferedInputStream(new FileInputStream(filename))) {
+				return (List<Song>) objectMapper.readValue(is, new TypeReference<List<Song>>(){});
+			}
+		}
+
+		// Write a List<Song> to a JSON-file
+		static void writeSongsToJSON(List<Song> songs, String filename) throws FileNotFoundException, IOException {
+			ObjectMapper objectMapper = new ObjectMapper();
+			//TODO: Wir haben ein ServletOutputStream!
+			try (OutputStream os = new BufferedOutputStream(new FileOutputStream(filename))) {
+				objectMapper.writeValue(os, songs);
+			}
+		}
 }

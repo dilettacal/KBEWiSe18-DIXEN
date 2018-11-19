@@ -70,6 +70,13 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.9.2</version>
         </dependency>
+        <!-- to convert Java object to / from JSON (Jackson): https://www.mkyong.com/java/how-to-convert-java-object-to-from-json-jackson/ -->
+        <dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.13</version>
+		</dependency>
+        
 	</dependencies>
 
   <build>
