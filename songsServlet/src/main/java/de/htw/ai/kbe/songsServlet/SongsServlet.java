@@ -44,6 +44,24 @@ public class SongsServlet extends HttpServlet {
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
+		//1. Read songs from json file - List<Song>
+		boolean readSuccessful = false;
+		List<Song> songsFromJSON = null;
+		
+		try {
+			//TODO: Das habe ich nicht getestet!
+			songsFromJSON= SongsServlet.readJSONToSongs("songs.json");
+			//Test- Ausgabe TODO: Remove before last commit to repo
+			songsFromJSON.forEach(s -> System.out.println(s));
+			readSuccessful = true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		if(readSuccessful){
+			//Jetzt wurde eine Liste von Song erstellt und sie muss der in-Memory DB hinzugefuegt werden
+			database = Songs.getInstance(songsFromJSON);
+		}
+			
 
 	}
 
