@@ -28,6 +28,19 @@ import java.util.List;
  *
  */
 public class SongsServlet extends HttpServlet {
+	
+	//Parameters for requests and responses
+	private final String APP_JSON = "application/json";
+	private final String ALL_PARAM = "all";
+	private final String SONGID = "songId";
+	private final String RESPONSE_TYPE = "text/plain";
+	
+	//Objects needed
+	private Songs database;
+	
+	//Path to file
+	private final String pathToFile = "songs.json"; //Das muss waehrend der Abgabe angepasst werden, da die Datei sich im Projekt nicht befindet!
+
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
