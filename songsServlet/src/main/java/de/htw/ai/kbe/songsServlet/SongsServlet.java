@@ -99,14 +99,13 @@ public class SongsServlet extends HttpServlet {
 					//Iterieren durch alle Songs in der DB und sie als JSON zueruckgeben
 				}
 				else if(actualParam.equals(SONGID)){
-					//Song ID auslesen
+					//SongID Wert aus Request auslesen
 					Integer songID = Integer.valueOf(req.getParameter(SONGID));
 
 					//TODO: Song mit songID aus DB aufrufen und sie als JSON zurueckgeben
 					
 					//TODO: Moegliche Faelle abdecken:
-					//1. Song existiert und wird zurueckgegeben
-					//TODO: Klaeren, wie das ausgegeben werden soll: PrintWriter oder Syso?
+					//1. Song existiert und wird zurueckgegeben (PrintWriter)
 					
 					//2. Song existiert nicht oder Request ist schlecht aufgebaut
 					//Request-Analyse in einer separaten Methode eventuell behandeln
@@ -117,11 +116,6 @@ public class SongsServlet extends HttpServlet {
 			
 			
 		}	
-		
-		
-		
-		
-
 	}
 
 	//http://localhost:8080/songsServlet mit Payload soll eine neue ID fuer den neuen Song generieren und den Song in der DB speichern
@@ -129,12 +123,74 @@ public class SongsServlet extends HttpServlet {
 	//akzeptiert nur JSON payloads
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		//Hinweis aus Folien:
+		/* Bei der Abarbeitung von POST und PUT mit request.getContentType() 
+		den MIME-Typ des Request-Bodys hecken */
+		
+		//TODO: Anmerkung Dozentin - ServletInputStream und ServletOutputStream
+		//1. Repsonse Typ festlegen --> text/plain
+		resp.setContentType(RESPONSE_TYPE);
 
+		Song song = null; //Die Song, die wir auslesen und speichern wollen
+		String jsonBody = "";
+		//2. Post-request lesen
+		
+		/* Vielleicht so?
+		
+		//Auslesen des Inputstreams
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		//Line nach Line
+		BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream()));
+		while ((line = in.readLine()) != null) {
+			jsonBody += line; //JsonBody string aufbauen
+		}
+		PrintWriter out = response.getWriter(); //PrintWriter vorbereiten
+		
+		try {
+			
+			//Song erstellen
+			song = objectMapper.readValue(jsonBody, Song.class);
+			id = database.getLastID() + 1; //Diese Methode soll in Songs noch eingebaut werden
+			song.setId(id); //ID vergeben
+			songStore.put(id, song); //Song in die DB hinfuegen
+			
+			//Ausgabe fuer Client
+			out.print(song.getTitle(), song.getArtist(), song.getAlbum(),
+					song.getReleased(), song.getId());
+
+			out.flush(); //Writer schließen
+
+		} catch (JsonParseException | JsonMappingException e) {
+			out.print(e);
+			out.flush();
+
+		}
+		
+		
+		*/
+
+		//2.1
+
+		//3.
+		
+		//Ausgabe fuer Client notwendig?
+		ServletInputStream inputStream = req.getInputStream();
+		byte[] inBytes = IOUtils.toByteArray(inputStream); 
+		//Responses haben einen Writer 
+		try (PrintWriter out = resp.getWriter()) {
+			out.println(new String(inBytes));
+		}
 	}
 
 	@Override
 	public void destroy() {
 		//TODO: Content from Hashmap should be transferred to songs.json
+		
+		//1. Auf Datei songs.json zugreifen
+
+		//2. Datei von Hashmap zu  songs.json schreiben
 
 	}
 
