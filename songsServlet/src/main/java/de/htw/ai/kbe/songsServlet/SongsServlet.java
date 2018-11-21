@@ -30,7 +30,7 @@ import java.util.List;
 public class SongsServlet extends HttpServlet {
 	
 	//Parameters for requests and responses
-	private final String APP_JSON = "application/json";
+	private final String APP_JSON = "application/json"; //accept header
 	private final String ALL_PARAM = "all";
 	private final String SONGID = "songId";
 	private final String RESPONSE_TYPE = "text/plain";
@@ -74,6 +74,53 @@ public class SongsServlet extends HttpServlet {
 	//http://localhost:8080/songsServlet?songId=6 mit Accept-Header: * oder application/json oder ohne Accept-Header soll den Song 6 in JSON-Format zurücksenden
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		//1. Header "Accept" auslesen
+		String acceptRequest = req.getHeader("Accept");
+		
+		//2. Check ob Header APP_JSON enthaelt - Wir behandeln nur JSON Requests
+		//Fall "Accept"-Header == application/json
+		if(acceptRequest.contains("application/json")){
+			//3. Aus einer Request koennen sowohl Parameternamen (all, songId), 
+			//als auch Parameterwerte - Methode: getParameterNames()
+			Enumeration<String> paramsNames = req.getParameterNames();
+			String actualParam = "";
+			//Iterieren ueber die Parameternamen
+			while(paramsNames.hasMoreElements()){
+				//Rufe aktuell iteriertes Element auf:
+				actualParam = paramsNames.nextElement();
+				
+				//Auslesen der Parameterwerte
+				if(actualParam.equals(ALL_PARAM)){
+					String response = ""; //Vorbereitung der Antwort
+					//Typ der Antwort festlegen
+					resp.setContentType(APP_JSON);
+
+					//Iterieren durch alle Songs in der DB und sie als JSON zueruckgeben
+				}
+				else if(actualParam.equals(SONGID)){
+					//Song ID auslesen
+					Integer songID = Integer.valueOf(req.getParameter(SONGID));
+
+					//TODO: Song mit songID aus DB aufrufen und sie als JSON zurueckgeben
+					
+					//TODO: Moegliche Faelle abdecken:
+					//1. Song existiert und wird zurueckgegeben
+					//TODO: Klaeren, wie das ausgegeben werden soll: PrintWriter oder Syso?
+					
+					//2. Song existiert nicht oder Request ist schlecht aufgebaut
+					//Request-Analyse in einer separaten Methode eventuell behandeln
+					//Kein Titel, Leere Autoren usw.
+				}
+				
+			}	
+			
+			
+		}	
+		
+		
+		
+		
 
 	}
 
