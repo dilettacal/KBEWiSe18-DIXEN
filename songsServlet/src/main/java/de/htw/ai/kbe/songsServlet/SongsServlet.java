@@ -154,7 +154,7 @@ public class SongsServlet extends HttpServlet {
 			song = objectMapper.readValue(jsonBody, Song.class);
 			id = database.getLastID() + 1; //Diese Methode soll in Songs noch eingebaut werden
 			song.setId(id); //ID vergeben
-			songStore.put(id, song); //Song in die DB hinfuegen
+			database.put(id, song); //Song in die DB hinfuegen
 			
 			//Ausgabe fuer Client
 			out.print(song.getTitle(), song.getArtist(), song.getAlbum(),
