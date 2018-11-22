@@ -11,9 +11,11 @@ import org.apache.commons.io.IOUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -29,7 +31,7 @@ import java.util.List;
 /**
  * Manages HTTP requests and responses (and JSON parsing)
  * 
- * @author dixen
+ * @author dixen 
  *
  */
 public class SongsServlet extends HttpServlet {
@@ -45,11 +47,14 @@ public class SongsServlet extends HttpServlet {
 	
 	//Path to file
 	private final String pathToFile = "songs.json"; //Das muss waehrend der Abgabe angepasst werden, da die Datei sich im Projekt nicht befindet!
+	
+	private String jsonFilePath = null;
 
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		//TODO: config bestimmen
+		this.jsonFilePath = config.getInitParameter("jsonFilePathComponent");
 		
 		//1. Read songs from json file - List<Song>
 		boolean readSuccessful = false;
@@ -84,12 +89,13 @@ public class SongsServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
+		
 		//1. Header "Accept" auslesen
 		String acceptRequest = req.getHeader("Accept");
 		
 		//2. Check ob Header APP_JSON enthaelt - Wir behandeln nur JSON Requests
 		//Fall "Accept"-Header == application/json
-		if(acceptRequest.contains("application/json")){
+		if(acceptRequest.contains(APP_JSON) || acceptRequest.contains("*")){
 			//3. Aus einer Request koennen sowohl Parameternamen (all, songId), 
 			//als auch Parameterwerte - Methode: getParameterNames()
 			Enumeration<String> paramsNames = req.getParameterNames();
@@ -99,20 +105,36 @@ public class SongsServlet extends HttpServlet {
 				//Rufe aktuell iteriertes Element auf:
 				actualParam = paramsNames.nextElement();
 				
-				//Auslesen der Parameterwerte
+				//Auslesen der Parameterwerte all
 				if(actualParam.equals(ALL_PARAM)){
 					String response = ""; //Vorbereitung der Antwort
 					//Typ der Antwort festlegen
 					resp.setContentType(APP_JSON);
+					resp.setCharacterEncoding("UTF8");
+					
+					
 					System.out.println("ALL gelesen");
+					database.getAllSongs().forEach(s -> System.out.println(s));
+					System.out.println("**************************************");
+					System.out.println("JSON string:");
+										
+					ObjectMapper objectMapper = new ObjectMapper();
+					String arrayToJson = objectMapper.writeValueAsString(database.getAllSongs());
+					System.out.println(arrayToJson);
+					try (PrintWriter out = resp.getWriter()){
+						out.println(arrayToJson);
+					}
 
 					//Iterieren durch alle Songs in der DB und sie als JSON zueruckgeben
 				}
+				//songId
 				else if(actualParam.equals(SONGID)){
 					//SongID Wert aus Request auslesen
 					Integer songID = Integer.valueOf(req.getParameter(SONGID));
 
 					//TODO: Song mit songID aus DB aufrufen und sie als JSON zurueckgeben
+					Song song = database.getSong(songID);
+					System.out.println("Aufgerufener Song: " + song);
 					
 					//TODO: Moegliche Faelle abdecken:
 					//1. Song existiert und wird zurueckgegeben (PrintWriter)
@@ -123,9 +145,11 @@ public class SongsServlet extends HttpServlet {
 				}
 				
 			}	
-			
-			
+
 		}	
+		
+		
+		
 	}
 
 	//http://localhost:8080/songsServlet mit Payload soll eine neue ID fuer den neuen Song generieren und den Song in der DB speichern
@@ -223,5 +247,9 @@ public class SongsServlet extends HttpServlet {
 			try (OutputStream os = new BufferedOutputStream(new FileOutputStream(filename))) {
 				objectMapper.writeValue(os, songs);
 			}
+		}
+		
+		protected String getJsonFilePath () {
+			return this.jsonFilePath;
 		}
 }

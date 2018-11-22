@@ -8,8 +8,8 @@
         <servlet-name>Song Servlet</servlet-name>
         <servlet-class>de.htw.ai.kbe.songsServlet.SongsServlet</servlet-class>
         <init-param>
-            <param-name>uriToDBComponent</param-name>
-            <param-value>db-uri:some.server/dbId</param-value>
+            <param-name>jsonFilePathComponent</param-name>
+            <param-value>songs.json</param-value>
         </init-param>
     </servlet>
 
@@ -19,6 +19,6 @@
  -->
     <servlet-mapping>
         <servlet-name>Song Servlet</servlet-name>
-        <url-pattern>/songsServlet</url-pattern>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
 </web-app>
