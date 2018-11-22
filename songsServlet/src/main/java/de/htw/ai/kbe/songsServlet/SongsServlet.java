@@ -2,9 +2,12 @@ package de.htw.ai.kbe.songsServlet;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +20,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.Enumeration;
 import java.util.List;
 
 //import org.json.JSONObject;
@@ -44,6 +49,8 @@ public class SongsServlet extends HttpServlet {
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
+		//TODO: config bestimmen
+		
 		//1. Read songs from json file - List<Song>
 		boolean readSuccessful = false;
 		List<Song> songsFromJSON = null;
@@ -60,6 +67,8 @@ public class SongsServlet extends HttpServlet {
 		if(readSuccessful){
 			//Jetzt wurde eine Liste von Song erstellt und sie muss der in-Memory DB hinzugefuegt werden
 			database = Songs.getInstance(songsFromJSON);
+		} else {
+			//Problemmelden
 		}
 			
 
@@ -95,6 +104,7 @@ public class SongsServlet extends HttpServlet {
 					String response = ""; //Vorbereitung der Antwort
 					//Typ der Antwort festlegen
 					resp.setContentType(APP_JSON);
+					System.out.println("ALL gelesen");
 
 					//Iterieren durch alle Songs in der DB und sie als JSON zueruckgeben
 				}

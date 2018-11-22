@@ -43,6 +43,7 @@ public class Songs {
 		for (Song s: songsFromJsonFile) {
 			instance.addSong(s);
 		}
+		
 	}
 	
 	/**

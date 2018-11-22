@@ -6,7 +6,7 @@
          
   <servlet>
         <servlet-name>Song Servlet</servlet-name>
-        <servlet-class>de.htw.ai.kbe.songsServlet</servlet-class>
+        <servlet-class>de.htw.ai.kbe.songsServlet.SongsServlet</servlet-class>
         <init-param>
             <param-name>uriToDBComponent</param-name>
             <param-value>db-uri:some.server/dbId</param-value>
