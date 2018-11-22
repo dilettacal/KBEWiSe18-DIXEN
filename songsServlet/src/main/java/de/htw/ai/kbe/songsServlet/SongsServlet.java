@@ -2,21 +2,32 @@ package de.htw.ai.kbe.songsServlet;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
+
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.Enumeration;
 import java.util.List;
 
 //import org.json.JSONObject;
@@ -24,7 +35,7 @@ import java.util.List;
 /**
  * Manages HTTP requests and responses (and JSON parsing)
  * 
- * @author dixen
+ * @author dixen 
  *
  */
 public class SongsServlet extends HttpServlet {
@@ -40,19 +51,20 @@ public class SongsServlet extends HttpServlet {
 	
 	//Path to file
 	private final String pathToFile = "songs.json"; //Das muss waehrend der Abgabe angepasst werden, da die Datei sich im Projekt nicht befindet!
+	
+	private String jsonFilePath = null;
 
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
+		this.jsonFilePath = config.getInitParameter("jsonFilePathComponent");
+		
 		//1. Read songs from json file - List<Song>
 		boolean readSuccessful = false;
 		List<Song> songsFromJSON = null;
 		
 		try {
-			//TODO: Das habe ich nicht getestet!
-			songsFromJSON= SongsServlet.readJSONToSongs("songs.json");
-			//Test- Ausgabe TODO: Remove before last commit to repo
-			songsFromJSON.forEach(s -> System.out.println(s));
+			songsFromJSON= SongsServlet.readJSONToSongs(this.jsonFilePath);
 			readSuccessful = true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -60,6 +72,8 @@ public class SongsServlet extends HttpServlet {
 		if(readSuccessful){
 			//Jetzt wurde eine Liste von Song erstellt und sie muss der in-Memory DB hinzugefuegt werden
 			database = Songs.getInstance(songsFromJSON);
+		} else {
+			//TODO: Problem melden
 		}
 			
 
@@ -75,12 +89,13 @@ public class SongsServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
+		
 		//1. Header "Accept" auslesen
 		String acceptRequest = req.getHeader("Accept");
 		
 		//2. Check ob Header APP_JSON enthaelt - Wir behandeln nur JSON Requests
 		//Fall "Accept"-Header == application/json
-		if(acceptRequest.contains("application/json")){
+		if(acceptRequest.contains(APP_JSON) || acceptRequest.contains("*")){
 			//3. Aus einer Request koennen sowohl Parameternamen (all, songId), 
 			//als auch Parameterwerte - Methode: getParameterNames()
 			Enumeration<String> paramsNames = req.getParameterNames();
@@ -90,32 +105,61 @@ public class SongsServlet extends HttpServlet {
 				//Rufe aktuell iteriertes Element auf:
 				actualParam = paramsNames.nextElement();
 				
-				//Auslesen der Parameterwerte
+				//Auslesen der Parameterwerte all
 				if(actualParam.equals(ALL_PARAM)){
 					String response = ""; //Vorbereitung der Antwort
 					//Typ der Antwort festlegen
 					resp.setContentType(APP_JSON);
+					resp.setCharacterEncoding("UTF8");
+					
+					
+					System.out.println("ALL gelesen");
+					database.getAllSongs().forEach(s -> System.out.println(s));
+					System.out.println("**************************************");
+					System.out.println("JSON string:");
+										
+					ObjectMapper objectMapper = new ObjectMapper();
+					String arrayToJson = objectMapper.writeValueAsString(database.getAllSongs());
+					System.out.println(arrayToJson);
+					try (PrintWriter out = resp.getWriter()){
+						out.println(arrayToJson);
+					}
 
 					//Iterieren durch alle Songs in der DB und sie als JSON zueruckgeben
 				}
+				//songId
 				else if(actualParam.equals(SONGID)){
 					//SongID Wert aus Request auslesen
 					Integer songID = Integer.valueOf(req.getParameter(SONGID));
-
-					//TODO: Song mit songID aus DB aufrufen und sie als JSON zurueckgeben
+					Song song = database.getSong(songID);
+					
+					//Typ der Antwort festlegen
+					resp.setContentType(APP_JSON);
+					resp.setCharacterEncoding("UTF8");
+					
+					ObjectMapper objectMapper = new ObjectMapper();
+					String objToJson = objectMapper.writeValueAsString(song);
+					System.out.println("JSON - Song mit Object Mapper:");
+					System.out.println(objToJson);
+					try (PrintWriter out = resp.getWriter()){
+						out.println(objToJson);
+					}
 					
 					//TODO: Moegliche Faelle abdecken:
-					//1. Song existiert und wird zurueckgegeben (PrintWriter)
+					//1. Song existiert und wird zurueckgegeben (PrintWriter) - ERLEDIGT
 					
 					//2. Song existiert nicht oder Request ist schlecht aufgebaut
 					//Request-Analyse in einer separaten Methode eventuell behandeln
 					//Kein Titel, Leere Autoren usw.
 				}
-				
 			}	
+
+		}
+		//TODO: Was passiert hier, wenn es keinen Accept-Header gibt?
+		else {
 			
-			
-		}	
+		}
+		
 	}
 
 	//http://localhost:8080/songsServlet mit Payload soll eine neue ID fuer den neuen Song generieren und den Song in der DB speichern
@@ -125,71 +169,37 @@ public class SongsServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		//Hinweis aus Folien:
 		/* Bei der Abarbeitung von POST und PUT mit request.getContentType() 
-		den MIME-Typ des Request-Bodys hecken */
+		den MIME-Typ des Request-Bodys checken */
 		
-		//TODO: Anmerkung Dozentin - ServletInputStream und ServletOutputStream
-		//1. Repsonse Typ festlegen --> text/plain
-		resp.setContentType(RESPONSE_TYPE);
-
-		Song song = null; //Die Song, die wir auslesen und speichern wollen
-		String jsonBody = "";
-		//2. Post-request lesen
-		
-		/* Vielleicht so?
-		
-		//Auslesen des Inputstreams
+		resp.setContentType("text/plain");
+		ServletInputStream inputStream = req.getInputStream();
+		byte[] inBytes = IOUtils.toByteArray(inputStream);
+		String s = new String(inBytes);
+		System.out.println("String aus Bytearray: "+s);
 		
 		ObjectMapper objectMapper = new ObjectMapper();
-		
-		//Line nach Line
-		BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream()));
-		while ((line = in.readLine()) != null) {
-			jsonBody += line; //JsonBody string aufbauen
-		}
-		PrintWriter out = response.getWriter(); //PrintWriter vorbereiten
-		
-		try {
-			
-			//Song erstellen
-			song = objectMapper.readValue(jsonBody, Song.class);
-			id = database.getLastID() + 1; //Diese Methode soll in Songs noch eingebaut werden
-			song.setId(id); //ID vergeben
-			database.put(id, song); //Song in die DB hinfuegen
-			
-			//Ausgabe fuer Client
-			out.print(song.getTitle(), song.getArtist(), song.getAlbum(),
-					song.getReleased(), song.getId());
-
-			out.flush(); //Writer schließen
-
-		} catch (JsonParseException | JsonMappingException e) {
-			out.print(e);
-			out.flush();
-
-		}
-		
-		
-		*/
-
-		//2.1
-
-		//3.
-		
-		//Ausgabe fuer Client notwendig?
-		ServletInputStream inputStream = req.getInputStream();
-		byte[] inBytes = IOUtils.toByteArray(inputStream); 
-		//Responses haben einen Writer 
+		Song song = null;
 		try (PrintWriter out = resp.getWriter()) {
-			out.println(new String(inBytes));
+			//Hier ID Ausgabe
+			//out.println(new String(inBytes));
+			song = objectMapper.readValue(s, Song.class);
+			database.addSong(song);			
+			//Ausgabe fuer Client
+			out.println(song.getId());
 		}
 	}
 
 	@Override
 	public void destroy() {
 		//TODO: Content from Hashmap should be transferred to songs.json
-		
+		List<Song> allSongs = (List<Song>) database.getAllSongs();
 		//1. Auf Datei songs.json zugreifen
-
+		try {
+			SongsServlet.writeSongsToJSON(allSongs, "output.json");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//2. Datei von Hashmap zu  songs.json schreiben
 
 	}
@@ -213,5 +223,9 @@ public class SongsServlet extends HttpServlet {
 			try (OutputStream os = new BufferedOutputStream(new FileOutputStream(filename))) {
 				objectMapper.writeValue(os, songs);
 			}
+		}
+		
+		protected String getJsonFilePath () {
+			return this.jsonFilePath;
 		}
 }
