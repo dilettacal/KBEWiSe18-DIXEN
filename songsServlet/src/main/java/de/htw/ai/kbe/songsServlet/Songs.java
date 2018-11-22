@@ -60,9 +60,11 @@ public class Songs {
 	}
 	
 	public Integer addSong(Song song) {
+		//TODO: Check if Titel da ist
 		//Add song in the Hashmap
 		song.setId((int) storage.keySet().stream().count()+1);
 		storage.putIfAbsent(song.getId(), song);
+		//System.out.println("Song added mit ID: " + song.getId());
 		return song.getId();
 	}
 	
