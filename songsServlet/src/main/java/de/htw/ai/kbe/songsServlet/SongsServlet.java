@@ -74,6 +74,7 @@ public class SongsServlet extends HttpServlet {
 			database = Songs.getInstance(songsFromJSON);
 		} else {
 			//TODO: Problem melden
+			System.out.println("Ein Fehler ist aufgetreten.");
 		}
 			
 
@@ -183,7 +184,9 @@ public class SongsServlet extends HttpServlet {
 			//Hier ID Ausgabe
 			//out.println(new String(inBytes));
 			song = objectMapper.readValue(s, Song.class);
-			database.addSong(song);			
+			database.addSong(song);		
+			//TODO: Was wenn der Titel null ist? momentan wird einfach null zurückgegeben, man könnte auch ein HTTP Status Code ausgeben
+			//response.sendError(400, "Bad Request" );
 			//Ausgabe fuer Client
 			out.println(song.getId());
 		}

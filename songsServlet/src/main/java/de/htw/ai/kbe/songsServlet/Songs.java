@@ -61,11 +61,36 @@ public class Songs {
 	
 	public Integer addSong(Song song) {
 		//TODO: Check if Titel da ist
-		//Add song in the Hashmap
-		song.setId((int) storage.keySet().stream().count()+1);
-		storage.putIfAbsent(song.getId(), song);
-		//System.out.println("Song added mit ID: " + song.getId());
-		return song.getId();
+		String title = song.getTitle().replaceAll("\\s","");
+		if(song.getTitle() == null || song.getTitle().equals("") || title.equals("")) {
+			System.out.println("Der Song mit der ID "+song.getId()+" konnte nicht hinzugefuegt werden. Der Titel hat gefehlt.");
+			return null;
+		} else {
+			Integer id = checkSongAlreadyInDB(song);
+			if(id == null) {
+				//Add song in the Hashmap
+				song.setId((int) storage.keySet().stream().count()+1);
+				storage.putIfAbsent(song.getId(), song);
+				System.out.println("Song added mit ID: " + song.getId());
+				return song.getId();
+			}
+			else {
+				return id;
+			}
+			
+		}
+	}
+	
+	public Integer checkSongAlreadyInDB(Song song) {
+		//System.out.println(song.toString());
+		for(Song s: storage.values()) {
+			//System.out.println(s.toString());
+			if(s.getTitle().equals(song.getTitle()) && s.getAlbum().equals(song.getAlbum()) && s.getArtist().equals(song.getArtist()) && s.getReleased() == song.getReleased()) {
+				song.setId(s.getId());
+				return song.getId();
+			}			
+		}
+		return null;
 	}
 	
 	public Integer getLastID() {
