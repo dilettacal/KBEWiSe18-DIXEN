@@ -85,8 +85,8 @@ public class SongsServlet extends HttpServlet {
 
 	}
 
-	//http://localhost:8080/songsServlet?all mit Accept-Header: * oder application/json oder ohne Accept-Header soll alle gespeicherten Songs in JSON-Format zurücksenden
-	//http://localhost:8080/songsServlet?songId=6 mit Accept-Header: * oder application/json oder ohne Accept-Header soll den Song 6 in JSON-Format zurücksenden
+	//http://localhost:8080/songsServlet?all mit Accept-Header: * oder application/json oder ohne Accept-Header soll alle gespeicherten Songs in JSON-Format zuruecksenden
+	//http://localhost:8080/songsServlet?songId=6 mit Accept-Header: * oder application/json oder ohne Accept-Header soll den Song 6 in JSON-Format zuruecksenden
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
@@ -164,7 +164,7 @@ public class SongsServlet extends HttpServlet {
 	}
 
 	//http://localhost:8080/songsServlet mit Payload soll eine neue ID fuer den neuen Song generieren und den Song in der DB speichern
-	//neue ID an den Client als Wert des "Location"-Header: http://localhost:8080/songsServlet?songId=newId der Response zurückschicken (Body ist leer)
+	//neue ID an den Client als Wert des "Location"-Header: http://localhost:8080/songsServlet?songId=newId der Response zurueckschicken (Body ist leer)
 	//akzeptiert nur JSON payloads
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -185,7 +185,7 @@ public class SongsServlet extends HttpServlet {
 			//out.println(new String(inBytes));
 			song = objectMapper.readValue(s, Song.class);
 			database.addSong(song);		
-			//TODO: Was wenn der Titel null ist? momentan wird einfach null zurückgegeben, man könnte auch ein HTTP Status Code ausgeben
+			//TODO: Was wenn der Titel null ist? momentan wird einfach null zurueckgegeben, man koennte auch ein HTTP Status Code ausgeben
 			//response.sendError(400, "Bad Request" );
 			//Ausgabe fuer Client
 			out.println(song.getId());
