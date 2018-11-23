@@ -96,7 +96,7 @@ public class SongsServlet extends HttpServlet {
 		
 		//2. Check ob Header APP_JSON enthaelt - Wir behandeln nur JSON Requests
 		//Fall "Accept"-Header == application/json
-		if(acceptRequest.contains(APP_JSON) || acceptRequest.contains("*")){
+		if(acceptRequest == null || acceptRequest.contains(APP_JSON) || acceptRequest.contains("*")){
 			//3. Aus einer Request koennen sowohl Parameternamen (all, songId), 
 			//als auch Parameterwerte - Methode: getParameterNames()
 			Enumeration<String> paramsNames = req.getParameterNames();
