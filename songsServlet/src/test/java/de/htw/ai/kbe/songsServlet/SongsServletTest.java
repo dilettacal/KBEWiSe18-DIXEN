@@ -90,7 +90,13 @@ public class SongsServletTest {
     
     @Test
     public void doGetAllWithAcceptHeaderShouldNotEchoParametersWithHTTPStatusCode() throws ServletException, IOException {
-    	
+    	request.addHeader("Accept", "bla");
+        request.addParameter("all", "");
+        
+        servlet.doGet(request, response);
+        
+        assertEquals(response.getStatus(), 400);
+        assertEquals(response.getErrorMessage(), "Bad Request");
     }
     
     @Test
@@ -132,7 +138,13 @@ public class SongsServletTest {
     
     @Test
     public void doGetSongWithIDWithAcceptHeaderShouldNotEchoSongWithHTTPStatusCode() throws ServletException, IOException {
-    	
+    	request.addHeader("Accept", "bla");
+        request.addParameter("songId", String.valueOf(9));
+        
+        servlet.doGet(request, response);
+        
+        assertEquals(response.getStatus(), 400);
+        assertEquals(response.getErrorMessage(), "Bad Request");
     }
     
     @Test

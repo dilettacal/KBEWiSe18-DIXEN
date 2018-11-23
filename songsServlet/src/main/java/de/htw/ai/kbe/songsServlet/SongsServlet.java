@@ -158,7 +158,7 @@ public class SongsServlet extends HttpServlet {
 		}
 		//TODO: Was passiert hier, wenn es keinen Accept-Header gibt?
 		else {
-			
+			resp.sendError(400, "Bad Request" );
 		}
 		
 	}

@@ -71,7 +71,7 @@ public class Songs {
 				//Add song in the Hashmap
 				song.setId((int) storage.keySet().stream().count()+1);
 				storage.putIfAbsent(song.getId(), song);
-				System.out.println("Song added mit ID: " + song.getId());
+				//System.out.println("Song added mit ID: " + song.getId());
 				return song.getId();
 			}
 			else {
