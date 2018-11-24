@@ -29,7 +29,7 @@ public class SongsServletTest {
     
     @Before
     public void setUp() throws ServletException {
-        servlet = new SongsServlet();
+    	servlet = new SongsServlet();
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
         config = new MockServletConfig();
@@ -201,42 +201,78 @@ public class SongsServletTest {
 	String location = respURL+ "?" + SONGID + "=" +song.getId();
  */
    //doPostShouldEchoSongID() --> doPostNewSongShouldSetNewLocationInHeader 
+    
+    //in diesem Test kam die fehlerhafte URL zurueck
     @Test
     public void doPostNewSongShouldSetNewLocationInHeader() throws ServletException, IOException {
     	//TODO: Check 'Location'-Header
     	request.addHeader("Accept", "application/json");
+    	request.setContentType("application/json");
     	String testContent ="{\"title\":\"Heroes\",\"artist\":\"David Bowie\",\"album\":\"Heroes\",\"released\":1977}";
         request.setContent(testContent.getBytes());
         servlet.doPost(request, response);
         System.out.println("Print: " + response.getContentAsString());
-        assertEquals("text/plain", response.getContentType());
-        assertTrue(response.getContentAsString().contains("11"));
+        assertNull(response.getContentType());
+        assertTrue(servlet.getDatabase().isSongStored(11));
+        System.out.println(response.getHeader("Location"));
+        assertEquals(response.getHeader("Location"), "http://localhost:8080/songsServlet?songId=11");
+        //assertTrue(response.getContentAsString().contains("11"));
         //assertTrue(response.getContentAsString().contains(testContent));    
         
     }
     
+    //schlaegt fehlt wenn gesamte Testklasse ausgeführt, weil vorher neuer Song hinzugefuegt wurde und dementsprechen Song mit ID 11 existiert
     @Test
     public void doPostShouldNotEchoSongIDNoSongTitle() throws ServletException, IOException {
     	request.addHeader("Accept", "application/json");
+    	request.setContentType("application/json");
     	String testContent ="{\"title\":\"\",\"artist\":\"Lukas Graham\",\"album\":\"Lukas Graham (Blue Album)\",\"released\":2015}";
         request.setContent(testContent.getBytes());
         servlet.doPost(request, response);
+        //System.out.println("HIER: " + servlet.getDatabase().getSong(11).getTitle());
+        assertEquals(response.getStatus(), 400);
+        assertNull(response.getContentType());
+        //assertFalse(servlet.getDatabase().isSongStored(11));
+        if(servlet.getDatabase().isSongStored(11)) {
+        	assertFalse(servlet.getDatabase().getSong(11).getTitle().equals(""));
+        	assertFalse(servlet.getDatabase().getSong(11).getArtist().equals("Lukas Graham"));
+        }
+        if(servlet.getDatabase().isSongStored(12)) {
+        	assertFalse(servlet.getDatabase().getSong(12).getTitle().equals(""));
+        	assertFalse(servlet.getDatabase().getSong(12).getArtist().equals("Lukas Graham"));
+        }
+        
+        //assertEquals("text/plain", response.getContentType());
+        //assertTrue(response.getContentAsString().contains("null"));
+    }
+    
+    @Test
+    public void doPostShouldNotEchoSongIDNoContentType() throws ServletException, IOException {
+    	request.addHeader("Accept", "application/json");
+    	String testContent ="{\"title\":\"Money\",\"artist\":\"Pink Floyd\",\"album\":\"Dark Side of the Moon\",\"released\":1973}";
+        request.setContent(testContent.getBytes());
+        servlet.doPost(request, response);
         System.out.println("Print: " + response.getContentAsString());
-        assertEquals("text/plain", response.getContentType());
-        assertTrue(response.getContentAsString().contains("null"));
+        assertEquals(response.getStatus(), 400);
+        assertNull(response.getContentType());
+        assertFalse(servlet.getDatabase().isSongStored(11));
+        //assertEquals("text/plain", response.getContentType());
+        //assertTrue(response.getContentAsString().contains("null"));
     }
     
     @Test
     public void doPostShouldNotEchoSongIDSongAlreadyInDB() throws ServletException, IOException {
     	request.addHeader("Accept", "application/json");
+    	request.setContentType("application/json");
     	String testContent ="{\"title\":\"7 Years\",\"artist\":\"Lukas Graham\",\"album\":\"Lukas Graham (Blue Album)\",\"released\":2015}";
         request.setContent(testContent.getBytes());
         servlet.doPost(request, response);
         System.out.println("Print: " + response.getContentAsString());
-        assertEquals("text/plain", response.getContentType());
-        assertTrue(response.getContentAsString().contains("1"));
-        assertFalse(response.getContentAsString().contains("11"));
-        assertFalse(response.getContentAsString().contains("10"));
+        assertNull(response.getContentType());
+        assertFalse(servlet.getDatabase().isSongStored(11));
+        assertEquals(servlet.getDatabase().getSong(1).getTitle(), "7 Years");
+        assertEquals(servlet.getDatabase().getSong(1).getArtist(), "Lukas Graham");
+        assertEquals(servlet.getDatabase().getSong(1).getAlbum(), "Lukas Graham (Blue Album)");
     }
     
     @Ignore

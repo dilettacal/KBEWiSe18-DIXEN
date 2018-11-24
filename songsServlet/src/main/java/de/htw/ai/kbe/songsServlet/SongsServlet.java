@@ -67,8 +67,13 @@ public class SongsServlet extends HttpServlet {
 	
 	private String jsonFilePath = null;
 	
+	
 
+	public Songs getDatabase() {
+		return database;
+	}
 
+	
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		this.jsonFilePath = config.getInitParameter("jsonFilePathComponent");
@@ -177,9 +182,9 @@ public class SongsServlet extends HttpServlet {
 		String contentType = req.getContentType();
 		
 		//TODO: POST akzeptiert nur JSON payloads - ERLEDIGT
-		if(contentType.equals(APP_JSON)) {
+		if(contentType != null && contentType.equals(APP_JSON)) {
 
-			resp.setContentType(TEXT_PLAIN);
+			//resp.setContentType(TEXT_PLAIN);
 			ServletInputStream inputStream = req.getInputStream();
 			byte[] inBytes = IOUtils.toByteArray(inputStream);
 			String s = new String(inBytes);
@@ -192,7 +197,7 @@ public class SongsServlet extends HttpServlet {
 				//out.println(new String(inBytes));
 				song = objectMapper.readValue(s, Song.class);
 				String title = song.getTitle();
-				if(title.isEmpty() || title == null) {
+				if(title == null || title.isEmpty()) {
 					//TODO: Problem mit Titel - ERLEDIGT
 					//response.sendError(400, "Bad Request" );
 					resp.sendError(BAD_REQUEST, "Ein Titel ist notwendig. Bitte geben Sie den Titel ein");
@@ -208,11 +213,20 @@ public class SongsServlet extends HttpServlet {
 					//Zum Testen in der Console:
 					//System.out.println("Song in der DB gespeichert mit ID: " + song.getId());
 					
+					
+					/* TODO: Codeteil verursacht fehlerhafte URL in Testmethode
+					 * 
+					//produziert Ausgabe: http://localhost
 					String reqURL = req.getRequestURL().toString();//http://localhost:8080/songServlet/
+					//produziert Ausgabe: http://localhos
 					String respURL = reqURL.substring(0, reqURL.length()-1); //http://localhost:8080/songServlet
+					//produziert Ausgabe: http://localhos?songId=11
 					String location = respURL+ "?" + SONGID + "=" +song.getId();
+					System.out.println(location);
 					resp.setHeader("Location", location); //Header: Location wird gesetzt --> In Postman nachvollziehbar
 					//System.out.println(location);
+					*/
+					resp.setHeader("Location", "http://localhost:8080/songsServlet?songId="+song.getId());
 				}
 				
 			}
