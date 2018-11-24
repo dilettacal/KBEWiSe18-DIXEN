@@ -18,7 +18,7 @@
       echoServlet ist die Bezeichnung der App, /echo ist Pfad zum Servlet 
  -->
     <servlet-mapping>
-        <servlet-name>Song Servlet</servlet-name>
+        <servlet-name>songServlet</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
     
