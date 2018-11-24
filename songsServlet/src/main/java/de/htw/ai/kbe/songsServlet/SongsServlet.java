@@ -28,8 +28,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 //import org.json.JSONObject;
 
@@ -190,23 +193,26 @@ public class SongsServlet extends HttpServlet {
 				song = objectMapper.readValue(s, Song.class);
 				String title = song.getTitle();
 				if(title.isEmpty() || title == null) {
-					//TODO: Was wenn der Titel null ist? momentan wird einfach null zurueckgegeben, man koennte auch ein HTTP Status Code ausgeben
+					//TODO: Problem mit Titel - ERLEDIGT
 					//response.sendError(400, "Bad Request" );
 					resp.sendError(BAD_REQUEST, "Ein Titel ist notwendig. Bitte geben Sie den Titel ein");
 				} else {
 					database.addSong(song);					
-					//TODO: Ausgabe fuer Client
+					//TODO: 
 					/*
 					 *  Die neue Id des Songs soll an den Client als Wert des “Location”-Header: http://localhost:8080/songsServlet?songId=newId der Response zurückschicken. 
 					 *  Der ResponseBody ist leer. 
 					 */
+					//ERLEDIGT
+					
 					//Zum Testen in der Console:
 					//System.out.println("Song in der DB gespeichert mit ID: " + song.getId());
+					
 					String reqURL = req.getRequestURL().toString();//http://localhost:8080/songServlet/
 					String respURL = reqURL.substring(0, reqURL.length()-1); //http://localhost:8080/songServlet
 					String location = respURL+ "?" + SONGID + "=" +song.getId();
 					resp.setHeader("Location", location); //Header: Location wird gesetzt --> In Postman nachvollziehbar
-					System.out.println(location);
+					//System.out.println(location);
 				}
 				
 			}
@@ -219,16 +225,15 @@ public class SongsServlet extends HttpServlet {
 	@Override
 	public void destroy() {
 		//TODO: Content from Hashmap should be transferred to songs.json
-		List<Song> allSongs = (List<Song>) database.getAllSongs();
+		Collection<Song> values = database.getAllSongs();
+		List<Song> allSongs = new ArrayList<Song>(values);
 		//1. Auf Datei songs.json zugreifen
 		try {
-			SongsServlet.writeSongsToJSON(allSongs, "output.json");
+			//2. Datei von Hashmap zu  songs.json schreiben
+			SongsServlet.writeSongsToJSON(allSongs, this.jsonFilePath);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//2. Datei von Hashmap zu  songs.json schreiben
-
 	}
 
 	
@@ -246,9 +251,9 @@ public class SongsServlet extends HttpServlet {
 		// Write a List<Song> to a JSON-file
 		static void writeSongsToJSON(List<Song> songs, String filename) throws FileNotFoundException, IOException {
 			ObjectMapper objectMapper = new ObjectMapper();
-			//TODO: Wir haben ein ServletOutputStream!
 			try (OutputStream os = new BufferedOutputStream(new FileOutputStream(filename))) {
 				objectMapper.writeValue(os, songs);
+				System.out.println("Completed!");
 			}
 		}
 		

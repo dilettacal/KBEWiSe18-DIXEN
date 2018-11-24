@@ -74,7 +74,7 @@ public class Songs {
 			Integer id = checkSongAlreadyInDB(song);
 			if(id == null) {
 				//Add song in the Hashmap
-				song.setId((int) storage.keySet().stream().count()+1);
+				song.setId(generateNewID());
 				storage.putIfAbsent(song.getId(), song);
 				//System.out.println("Song added mit ID: " + song.getId());
 				return song.getId();
@@ -98,7 +98,7 @@ public class Songs {
 		return null;
 	}
 	
-	public Integer getLastID() {
+	private Integer generateNewID() {
 		return (int) (storage.keySet().stream().count()+1);
 	}
 }

@@ -21,9 +21,11 @@ public class SongsServletTest {
     private MockHttpServletResponse response;
 
     private final static String JSON_PATH = "testsongs.json";
-    private final static String JSON_PATH2 = "testsongsALL.json";
     private final static String INIT_PARAM = "jsonFilePathComponent";
-    private static final String WRONG_HEADER = "Bad Request. Nur folgende Header werden akzeptiert: \"application/json\", *, oder leer";
+    //Dasselbe WRONG_HEADER wie in SongsServlet.java
+    private static final String WRONG_HEADER = "Bad Request. Akzeptiert werden nur Anfragen mit folgenden Header: \"application/json\" oder *, sowie Anfragen ohne Header";
+    
+    private static final String HOME_URL = "http://localhost:8080/songServlet";
     
     @Before
     public void setUp() throws ServletException {
@@ -186,8 +188,22 @@ public class SongsServletTest {
         assertTrue(response.getContentAsString().contains((jsonResp)));
     }
     
+    //*** Anforderungen fuer POST
+/*
+ * Soll eine neue Id fuer den neuen Song generieren und den Song in der “DB” speichern. 
+ * Die neue Id des Songs soll an den Client als Wert des “Location”-Header: http://localhost:8080/songsServlet?songId=newId der Response zurückschicken. 
+ * Der ResponseBody ist leer ==> keine Plaintext-Antwort
+ * POST akzeptiert nur JSON payloads (== Body)
+ * 
+ * Aus SongServlet.java - Aufbau locationURL:
+ * String reqURL = req.getRequestURL().toString();//http://localhost:8080/songServlet/
+	String respURL = reqURL.substring(0, reqURL.length()-1); //http://localhost:8080/songServlet
+	String location = respURL+ "?" + SONGID + "=" +song.getId();
+ */
+   //doPostShouldEchoSongID() --> doPostNewSongShouldSetNewLocationInHeader 
     @Test
-    public void doPostShouldEchoSongID() throws ServletException, IOException {
+    public void doPostNewSongShouldSetNewLocationInHeader() throws ServletException, IOException {
+    	//TODO: Check 'Location'-Header
     	request.addHeader("Accept", "application/json");
     	String testContent ="{\"title\":\"Heroes\",\"artist\":\"David Bowie\",\"album\":\"Heroes\",\"released\":1977}";
         request.setContent(testContent.getBytes());
@@ -221,6 +237,13 @@ public class SongsServletTest {
         assertTrue(response.getContentAsString().contains("1"));
         assertFalse(response.getContentAsString().contains("11"));
         assertFalse(response.getContentAsString().contains("10"));
+    }
+    
+    @Ignore
+    @Test 
+    //Aufruf der Methode - File im Explorer evtl. checken, ob es ueberschrieben wurde
+    public void destroy() throws ServletException, IOException {
+    	servlet.destroy();
     }
 
 }
