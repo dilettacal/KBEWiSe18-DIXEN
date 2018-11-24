@@ -21,7 +21,9 @@ public class SongsServletTest {
     private MockHttpServletResponse response;
 
     private final static String JSON_PATH = "testsongs.json";
+    private final static String JSON_PATH2 = "testsongsALL.json";
     private final static String INIT_PARAM = "jsonFilePathComponent";
+    private static final String WRONG_HEADER = "Bad Request. Nur folgende Header werden akzeptiert: \"application/json\", *, oder leer";
     
     @Before
     public void setUp() throws ServletException {
@@ -38,12 +40,10 @@ public class SongsServletTest {
     		assertEquals(JSON_PATH, servlet.getJsonFilePath());
     }
 
-    @Ignore
     @Test 
     public void doGetAllWithAcceptHeaderApplicationJSONShouldEchoParameters() throws ServletException, IOException {
     	request.addHeader("Accept", "application/json");
         request.addParameter("all", "");
-       // request.addParameter("password", "tiger");
         
         servlet.doGet(request, response);
 
@@ -57,13 +57,17 @@ public class SongsServletTest {
         		+ "{\"title\":\"Team\",\"artist\":\"Iggy Azalea\",\"album\":null,\"released\":2016,\"id\":8},"
         		+ "{\"title\":\"Mom\",\"artist\":\"Meghan Trainor, Kelli Trainor\",\"album\":\"Thank You\",\"released\":2016,\"id\":9},"
         		+ "{\"title\":\"Can't Stop the Feeling\",\"artist\":\"Justin Timberlake\",\"album\":\"Trolls\",\"released\":2016,\"id\":10}]";
+        System.out.println("String: \n" + jsonResp);
+        
         assertEquals("application/json", response.getContentType());
+        
         System.out.println("Ausgabe vom Testfall: ");
         System.out.println(response.getContentAsString());
-        System.out.println(response.getContentAsString().contains(jsonResp));
-        assertTrue(response.getContentAsString().contains((jsonResp)));
-       // assertTrue(response.getContentAsString().contains("password=tiger"));
-       // assertTrue(response.getContentAsString().contains(JSON_PATH));        
+       // System.out.println(response.getContentAsString().contains(jsonResp));
+        String databaseContentBeforePost = response.getContentAsString().substring(0, jsonResp.length()-1); //jsonResp.length()-1 so wird das letzte Komma entfernt
+        databaseContentBeforePost += "]";
+       // System.out.println("Substring:\n"+databaseContentBeforePost);
+        assertTrue(databaseContentBeforePost.contains((jsonResp)));
     }
     
     @Test
@@ -98,7 +102,7 @@ public class SongsServletTest {
         servlet.doGet(request, response);
         
         assertEquals(response.getStatus(), 400);
-        assertEquals(response.getErrorMessage(), "Bad Request");
+        assertEquals(response.getErrorMessage(), WRONG_HEADER);
     }
     
     @Test
@@ -165,7 +169,7 @@ public class SongsServletTest {
         servlet.doGet(request, response);
         
         assertEquals(response.getStatus(), 400);
-        assertEquals(response.getErrorMessage(), "Bad Request");
+        assertEquals(response.getErrorMessage(), WRONG_HEADER);
     }
     
     @Test
