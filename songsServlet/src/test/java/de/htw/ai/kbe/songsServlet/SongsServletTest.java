@@ -20,7 +20,7 @@ public class SongsServletTest {
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
 
-    private final static String JSON_PATH = "songs.json";
+    private final static String JSON_PATH = "testsongs.json";
     private final static String INIT_PARAM = "jsonFilePathComponent";
     
     @Before
