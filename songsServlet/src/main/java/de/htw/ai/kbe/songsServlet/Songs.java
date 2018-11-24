@@ -52,11 +52,16 @@ public class Songs {
 	 * @return
 	 */
 	public Song getSong(Integer songId) {
+		System.out.println("Storage get song: " + storage.get(songId));
 		return storage.get(songId);
 	}
 	
 	public Collection<Song> getAllSongs(){
 		return storage.values();
+	}
+	
+	public boolean isSongStored(Integer id) {
+		return storage.get(id) != null;
 	}
 	
 	public Integer addSong(Song song) {

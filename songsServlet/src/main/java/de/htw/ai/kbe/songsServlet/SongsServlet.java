@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,11 +42,15 @@ import java.util.List;
 public class SongsServlet extends HttpServlet {
 	
 	//Parameters for requests and responses
-	private final String APP_JSON = "application/json"; //accept header
-	private final String ALL_PARAM = "all";
-	private final String SONGID = "songId";
-	private final String RESPONSE_TYPE = "text/plain";
-	
+	private static final String APP_JSON = "application/json"; //accept header
+	private static final String ALL_PARAM = "all";
+	private static final String SONGID = "songId";
+	private static final String RESPONSE_TYPE = "text/plain";
+	//Responses to Client
+	private static final String WRONG_PARAMS = "Eingegebene Parameter nicht gueltig. Bitte entweder ?all oder ?songId=1";
+	private static final String SONG_NOT_AVAILABLE = "Achtung, Song mit Id %d nicht vorhanden";
+	private static final String EMPTY_VALUE = "Achtung, Sie heben keinen Wert fuer Parameter %s eingegeben. Ueberpruefen Sie bitte Ihre Eingabe";
+	private static final String WRONG_FORMAT = "Format des Parameters %s ist moeglicherweise falsch. Die Anfrage konnte nicht verarbeitet werden";
 	//Objects needed
 	private Songs database;
 	
@@ -53,6 +58,7 @@ public class SongsServlet extends HttpServlet {
 	private final String pathToFile = "songs.json"; //Das muss waehrend der Abgabe angepasst werden, da die Datei sich im Projekt nicht befindet!
 	
 	private String jsonFilePath = null;
+	
 
 
 	@Override
@@ -89,6 +95,58 @@ public class SongsServlet extends HttpServlet {
 	//http://localhost:8080/songsServlet?songId=6 mit Accept-Header: * oder application/json oder ohne Accept-Header soll den Song 6 in JSON-Format zuruecksenden
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		//1. Response-Typ: Nur json Format erlaubt
+		resp.setContentType(APP_JSON);
+		Integer id  = -1;
+		try (PrintWriter out = resp.getWriter()) {
+			if (req.getParameter("songId") != null) {
+				try {
+					id = Integer.parseInt(req.getParameter("songId"));
+					responseToClient(out, id, req, resp);
+				} catch(NumberFormatException e ) {
+					//Problematisches Id untersuchen
+					//Kein ID uebergeben
+					if (req.getParameter("songId").isEmpty()) {
+						out.println(String.format(EMPTY_VALUE, "songId"));
+					}
+					//Falsches Format oder andere moegliche Ursachen
+					else {
+						out.println(String.format(WRONG_FORMAT, "songId"));
+					}				
+				}
+				
+				
+			}			
+			else if (req.getParameter("all") != null) {
+				responseToClient(out,id, req, resp);
+			}
+			else {
+				out.println(WRONG_PARAMS);
+			}
+				
+		}
+	}
+		
+
+	
+	private void responseToClient(PrintWriter out, Integer id, HttpServletRequest req, HttpServletResponse resp) throws JsonProcessingException {
+		ObjectMapper objMap = new ObjectMapper();
+		if(id == -1) {
+			//Ausgabe aller Songs
+			out.println(objMap.writeValueAsString(database.getAllSongs()));
+		} else if(database.isSongStored(id)){
+			//Suche nach einem bestimmten Song + Fehlermeldung im Fall, dass der Song nicht in DB
+			out.println(objMap.writeValueAsString(database.getSong(id)));
+		} else {
+			out.println(String.format(SONG_NOT_AVAILABLE, id));
+		}
+		
+		
+	}
+	
+	
+	//Backup
+	protected void olddoGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		
 		//1. Header "Accept" auslesen
@@ -132,7 +190,9 @@ public class SongsServlet extends HttpServlet {
 				else if(actualParam.equals(SONGID)){
 					//SongID Wert aus Request auslesen
 					Integer songID = Integer.valueOf(req.getParameter(SONGID));
+					System.out.println("Parameter: " + songID);
 					Song song = database.getSong(songID);
+					System.out.println("Song aus DB: " + song);
 					
 					//Typ der Antwort festlegen
 					resp.setContentType(APP_JSON);
