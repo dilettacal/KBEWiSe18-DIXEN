@@ -45,12 +45,17 @@ public class SongsServlet extends HttpServlet {
 	private static final String APP_JSON = "application/json"; //accept header
 	private static final String ALL_PARAM = "all";
 	private static final String SONGID = "songId";
-	private static final String RESPONSE_TYPE = "text/plain";
+	private static final String TEXT_PLAIN = "text/plain";
 	//Responses to Client
 	private static final String WRONG_PARAMS = "Eingegebene Parameter nicht gueltig. Bitte entweder ?all oder ?songId=1";
 	private static final String SONG_NOT_AVAILABLE = "Achtung, Song mit Id %d nicht vorhanden";
 	private static final String EMPTY_VALUE = "Achtung, Sie heben keinen Wert fuer Parameter %s eingegeben. Ueberpruefen Sie bitte Ihre Eingabe";
 	private static final String WRONG_FORMAT = "Format des Parameters %s ist moeglicherweise falsch. Die Anfrage konnte nicht verarbeitet werden";
+	
+	private static final int NOT_FOUND = 404;
+	private static final int NOT_ACCEPTABLE = 406;
+	private static final int BAD_REQUEST = 400;
+	private static final String WRONG_HEADER = "Bad Request. Akzeptiert werden nur Anfragen mit folgenden Header: \"application/json\" oder *, sowie Anfragen ohne Header";
 	//Objects needed
 	private Songs database;
 	
@@ -95,36 +100,48 @@ public class SongsServlet extends HttpServlet {
 	//http://localhost:8080/songsServlet?songId=6 mit Accept-Header: * oder application/json oder ohne Accept-Header soll den Song 6 in JSON-Format zuruecksenden
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		//0. Check header Accept
+		String acceptRequest = req.getHeader("Accept");
+		
 		//1. Response-Typ: Nur json Format erlaubt
-		resp.setContentType(APP_JSON);
-		Integer id  = -1;
-		try (PrintWriter out = resp.getWriter()) {
-			if (req.getParameter("songId") != null) {
-				try {
-					id = Integer.parseInt(req.getParameter("songId"));
-					responseToClient(out, id, req, resp);
-				} catch(NumberFormatException e ) {
-					//Problematisches Id untersuchen
-					//Kein ID uebergeben
-					if (req.getParameter("songId").isEmpty()) {
-						out.println(String.format(EMPTY_VALUE, "songId"));
+		resp.setContentType(APP_JSON); 
+		if(acceptRequest == null || acceptRequest.contains(APP_JSON) || acceptRequest.contains("*")) {
+			//2. Anfragetyp: -1 == all, Zahl == bestimmter Song-ID
+			Integer id  = -1;
+			try (PrintWriter out = resp.getWriter()) {
+				if (req.getParameter("songId") != null) {
+					try {
+						id = Integer.parseInt(req.getParameter("songId"));
+						responseToClient(out, id, req, resp);
+					} catch(NumberFormatException e ) {
+						//NumberFormatException tritt auf, wenn Wert keine Zahl ist, z.B. String 'ahahah', leere Zeichenkette...
+						//Kein ID uebergeben
+						if (req.getParameter("songId").isEmpty()) {
+							resp.sendError(BAD_REQUEST,String.format(EMPTY_VALUE, "songId") );
+							//out.println(String.format(EMPTY_VALUE, "songId"));
+						}
+						//Falsches Format oder andere moegliche Ursachen
+						else {
+							resp.sendError(BAD_REQUEST,String.format(WRONG_FORMAT, "songId") );
+							//out.println(String.format(WRONG_FORMAT, "songId"));
+						}				
 					}
-					//Falsches Format oder andere moegliche Ursachen
-					else {
-						out.println(String.format(WRONG_FORMAT, "songId"));
-					}				
+					
+					
+				}			
+				else if (req.getParameter("all") != null) {
+					responseToClient(out,id, req, resp);
 				}
-				
-				
-			}			
-			else if (req.getParameter("all") != null) {
-				responseToClient(out,id, req, resp);
+				else {
+					out.println(WRONG_PARAMS);
+				}
+					
 			}
-			else {
-				out.println(WRONG_PARAMS);
-			}
-				
+		} else {
+			//Zum Beispiel wenn Accept Header xml fordert oder nicht gueltig ist
+			resp.sendError(BAD_REQUEST, WRONG_HEADER);
 		}
+		
 	}
 		
 
@@ -138,118 +155,65 @@ public class SongsServlet extends HttpServlet {
 			//Suche nach einem bestimmten Song + Fehlermeldung im Fall, dass der Song nicht in DB
 			out.println(objMap.writeValueAsString(database.getSong(id)));
 		} else {
-			out.println(String.format(SONG_NOT_AVAILABLE, id));
+			try {
+				resp.sendError(NOT_FOUND, String.format(SONG_NOT_AVAILABLE, id));
+				//out.println(String.format(SONG_NOT_AVAILABLE, id));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
 		}
-		
-		
 	}
 	
-	
-	//Backup
-	protected void olddoGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-		
-		//1. Header "Accept" auslesen
-		String acceptRequest = req.getHeader("Accept");
-		
-		//2. Check ob Header APP_JSON enthaelt - Wir behandeln nur JSON Requests
-		//Fall "Accept"-Header == application/json
-		if(acceptRequest == null || acceptRequest.contains(APP_JSON) || acceptRequest.contains("*")){
-			//3. Aus einer Request koennen sowohl Parameternamen (all, songId), 
-			//als auch Parameterwerte - Methode: getParameterNames()
-			Enumeration<String> paramsNames = req.getParameterNames();
-			String actualParam = "";
-			//Iterieren ueber die Parameternamen
-			while(paramsNames.hasMoreElements()){
-				//Rufe aktuell iteriertes Element auf:
-				actualParam = paramsNames.nextElement();
-				
-				//Auslesen der Parameterwerte all
-				if(actualParam.equals(ALL_PARAM)){
-					String response = ""; //Vorbereitung der Antwort
-					//Typ der Antwort festlegen
-					resp.setContentType(APP_JSON);
-					resp.setCharacterEncoding("UTF8");
-					
-					
-					System.out.println("ALL gelesen");
-					database.getAllSongs().forEach(s -> System.out.println(s));
-					System.out.println("**************************************");
-					System.out.println("JSON string:");
-										
-					ObjectMapper objectMapper = new ObjectMapper();
-					String arrayToJson = objectMapper.writeValueAsString(database.getAllSongs());
-					System.out.println(arrayToJson);
-					try (PrintWriter out = resp.getWriter()){
-						out.println(arrayToJson);
-					}
-
-					//Iterieren durch alle Songs in der DB und sie als JSON zueruckgeben
-				}
-				//songId
-				else if(actualParam.equals(SONGID)){
-					//SongID Wert aus Request auslesen
-					Integer songID = Integer.valueOf(req.getParameter(SONGID));
-					System.out.println("Parameter: " + songID);
-					Song song = database.getSong(songID);
-					System.out.println("Song aus DB: " + song);
-					
-					//Typ der Antwort festlegen
-					resp.setContentType(APP_JSON);
-					resp.setCharacterEncoding("UTF8");
-					
-					ObjectMapper objectMapper = new ObjectMapper();
-					String objToJson = objectMapper.writeValueAsString(song);
-					System.out.println("JSON - Song mit Object Mapper:");
-					System.out.println(objToJson);
-					try (PrintWriter out = resp.getWriter()){
-						out.println(objToJson);
-					}
-					
-					//TODO: Moegliche Faelle abdecken:
-					//1. Song existiert und wird zurueckgegeben (PrintWriter) - ERLEDIGT
-					
-					//2. Song existiert nicht oder Request ist schlecht aufgebaut
-					//Request-Analyse in einer separaten Methode eventuell behandeln
-					//Kein Titel, Leere Autoren usw.
-				}
-			}	
-
-		}
-		//TODO: Was passiert hier, wenn es keinen Accept-Header gibt?
-		else {
-			resp.sendError(400, "Bad Request" );
-		}
-		
-	}
-
 	//http://localhost:8080/songsServlet mit Payload soll eine neue ID fuer den neuen Song generieren und den Song in der DB speichern
 	//neue ID an den Client als Wert des "Location"-Header: http://localhost:8080/songsServlet?songId=newId der Response zurueckschicken (Body ist leer)
 	//akzeptiert nur JSON payloads
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		//Hinweis aus Folien:
-		/* Bei der Abarbeitung von POST und PUT mit request.getContentType() 
-		den MIME-Typ des Request-Bodys checken */
+		String contentType = req.getContentType();
 		
-		resp.setContentType("text/plain");
-		ServletInputStream inputStream = req.getInputStream();
-		byte[] inBytes = IOUtils.toByteArray(inputStream);
-		String s = new String(inBytes);
-		System.out.println("String aus Bytearray: "+s);
-		
-		ObjectMapper objectMapper = new ObjectMapper();
-		Song song = null;
-		try (PrintWriter out = resp.getWriter()) {
-			//Hier ID Ausgabe
-			//out.println(new String(inBytes));
-			song = objectMapper.readValue(s, Song.class);
-			database.addSong(song);		
-			//TODO: Was wenn der Titel null ist? momentan wird einfach null zurueckgegeben, man koennte auch ein HTTP Status Code ausgeben
-			//response.sendError(400, "Bad Request" );
-			//Ausgabe fuer Client
-			out.println(song.getId());
+		//TODO: POST akzeptiert nur JSON payloads - ERLEDIGT
+		if(contentType.equals(APP_JSON)) {
+
+			resp.setContentType(TEXT_PLAIN);
+			ServletInputStream inputStream = req.getInputStream();
+			byte[] inBytes = IOUtils.toByteArray(inputStream);
+			String s = new String(inBytes);
+			System.out.println("String aus Bytearray: "+s);
+			
+			ObjectMapper objectMapper = new ObjectMapper();
+			Song song = null;
+			try (PrintWriter out = resp.getWriter()) {
+				//Hier ID Ausgabe
+				//out.println(new String(inBytes));
+				song = objectMapper.readValue(s, Song.class);
+				String title = song.getTitle();
+				if(title.isEmpty() || title == null) {
+					//TODO: Was wenn der Titel null ist? momentan wird einfach null zurueckgegeben, man koennte auch ein HTTP Status Code ausgeben
+					//response.sendError(400, "Bad Request" );
+					resp.sendError(BAD_REQUEST, "Ein Titel ist notwendig. Bitte geben Sie den Titel ein");
+				} else {
+					database.addSong(song);					
+					//TODO: Ausgabe fuer Client
+					/*
+					 *  Die neue Id des Songs soll an den Client als Wert des “Location”-Header: http://localhost:8080/songsServlet?songId=newId der Response zurückschicken. 
+					 *  Der ResponseBody ist leer. 
+					 */
+					//Zum Testen in der Console:
+					//System.out.println("Song in der DB gespeichert mit ID: " + song.getId());
+					String reqURL = req.getRequestURL().toString();//http://localhost:8080/songServlet/
+					String respURL = reqURL.substring(0, reqURL.length()-1); //http://localhost:8080/songServlet
+					String location = respURL+ "?" + SONGID + "=" +song.getId();
+					resp.setHeader("Location", location); //Header: Location wird gesetzt --> In Postman nachvollziehbar
+					System.out.println(location);
+				}
+				
+			}
+		} else {
+			resp.sendError(BAD_REQUEST, "Nur JSON Payload ist akzeptiert.");
 		}
+		
 	}
 
 	@Override
