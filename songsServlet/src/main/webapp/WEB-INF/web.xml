@@ -5,7 +5,7 @@
          version="3.1">  
          
   <servlet>
-        <servlet-name>songServlet</servlet-name>
+        <servlet-name>songsServlet</servlet-name>
         <servlet-class>de.htw.ai.kbe.songsServlet.SongsServlet</servlet-class>
         <init-param>
             <param-name>jsonFilePathComponent</param-name>
@@ -19,7 +19,7 @@
       echoServlet ist die Bezeichnung der App, /echo ist Pfad zum Servlet 
  -->
     <servlet-mapping>
-        <servlet-name>songServlet</servlet-name>
+        <servlet-name>songsServlet</servlet-name>
         <url-pattern></url-pattern>
     </servlet-mapping>
     
