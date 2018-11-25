@@ -48,7 +48,6 @@ public class SongsServlet extends HttpServlet {
 	private static final String APP_JSON = "application/json"; //accept header
 	private static final String ALL_PARAM = "all";
 	private static final String SONGID = "songId";
-	private static final String TEXT_PLAIN = "text/plain";
 	//Responses to Client
 	private static final String WRONG_PARAMS = "Eingegebene Parameter nicht gueltig. Bitte entweder ?all oder ?songId=1";
 	private static final String SONG_NOT_AVAILABLE = "Achtung, Song mit Id %d nicht vorhanden";
@@ -56,14 +55,10 @@ public class SongsServlet extends HttpServlet {
 	private static final String WRONG_FORMAT = "Format des Parameters %s ist moeglicherweise falsch. Die Anfrage konnte nicht verarbeitet werden";
 	
 	private static final int NOT_FOUND = 404;
-	private static final int NOT_ACCEPTABLE = 406;
 	private static final int BAD_REQUEST = 400;
 	private static final String WRONG_HEADER = "Bad Request. Akzeptiert werden nur Anfragen mit folgenden Header: \"application/json\" oder *, sowie Anfragen ohne Header";
 	//Objects needed
 	private Songs database;
-	
-	//Path to file
-	private final String pathToFile = "songs.json"; //Das muss waehrend der Abgabe angepasst werden, da die Datei sich im Projekt nicht befindet!
 	
 	private String jsonFilePath = null;
 	
@@ -114,6 +109,7 @@ public class SongsServlet extends HttpServlet {
 		//1. Response-Typ: Nur json Format erlaubt
 		resp.setContentType(APP_JSON); 
 		if(acceptRequest == null || acceptRequest.contains(APP_JSON) || acceptRequest.contains("*")) {
+			System.out.println("Condition OK!");
 			//2. Anfragetyp: -1 == all, Zahl == bestimmter Song-ID
 			Integer id  = -1;
 			try (PrintWriter out = resp.getWriter()) {
@@ -126,18 +122,19 @@ public class SongsServlet extends HttpServlet {
 						//Kein ID uebergeben
 						if (req.getParameter("songId").isEmpty()) {
 							resp.sendError(BAD_REQUEST,String.format(EMPTY_VALUE, "songId") );
-							//out.println(String.format(EMPTY_VALUE, "songId"));
+							out.println(String.format(EMPTY_VALUE, "songId"));
 						}
 						//Falsches Format oder andere moegliche Ursachen
 						else {
 							resp.sendError(BAD_REQUEST,String.format(WRONG_FORMAT, "songId") );
-							//out.println(String.format(WRONG_FORMAT, "songId"));
+							out.println(String.format(WRONG_FORMAT, "songId"));
 						}				
 					}
 					
 					
 				}			
 				else if (req.getParameter("all") != null) {
+					System.out.println("ALL songs: "+id);
 					responseToClient(out,id, req, resp);
 				}
 				else {
@@ -148,6 +145,7 @@ public class SongsServlet extends HttpServlet {
 		} else {
 			//Zum Beispiel wenn Accept Header xml fordert oder nicht gueltig ist
 			resp.sendError(BAD_REQUEST, WRONG_HEADER);
+			
 		}
 		
 	}
@@ -155,8 +153,10 @@ public class SongsServlet extends HttpServlet {
 
 	
 	private void responseToClient(PrintWriter out, Integer id, HttpServletRequest req, HttpServletResponse resp) throws JsonProcessingException {
+		resp.setContentType(APP_JSON); 
 		ObjectMapper objMap = new ObjectMapper();
 		if(id == -1) {
+			System.out.println("Ausgabe aller Songs!");
 			//Ausgabe aller Songs
 			out.println(objMap.writeValueAsString(database.getAllSongs()));
 		} else if(database.isSongStored(id)){
@@ -165,7 +165,7 @@ public class SongsServlet extends HttpServlet {
 		} else {
 			try {
 				resp.sendError(NOT_FOUND, String.format(SONG_NOT_AVAILABLE, id));
-				//out.println(String.format(SONG_NOT_AVAILABLE, id));
+				out.println(String.format(SONG_NOT_AVAILABLE, id));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -201,6 +201,7 @@ public class SongsServlet extends HttpServlet {
 					//TODO: Problem mit Titel - ERLEDIGT
 					//response.sendError(400, "Bad Request" );
 					resp.sendError(BAD_REQUEST, "Ein Titel ist notwendig. Bitte geben Sie den Titel ein");
+					out.print(BAD_REQUEST+ ": Ein Titel ist notwendig. Bitte geben Sie den Titel ein");
 				} else {
 					database.addSong(song);					
 					//TODO: 
@@ -231,7 +232,10 @@ public class SongsServlet extends HttpServlet {
 				
 			}
 		} else {
+			try (PrintWriter out = resp.getWriter()) {
 			resp.sendError(BAD_REQUEST, "Nur JSON Payload ist akzeptiert.");
+			out.println(BAD_REQUEST + ": Nur JSON Payload ist akzeptiert.");
+			}
 		}
 		
 	}

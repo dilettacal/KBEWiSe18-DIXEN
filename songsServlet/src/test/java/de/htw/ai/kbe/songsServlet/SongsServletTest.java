@@ -277,7 +277,7 @@ public class SongsServletTest {
     
     @Ignore
     @Test 
-    //Aufruf der Methode - File im Explorer evtl. checken, ob es ueberschrieben wurde
+    //Aufruf der Methode - Das ist nur fuer uns
     public void destroy() throws ServletException, IOException {
     	servlet.destroy();
     }
