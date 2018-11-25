@@ -232,10 +232,7 @@ public class SongsServlet extends HttpServlet {
 				
 			}
 		} else {
-			try (PrintWriter out = resp.getWriter()) {
 			resp.sendError(BAD_REQUEST, "Nur JSON Payload ist akzeptiert.");
-			out.println(BAD_REQUEST + ": Nur JSON Payload ist akzeptiert.");
-			}
 		}
 		
 	}
