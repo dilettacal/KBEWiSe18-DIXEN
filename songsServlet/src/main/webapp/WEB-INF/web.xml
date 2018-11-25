@@ -10,7 +10,11 @@
         <init-param>
             <param-name>jsonFilePathComponent</param-name>
             <!-- Dieses Pfad darf bei der Abgabe geandert werden. Datei soll sich ausserhalb des Projekts befinden.  -->
-            <param-value>D:\songs.json</param-value>
+	<!-- Windows -->
+            <!-- <param-value>D:\songs.json</param-value> -->
+	<!-- Ubuntu -->
+	<param-value>/home/dical/songs.json</param-value>
+	
         </init-param>
     </servlet>
 
@@ -18,9 +22,10 @@
       http://localhost:8080/echoServlet/echo
       echoServlet ist die Bezeichnung der App, /echo ist Pfad zum Servlet 
  -->
+ <!-- Anfrage (GET/POST) funktionieren mit dieser Angabe richtig -->
     <servlet-mapping>
         <servlet-name>songsServlet</servlet-name>
-        <url-pattern></url-pattern>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
     
    <session-config>
