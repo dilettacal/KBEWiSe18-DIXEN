@@ -12,8 +12,8 @@
             <!-- Dieses Pfad darf bei der Abgabe geandert werden. Datei soll sich ausserhalb des Projekts befinden.  -->
 	<!-- Windows -->
             <!-- <param-value>D:\songs.json</param-value> -->
-	<!-- Ubuntu -->
-	<param-value>/home/dical/songs.json</param-value>
+	<!-- Ubuntu /home/dical/songs.json -->
+	<param-value>/home/s0559842/songs.json</param-value>
 	
         </init-param>
     </servlet>
