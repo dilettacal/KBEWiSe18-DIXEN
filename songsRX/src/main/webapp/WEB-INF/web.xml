@@ -7,14 +7,16 @@
   <servlet>
     <servlet-name>jersey-serlvet</servlet-name>
     <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-    <init-param>
+        <!-- Auskommentiert wegen Umstellung auf Dependency Injection! -->
+   <!-- <init-param>
       <param-name>jersey.config.server.provider.packages</param-name>
       <param-value>de.htw.ai.kbe.services</param-value>
-    </init-param>
+    </init-param> -->
     <load-on-startup>1</load-on-startup>
   </servlet>
-  <servlet-mapping>
+  <!-- Auskommentiert, da das von MyApplication erledigt wird -->
+ <!-- < <servlet-mapping>
     <servlet-name>jersey-serlvet</servlet-name>
     <url-pattern>/rest/*</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping> -->
 </web-app>
