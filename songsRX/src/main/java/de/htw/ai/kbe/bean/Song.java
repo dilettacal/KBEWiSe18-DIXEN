@@ -1,6 +1,5 @@
 package de.htw.ai.kbe.bean;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -103,11 +102,11 @@ public class Song {
 		this.released = released;
 	}
 
+	@XmlElement
 	public Integer getId() {
 		return id;
 	}
 
-	@XmlElement
 	public void setId(Integer id) {
 		this.id = id;
 	}
