@@ -9,6 +9,7 @@ import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.server.model.Resource;
 
 import de.htw.ai.kbe.di.DependencyBinder;
+import de.htw.ai.kbe.filter.AuthenticationFilter;
 
 @ApplicationPath("/rest")
 public class MyApplication extends ResourceConfig {
@@ -17,8 +18,9 @@ public class MyApplication extends ResourceConfig {
 		//Einbinden 
 		register(new DependencyBinder());
 		packages("de.htw.ai.kbe.services");
-		//packages("de.htw.ai.kbe.filter");
+		
 		property(ServerProperties.TRACING, "ALL");
+        register(AuthenticationFilter.class); //packages("de.htw.ai.kbe.filter");
 	}
 
 }

@@ -13,7 +13,7 @@ public class DependencyBinder extends AbstractBinder {
 
 	@Override
 	protected void configure() {
-		bind(SongsStorage.class).to(ISongs.class).in(Singleton.class);		// erzeugt nur eine Instanz (Singleton-Muster!)
+		//bind(SongsStorage.class).to(ISongs.class).in(Singleton.class);		// erzeugt nur eine Instanz (Singleton-Muster!)
 		bind(AuthTokenStorage.class).to(IAuth.class).in(Singleton.class);
 		//bind(SongsStorage.class).to(ISongs.class);
 	}

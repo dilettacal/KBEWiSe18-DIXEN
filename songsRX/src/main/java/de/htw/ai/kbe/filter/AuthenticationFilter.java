@@ -3,6 +3,7 @@
 import java.io.IOException;
 import java.util.UUID;
 
+import javax.inject.Inject;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -12,52 +13,35 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class AuthenticationFilter implements ContainerResponseFilter {
+public class AuthenticationFilter implements ContainerRequestFilter {
 	
-	private static final String AUTHENTICATION_HEADER = "Authorization";
-	// better injected
-	private IAuth authenticationService = new AuthTokenStorage();
+
+public static final String AUTHENTICATION_HEADER = "Authorization";
+
 	
-	private static AuthenticationFilter filter = new AuthenticationFilter();
+	private IAuth authContainer;
 	
-	private String userID = null;
-	
-	
-	public AuthenticationFilter() {			
+	@Inject
+	public AuthenticationFilter(IAuth authContainer) {
+		this.authContainer = authContainer;
 	}
-	
-	public static AuthenticationFilter getInstance() {
-		return filter;
-	}
-	
-	public void setUserID(String userID) {
-		this.userID = userID;
-	}
-	
+
 	@Override
-	public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException{
+	public void filter(ContainerRequestContext containerRequest) throws WebApplicationException {
 
-		String authKey = requestContext.getHeaderString(AUTHENTICATION_HEADER);
-		
-		if(authKey == null || authKey.isEmpty())
-			authKey = keyGenerator();
+		String authToken = containerRequest.getHeaderString(AUTHENTICATION_HEADER);
 
-		boolean authenticationStatus = authenticationService.authenticate(this.userID, authKey);
-		//String user = authenticationService.getUserIdByToken(authCredentials);		
-
-		if (!authenticationStatus) {
-			responseContext.setStatusInfo(Status.UNAUTHORIZED);
+		if (authToken == null) {
+			// etwas zu einfach: wenn "auth" in der URL, dann durchlassen:
+			if (!containerRequest.getUriInfo().getPath().contains("auth")) { //kein "auth"
+				System.out.print("token ist null bei filter");
+				throw new WebApplicationException(Status.UNAUTHORIZED);
+			}
+		} else {
+			if (!authContainer.authenticate(authToken)) { // Service kennt den Token nicht
+				System.out.print("token ist unathorized bei filter");
+				throw new WebApplicationException(Status.UNAUTHORIZED);
+			}
 		}
-		else {
-			responseContext.getHeaders().add(AUTHENTICATION_HEADER, authKey);
-		}
-
 	}
-	
-	private String keyGenerator() {
-		String key = UUID.randomUUID().toString();
-		key = key.replaceAll("-", "");
-		return key;
-	}
-
 }

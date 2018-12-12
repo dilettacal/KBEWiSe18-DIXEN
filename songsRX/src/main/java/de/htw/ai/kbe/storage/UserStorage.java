@@ -8,10 +8,10 @@ import de.htw.ai.kbe.bean.User;
 
 public class UserStorage implements IUser{
 	
-	private static Map<Integer, User> storage;
+	public static Map<Integer, User> storage  = new ConcurrentHashMap<Integer, User>();;
 	
 	public UserStorage() {
-		storage = new ConcurrentHashMap<Integer, User>();
+		//storage = new ConcurrentHashMap<Integer, User>();
 		initUserDB();
 	}
 
@@ -26,8 +26,8 @@ public class UserStorage implements IUser{
 	}
 
 	@Override
-	public User getUser(Integer id) {
-		return storage.get(id);
+	public User getUser(String userID) {
+		return storage.get(userID);
 	}
 
 	@Override
