@@ -15,12 +15,12 @@ import de.htw.ai.kbe.filter.AuthenticationFilter;
 public class MyApplication extends ResourceConfig {
 	
 	public MyApplication() {
+		//FIXME: Problem nach Auth-Implementierung
 		//Einbinden 
 		register(new DependencyBinder());
 		packages("de.htw.ai.kbe.services");
-		
-		property(ServerProperties.TRACING, "ALL");
-        register(AuthenticationFilter.class); //packages("de.htw.ai.kbe.filter");
+		//AuthenticationFilter muss registriert werden, kein packages(..)
+       // register(AuthenticationFilter.class); //packages("de.htw.ai.kbe.filter");
 	}
 
 }

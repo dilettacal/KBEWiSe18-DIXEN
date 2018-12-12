@@ -33,8 +33,10 @@ public class SongsStorage implements ISongs{
 
 
 	private void initSongsFromFile(List<Song> songsFromJsonFile) {
-		if(songsFromJsonFile == null)
+		if(songsFromJsonFile == null){
+			//TODO: Songs anderswie initialisieren ODER Programm abbrechen
 			System.out.println("Es sind keine Songs in der Datei vorhanden.");
+		}
 		else {
 			for (Song s: songsFromJsonFile) {
 				addSong(s);
@@ -43,7 +45,7 @@ public class SongsStorage implements ISongs{
 	}
 	
 
-	//Nur zu Beginn verwendet, bruachen wir fuer Beleg nicht
+	//TODO: Evtl. erweitern, damit DB nicht null bleibt
 	private static void initSomeSongs() {
 		Song song1 = new Song.Builder("A love song").album("A love album").artist("An empty artist").released(2008).build();
 		storage.put(1, song1);

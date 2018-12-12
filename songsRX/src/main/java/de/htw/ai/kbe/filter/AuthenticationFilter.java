@@ -13,15 +13,15 @@ import javax.ws.rs.ext.Provider;
 public class AuthenticationFilter implements ContainerRequestFilter {
 	
 
-public static final String AUTHENTICATION_HEADER = "Authorization";
+private static final String AUTHENTICATION_HEADER = "Authorization";
 
 	
+	@Inject
 	private IAuth authContainer;
 	
-	@Inject
-	public AuthenticationFilter(IAuth authContainer) {
+	/*public AuthenticationFilter(IAuth authContainer) {
 		this.authContainer = authContainer;
-	}
+	}*/
 
 	@Override
 	public void filter(ContainerRequestContext containerRequest) throws WebApplicationException {

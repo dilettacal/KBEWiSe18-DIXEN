@@ -29,7 +29,6 @@ public class SongsWebService {
 
 	// Referenz auf InMemory-DB
 	private ISongs songsStorage;
-
 	private IAuth authStorage;
 
 	// Konstruktor bekommt Verweis auf DB-Instanz
