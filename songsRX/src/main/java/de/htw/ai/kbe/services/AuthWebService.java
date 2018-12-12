@@ -2,13 +2,13 @@ package de.htw.ai.kbe.services;
 
 import java.util.UUID;
 
-import java.util.UUID;
-
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import de.htw.ai.kbe.bean.User;
@@ -34,6 +34,7 @@ public class AuthWebService {
 	
 	@GET
 	@Path("/")
+	@Produces({ MediaType.TEXT_PLAIN })
 	public Response getToken(@QueryParam("userId") String userID) {
 		User user = ((IUser) UserStorage.storage).getUser(userID);
 		if (user != null) {

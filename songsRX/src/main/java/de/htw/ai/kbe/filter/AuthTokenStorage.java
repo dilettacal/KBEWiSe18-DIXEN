@@ -2,7 +2,9 @@ package de.htw.ai.kbe.filter;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.inject.Singleton;
 
+@Singleton
 public class AuthTokenStorage implements IAuth {
 
 	private static Map<String,String> storage = new ConcurrentHashMap<String,String>(); //Key,userID

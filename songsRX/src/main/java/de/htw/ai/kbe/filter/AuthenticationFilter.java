@@ -1,8 +1,5 @@
 	package de.htw.ai.kbe.filter;
 
-import java.io.IOException;
-import java.util.UUID;
-
 import javax.inject.Inject;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;

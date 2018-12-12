@@ -7,16 +7,19 @@
   <servlet>
     <servlet-name>jersey-serlvet</servlet-name>
     <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-        <!-- Auskommentiert wegen Umstellung auf Dependency Injection! -->
-   <!-- <init-param>
-      <param-name>jersey.config.server.provider.packages</param-name>
-      <param-value>de.htw.ai.kbe.services</param-value>
-    </init-param> -->
+        <!-- Auskommentiert wegen Umstellung auf Dependency Injection! 
+        Wegen Fehler, wird das reaktiviert. 12.12.2018, ca 17 Uhr
+        -->
+   <init-param>
+   <!-- Alternative aus Internet: -->
+      <param-name>javax.ws.rs.Application </param-name>
+      <param-value>de.htw.ai.kbe.config.MyApplication</param-value>
+    </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
-  <!-- Auskommentiert, da das von MyApplication erledigt wird -->
- <!-- < <servlet-mapping>
+  <!-- Auskommentiert, da das von MyApplication erledigt wird - Reaktiviert wegen Fehler 12.12.2018 -->
+   <servlet-mapping>
     <servlet-name>jersey-serlvet</servlet-name>
     <url-pattern>/rest/*</url-pattern>
-  </servlet-mapping> -->
+  </servlet-mapping>
 </web-app>
