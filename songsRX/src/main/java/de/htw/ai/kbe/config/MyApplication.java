@@ -17,6 +17,7 @@ public class MyApplication extends ResourceConfig {
 		//Einbinden 
 		register(new DependencyBinder());
 		packages("de.htw.ai.kbe.services");
+		//packages("de.htw.ai.kbe.filter");
 		property(ServerProperties.TRACING, "ALL");
 	}
 

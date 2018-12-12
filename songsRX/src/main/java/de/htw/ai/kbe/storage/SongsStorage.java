@@ -26,7 +26,6 @@ public class SongsStorage implements ISongs{
 		try {
 			songs = readJSONToSongs("songs.json");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		initSongsFromFile(songs);

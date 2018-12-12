@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -18,20 +19,24 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import de.htw.ai.kbe.bean.Song;
+import de.htw.ai.kbe.filter.AuthenticationFilter;
+import de.htw.ai.kbe.filter.IAuth;
 import de.htw.ai.kbe.storage.ISongs;
 
-// URL fuer diesen Service ist: http://localhost:8080/contactsJAXRS/rest/contacts 
+// URL fuer diesen Service ist: http://localhost:8080/songsRX/rest/songs 
 @Path("/songs")
 public class SongsWebService {
-	
 	
 	//Referenz auf InMemory-DB
 	private ISongs songsStorage;
 	
+	private IAuth authStorage;
+	
 	//Konstruktor bekommt Verweis auf DB-Instanz
 	@Inject
-	public SongsWebService(ISongs songStorage) {
+	public SongsWebService(ISongs songStorage, IAuth authStorage) {
 		this.songsStorage = songStorage;
+		this.authStorage = authStorage;
 	}
 	
 	/*  METHODEN DES WEBSERVICE */
@@ -56,14 +61,19 @@ public class SongsWebService {
 	
 	// GET http://localhost:8080/songsRX/rest/songs
 	// Returns all contacts
+	//TODO: fuer xml klappt das mit return-Response noch nicht
 	@GET
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Collection<Song> getAllSongs() {
-		System.out.println("getAllSongs: Returning all songs!");		
-		Collection<Song> allSongs = songsStorage.getAllSongs();
-		//return Response.ok(allSongs).build();
-		//return Response.status(Response.Status.OK).entity(allSongs).build();
-		return allSongs;
+	public Response getAllSongs(@HeaderParam("Authorization") String key) {
+		boolean authorized = authStorage.identify(key);
+		if(authorized) {
+			System.out.println("getAllSongs: Returning all songs!");		
+			Collection<Song> allSongs = songsStorage.getAllSongs();
+			return Response.status(Response.Status.OK).entity(allSongs).build();
+		}
+		else 
+			return Response.status(Response.Status.UNAUTHORIZED).entity("No valid key.").build();
+		
 	}
 
 	 //GET http://localhost:8080/songsRX/rest/songs/1
@@ -72,14 +82,20 @@ public class SongsWebService {
 	@GET
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public Response getSong(@PathParam("id") Integer id) {
-		Song song = songsStorage.getSong(id);
-		if (song != null) {
-			System.out.println("getSong: Returning song for id " + id);
-			return Response.ok(song).build();
-		} else {
-			return Response.status(Response.Status.NOT_FOUND).entity("No song found with id " + id).build();
+	public Response getSong(@PathParam("id") Integer id, @HeaderParam("Authorization") String key) {
+		//TODO || FIXME: Test mit "OLD", id ist schon als Integer, sollte ID lieber als String gespeichert werden? und hier zieht man den Wert mit Integer.parseInt(id)?
+		boolean authorized = authStorage.identify(key);
+		if(authorized) {
+			Song song = songsStorage.getSong(id);
+			if (song != null) {
+				System.out.println("getSong: Returning song for id " + id);
+				return Response.ok(song).build();
+			} else {
+				return Response.status(Response.Status.NOT_FOUND).entity("No song found with id " + id).build();
+			} 
 		}
+		else
+			return Response.status(Response.Status.UNAUTHORIZED).entity("No valid key.").build();
 	}
 
 // POST http://localhost:8080/songsRX/rest/songs with contact in payload
@@ -94,15 +110,19 @@ public class SongsWebService {
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	@Produces(MediaType.TEXT_PLAIN) //TODO: brauchen wir das? POST schickt nur Location Header zurueck, siehe PUT und DELETE -> da gibt es auch kein Consumes
-	public Response createSong(Song song) {
-		System.out.println("createSong: I am creating your song...");
-		 Integer newId = songsStorage.addSong(song);
-		 if(newId == null)
-			 return Response.status(Response.Status.BAD_REQUEST).entity("Adding new song failed for some reason.").build();
-	     UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
-	     uriBuilder.path(Integer.toString(newId));
-	     return Response.created(uriBuilder.build()).status(Response.Status.OK).entity("Adding new song successful.").build();
-	     
+	public Response createSong(Song song, @HeaderParam("Authorization") String key) {
+		boolean authorized = authStorage.identify(key);
+		if(authorized) {
+			System.out.println("createSong: I am creating your song...");
+			 Integer newId = songsStorage.addSong(song);
+			 if(newId == null)
+				 return Response.status(Response.Status.BAD_REQUEST).entity("Adding new song failed for some reason.").build();
+		     UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
+		     uriBuilder.path(Integer.toString(newId));
+		     return Response.created(uriBuilder.build()).status(Response.Status.OK).entity("Adding new song successful.").build();
+		}
+		else
+			return Response.status(Response.Status.UNAUTHORIZED).entity("No valid key.").build();
 	}
 
 //     Besser: 
@@ -117,22 +137,32 @@ public class SongsWebService {
 	@PUT
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	@Path("/{id}")
-	public Response updateSong(@PathParam("id") Integer id, Song song) {
-		System.out.println("updateSong: Updating song with id " + id);
-		boolean updateSuccessful = songsStorage.updateSong(id, song);
-		if(updateSuccessful)
-			return Response.status(Response.Status.NO_CONTENT).entity("Update successful.").build();
+	public Response updateSong(@PathParam("id") Integer id, Song song, @HeaderParam("Authorization") String key) {
+		boolean authorized = authStorage.identify(key);
+		if(authorized) {
+			System.out.println("updateSong: Updating song with id " + id);
+			boolean updateSuccessful = songsStorage.updateSong(id, song);
+			if(updateSuccessful)
+				return Response.status(Response.Status.NO_CONTENT).entity("Update successful.").build();
+			else
+				return Response.status(Response.Status.BAD_REQUEST).entity("Wrong content type or song ID was not found or not successfully updated.").build();
+		}
 		else
-			return Response.status(Response.Status.BAD_REQUEST).entity("Wrong content type or song ID was not found or not successfully updated.").build();
+			return Response.status(Response.Status.UNAUTHORIZED).entity("No valid key.").build();
 	}
 
 	@DELETE
 	@Path("/{id}")
-	public Response delete(@PathParam("id") Integer id) {
-		Song song = songsStorage.deleteSong(id);
-		if(song == null)
-			return Response.status(Response.Status.NOT_FOUND).entity("Song ID was not found or not successfully deleted.").build();
+	public Response delete(@PathParam("id") Integer id, @HeaderParam("Authorization") String key) {
+		boolean authorized = authStorage.identify(key);
+		if(authorized) {
+			Song song = songsStorage.deleteSong(id);
+			if(song == null)
+				return Response.status(Response.Status.NOT_FOUND).entity("Song ID was not found or not successfully deleted.").build();
+			else
+				return Response.status(Response.Status.NO_CONTENT).entity("Delete successful.").build();
+		}
 		else
-			return Response.status(Response.Status.NO_CONTENT).entity("Delete successful.").build();
+			return Response.status(Response.Status.UNAUTHORIZED).entity("No valid key.").build();
 	}
 }

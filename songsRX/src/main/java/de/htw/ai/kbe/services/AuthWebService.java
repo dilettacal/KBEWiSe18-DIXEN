@@ -6,14 +6,18 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
+import de.htw.ai.kbe.bean.User;
+import de.htw.ai.kbe.filter.AuthenticationFilter;
 import de.htw.ai.kbe.storage.IUser;
 
-//URL fuer diesen Service ist: http://localhost:8080/contactsJAXRS/rest/auth 
+//URL fuer diesen Service ist: http://localhost:8080/contactsJAXRS/rest/auth?userId=schueler --> ghahoeho4
 @Path("/auth")
 public class AuthWebService {
 
 	// Referenz auf InMemory-DB
 	private IUser userStorage;
+	
+	private AuthenticationFilter filter = AuthenticationFilter.getInstance();
 
 	// Konstruktor bekommt Verweis auf DB-Instanz
 	@Inject
@@ -24,7 +28,14 @@ public class AuthWebService {
 	@GET
 	@Path("/{userId}")
 	public Response getUser(@PathParam("userId") String userID) {
-		return null;
+		User userExists = userStorage.getUserByUsername(userID);
+		if(userExists != null) {
+			//TODO: Generate token here !!!!!!!!!
+			//String key = filter.filter(containerRequest);
+			return Response.status(Response.Status.OK).entity("Authorized").build();
+		} else {
+			return Response.status(Response.Status.UNAUTHORIZED).entity("No existing user found").build();
+		}
 	}
 
 }

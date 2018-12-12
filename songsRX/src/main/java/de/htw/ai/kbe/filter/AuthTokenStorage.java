@@ -21,7 +21,7 @@ public class AuthTokenStorage implements IAuth {
 	}
 
 	@Override
-	public boolean authenticate(String userID, String token) {
+	public synchronized boolean authenticate(String userID, String token) {
 		//1. Existiert der User (ist in der Map) --> Token wird durch den neuen ersetzt
 		//2. User ist identifiziert? 
 		if(userExists(userID)) {
@@ -34,9 +34,11 @@ public class AuthTokenStorage implements IAuth {
 
 	/*checks wether key exists*/
 	@Override
-	public User identify(String token) {
-		// TODO Auto-generated method stub
-		return null;
+	public synchronized boolean identify(String token) {
+		if(userTokenMapping.containsValue(token))
+			return true;
+		else
+			return false;
 	}
 
 	/*checks wether user is in userDB or not --> allows requests when he exists*/
