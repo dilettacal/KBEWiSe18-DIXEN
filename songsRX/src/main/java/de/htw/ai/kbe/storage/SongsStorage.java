@@ -39,7 +39,8 @@ public class SongsStorage implements ISongs{
 		}
 		else {
 			for (Song s: songsFromJsonFile) {
-				addSong(s);
+				if(s.getTitle() != null && !(s.getTitle().trim()).isEmpty())
+					addSong(s);
 			}
 		}	
 	}
@@ -68,32 +69,40 @@ public class SongsStorage implements ISongs{
 
 
 	@Override
-	public Song getSong(Integer id) {
+	public synchronized Song getSong(Integer id) {
 		return storage.get(id);
 	}
 
 	@Override
-	public Collection<Song> getAllSongs() {
+	public synchronized Collection<Song> getAllSongs() {
 		return storage.values();
 	}
 
 	@Override
-	public Integer addSong(Song song) {
-		song.setId((int) storage.keySet().stream().count()+1);
-		storage.put(song.getId(), song);
-		//liefert neu vergebene ID zurueck
-		return song.getId();
+	public synchronized Integer addSong(Song song) {
+		if(song.getTitle() != null && !(song.getTitle().trim()).isEmpty()) {
+			song.setId((int) storage.keySet().stream().count()+1);
+			storage.put(song.getId(), song);
+			//liefert neu vergebene ID zurueck
+			return song.getId();
+		}
+		else
+			return null;
 	}
 
 	@Override
-	public boolean updateSong(Integer id, Song song) {
+	public synchronized boolean updateSong(Integer id, Song song) {
 		Song oldSong = storage.get(id);
-		song.setId(oldSong.getId());
-		return storage.replace(oldSong.getId(), oldSong, song);
+		if(oldSong != null && song.getTitle() != null && !(song.getTitle().trim()).isEmpty()) {
+			song.setId(oldSong.getId());
+			return storage.replace(oldSong.getId(), oldSong, song);
+		}
+		else
+			return false;
 	}
 
 	@Override
-	public Song deleteSong(Integer id) {
+	public synchronized Song deleteSong(Integer id) {
 		return storage.remove(id);
 	}
 
