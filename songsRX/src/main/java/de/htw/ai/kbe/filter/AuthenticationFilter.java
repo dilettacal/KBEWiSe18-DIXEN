@@ -13,7 +13,6 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
 private static final String AUTHENTICATION_HEADER = "Authorization";
 
-	
 	@Inject
 	private IAuth authContainer;
 	
@@ -23,6 +22,8 @@ private static final String AUTHENTICATION_HEADER = "Authorization";
 
 	@Override
 	public void filter(ContainerRequestContext containerRequest) throws WebApplicationException {
+		System.out.println("Ich bin im Filter");
+		
 		String path = containerRequest.getUriInfo().getPath();
 		//wenn sich User authorisieren will, wird Authentication-Header nicht gecheckt
 		//laeuft durch wenn Anfrage fuer SongsWebService kommt
@@ -30,24 +31,14 @@ private static final String AUTHENTICATION_HEADER = "Authorization";
 			return;
 		}
 		String authToken = containerRequest.getHeaderString(AUTHENTICATION_HEADER);
+		if(authToken == null) {
+			throw new WebApplicationException(Status.UNAUTHORIZED);
+		}
 		boolean valid = authContainer.isValid(authToken);
 		
-		if(!valid)
+		if(!valid) {
 			throw new WebApplicationException(Status.UNAUTHORIZED);
-		
-//		String authToken = containerRequest.getHeaderString(AUTHENTICATION_HEADER);
-//
-//		if (authToken == null) {
-//			// etwas zu einfach: wenn "auth" in der URL, dann durchlassen:
-//			if (!containerRequest.getUriInfo().getPath().contains("auth")) { //kein "auth"
-//				System.out.print("token ist null bei filter");
-//				throw new WebApplicationException(Status.UNAUTHORIZED);
-//			}
-//		} else {
-//			if (!authContainer.authenticate(authToken)) { // Service kennt den Token nicht
-//				System.out.print("token ist unathorized bei filter");
-//				throw new WebApplicationException(Status.UNAUTHORIZED);
-//			}
-//		}
+		}
 	}
+	
 }

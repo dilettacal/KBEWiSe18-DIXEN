@@ -34,7 +34,11 @@ public class UserStorage implements IUser{
 
 	@Override
 	public User getUser(String userID) {
-		return storage.get(userID);
+		for(User u: storage.values()) {
+			if(u.getUserID().equals(userID))
+				return u;
+		}
+		return null;
 	}
 
 	@Override
