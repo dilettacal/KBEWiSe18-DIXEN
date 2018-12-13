@@ -21,44 +21,36 @@ import de.htw.ai.kbe.storage.UserStorage;
 @Path("/auth")
 public class AuthWebService {
 
-	// Referenz auf InMemory-DB
-	private IUser userStorage;
-	private IAuth tokenStorage;
-
-	// Konstruktor bekommt Verweis auf DB-Instanz
+	//Konstruktor INjection hat nicht funktioniert -> Field Injection
 	@Inject
-	public AuthWebService(IUser userStorage, IAuth tokenStorage) {
-		this.userStorage = userStorage;
-		this.tokenStorage = tokenStorage;
+	private IAuth tokenStorage;
+	
+	public AuthWebService() {
+		
 	}
 	
 	@GET
 	@Path("/")
 	@Produces({ MediaType.TEXT_PLAIN })
 	public Response getToken(@QueryParam("userId") String userID) {
-		User user = ((IUser) UserStorage.storage).getUser(userID);
-		if (user != null) {
-			if (tokenStorage.containsVal(userID)) {
-				return Response.status(Response.Status.FOUND).entity(
-						Response.Status.FORBIDDEN + ": You allready logged in, your token is: " + tokenStorage.getUserIdByToken(userID.toString()))
-						.build();
-			}
-			String token = keyGenerator();
-			System.out.println("Session token ist: "  +token);
-			tokenStorage.setUserIdByToken(token, userID);
+		
+		if(userID == null || (userID.trim()).isEmpty()) {
+			return Response.status(Response.Status.BAD_REQUEST).entity(
+					Response.Status.BAD_REQUEST + ": No username given!")
+					.build();
+		}
+		
+		String token = tokenStorage.authenticate(userID);
+		if(token == null) {
+			return Response.status(Response.Status.UNAUTHORIZED).entity(
+					Response.Status.UNAUTHORIZED + ": Unauthorized user!")
+					.build();
+		}
+		else {
+			//TODO: Reicht das oder soll Token explizit in den Request-Body?
 			return Response.status(Response.Status.OK).entity("Token: " + token).build();
-		} else {
-			return Response.status(Response.Status.FORBIDDEN)
-					.entity(Response.Status.FORBIDDEN + ": Not Auth, No User found with id " + userID).build();
 		}
 
 	}
-	
-//	//Alternativer Token: Session ID?
-//	private String keyGenerator() {
-//		String key = UUID.randomUUID().toString();
-//		key = key.replaceAll("-", "");
-//		return key;
-//	}
 
 }

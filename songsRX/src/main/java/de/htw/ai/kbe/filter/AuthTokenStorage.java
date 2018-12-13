@@ -28,6 +28,7 @@ public class AuthTokenStorage implements IAuth {
 		user = userStorage.getUser(userId);
 		if(user != null) {
 			String token = generateToken();
+			//TODO: Was wenn der User schon authentifiziert ist? Token ersetzen oder user mit mehreren Token gespeichert?
 			userToken.put(userId, token);
 			return token;
 		}
@@ -44,30 +45,5 @@ public class AuthTokenStorage implements IAuth {
 		key = key.replaceAll("-", "");
 		return key;
 	}
-
-//	@Override
-//	public boolean authenticate(String authKey) {
-//		if(storage.containsKey(authKey)) {
-//			return true;
-//		}
-//		return false;
-//	}
-//	
-//	@Override
-//	public String getUserIdByToken(String token) {
-//		return storage.get(token);
-//	}
-//	
-//	@Override
-//	public String setUserIdByToken(String token,String userId) {
-//		return storage.put(token,userId);
-//	}
-//
-//	@Override
-//	public boolean containsVal(String userId) {		
-//		return storage.containsValue(userId);
-//	}
-
-	
 
 }
