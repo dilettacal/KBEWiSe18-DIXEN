@@ -54,11 +54,11 @@ public class AuthWebService {
 
 	}
 	
-	//Alternativer Token: Session ID?
-	private String keyGenerator() {
-		String key = UUID.randomUUID().toString();
-		key = key.replaceAll("-", "");
-		return key;
-	}
+//	//Alternativer Token: Session ID?
+//	private String keyGenerator() {
+//		String key = UUID.randomUUID().toString();
+//		key = key.replaceAll("-", "");
+//		return key;
+//	}
 
 }
