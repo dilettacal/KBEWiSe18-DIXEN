@@ -42,31 +42,6 @@ public class SongsWebService {
 
 	/* METHODEN DES WEBSERVICE */
 
-	/*
-	 * Der WebService muss folgende Anfragen vearbeiten:
-	 * 
-	 * ##### GET ##### GET Accept:application/json
-	 * http://localhost:8080/songsRX/rest/songs - schickt alle Songs in JSON zurück
-	 * GET Accept:application/xml http://localhost:8080/songsRX/rest/songs/7 -
-	 * schickt Song 7 in XML zurück #### POST #### POST Content-Type:application/xml
-	 * http://localhost:8080/songsRX/rest/songs (mit einer XML-Payload) - trägt den
-	 * Song in der DB ein. Falls erfolgreich, dann Status-Code 201 und liefert die
-	 * URL für den neuen Song im “Location”-Header an den Client zurück. POST
-	 * Content-Type:application/json http://localhost:8080/songsRX/rest/songs (mit
-	 * einer JSON-Payload) - trägt den Song in der DB ein. Falls erfolgreich, dann
-	 * Status-Code 201 und liefert die URL für den neuen Song im “Location”-Header
-	 * an den Client zurück. #### PUT ##### PUT Content-Type:application/xml
-	 * http://localhost:8080/songsRX/rest/songs/7 (mit einer XML-Payload) - erneuert
-	 * den Eintrag für Id 7 in der DB und schickt “on Success” den HTTP-Statuscode
-	 * 204. PUT Content-Type:application/json
-	 * http://localhost:8080/songsRX/rest/songs/7 (mit einer JSON-Payload) -
-	 * erneuert den Eintrag für Id 7 in der DB und schickt “on Success” den
-	 * HTTP-Statuscode 204. #### DELETE #### DELETE
-	 * http://localhost:8080/songsRX/rest/songs/7 - loescht den Eintrag Id 7 in der
-	 * DB und schickt on Success einen HTTP-Statuscode 204.
-	 * 
-	 */
-
 	// GET http://localhost:8080/songsRX/rest/songs
 	// Returns all contacts
 	// TODO: fuer xml klappt das mit return-Response noch nicht
@@ -99,11 +74,6 @@ public class SongsWebService {
 		
 	}
 
-// POST http://localhost:8080/songsRX/rest/songs with contact in payload
-// Temp. solution returns: 
-//   Status Code 200 and the new id of the contact in the payload 
-// diese methode nimmt json oder xml object und fragt ob es möglich ist diese auf contact pojos abzubilden. wenn ja dann macht er
-	// das automatisch
 
 	@POST
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
