@@ -20,8 +20,6 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import de.htw.ai.kbe.bean.Song;
-import de.htw.ai.kbe.filter.AuthenticationFilter;
-import de.htw.ai.kbe.filter.IAuth;
 import de.htw.ai.kbe.storage.ISongs;
 
 // URL fuer diesen Service ist: http://localhost:8080/songsRX/rest/songs 

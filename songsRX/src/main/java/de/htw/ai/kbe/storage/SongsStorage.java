@@ -20,7 +20,7 @@ import de.htw.ai.kbe.bean.Song;
 
 public class SongsStorage implements ISongs{
 	
-	private static Map<Integer, Song> storage;
+	private Map<Integer, Song> storage;
 	
 	public SongsStorage() {
 		storage = new ConcurrentHashMap<Integer, Song>();
@@ -62,7 +62,7 @@ public class SongsStorage implements ISongs{
 		}	
 	}
 	
-	private static void initSomeSongs() {
+	private void initSomeSongs() {
 		Song song1 = new Song.Builder("A love song").album("A love album").artist("An empty artist").released(2008).build();
 		storage.put(1, song1);
 		

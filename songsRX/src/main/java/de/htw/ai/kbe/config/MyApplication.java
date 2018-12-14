@@ -18,8 +18,8 @@ public class MyApplication extends ResourceConfig {
 		//Einbinden 
 		register(new DependencyBinder());
 		packages("de.htw.ai.kbe.services");
-		//AuthenticationFilter muss registriert werden, kein packages(..)
-       register(AuthenticationFilter.class); //packages("de.htw.ai.kbe.filter");
+		//XXX: Das erlaubt Filtering der Anfragen!
+       register(AuthenticationFilter.class); 
 	}
 
 }

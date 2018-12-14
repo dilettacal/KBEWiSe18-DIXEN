@@ -25,33 +25,33 @@ public class Song implements Comparable<Song>  {
 	}
 
 	public static class Builder {
-		private String title;
-		private String artist;
-		private String album;
-		private int released;
-		private Integer id;
+		private String builderTitle;
+		private String builderArtist;
+		private String builderAlbum;
+		private int builderReleased;
+		private Integer builderId;
 
 		public Builder(String title) {
-			this.title = title;
+			this.builderTitle = title;
 		}
 
 		public Builder artist(String val) {
-			artist = val;
+			builderArtist = val;
 			return this;
 		}
 
 		public Builder album(String val) {
-			album = val;
+			builderAlbum = val;
 			return this;
 		}
 
 		public Builder released(int val) {
-			released = val;
+			builderReleased = val;
 			return this;
 		}
 
 		public Builder id(Integer val) {
-			id = val;
+			builderId = val;
 			return this;
 		}
 		
@@ -62,11 +62,11 @@ public class Song implements Comparable<Song>  {
 	}
 
 	private Song(Builder builder) {
-		this.title = builder.title;
-		this.artist = builder.artist;
-		this.album = builder.album;
-		this.released = builder.released;
-		this.id = builder.id;
+		this.title = builder.builderTitle;
+		this.artist = builder.builderArtist;
+		this.album = builder.builderAlbum;
+		this.released = builder.builderReleased;
+		this.id = builder.builderId;
 	}
 
 	@XmlElement
