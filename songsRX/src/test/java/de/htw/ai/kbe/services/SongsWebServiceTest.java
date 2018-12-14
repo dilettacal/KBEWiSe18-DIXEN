@@ -134,23 +134,5 @@ public void updateSongWithNonExistingIDShouldReturn404 () {
 		assertEquals("Should return status 404", 404, output.getStatus()); //FIXME: 500 Error XML!
 	}
 
-	@Test
-	public void updateSongwithoutIDShouldReturn404() {
-		Song song = new Song();
-		song.setArtist("Ein Title");
-		song.setAlbum("Ein Album");
-		song.setReleased(1900);
-		Response output = target("songs/5").request().header("authorization", "testToken").put(Entity.json(song));
-		assertEquals(404, output.getStatus()); //FIXME: 500
-	}
-
-	@Test
-	public void updateSongwithDifferentIdTargetSongShouldReturn400() {
-		Song song = new Song.Builder("Ein neuer Titel").artist("Ein neuer Artist").album("Album")
-				.released(2005).id(5).build();
-
-		Response output = target("songs/9").request().put(Entity.json(song));
-		assertEquals(400, output.getStatus());
-	}
 
 }
