@@ -10,33 +10,5 @@ public interface IAuth {
 	
 	//prueft ob Token gueltig ist
 	public boolean isValid(String token);
-	
-	
-	/**
-	 * 
-	 * @param authToken
-	 * @return true when authToken in tokenMap
-	 */
-	//public boolean authenticate(String authToken);
-	
-	/**
-	 * 
-	 * @param userID
-	 * @return userId given token
-	 */
-	//public String getUserIdByToken(String userID);
-	
-	/**
-	 * put token in tokenMap
-	 * @param token
-	 * @param userId
-	 * @return
-	 */
-//	public String setUserIdByToken(String token,String userId);
-//	
-//	
-//	public boolean containsVal(String userId);
-
-	
 
 }
