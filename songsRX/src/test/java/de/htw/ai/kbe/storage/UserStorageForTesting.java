@@ -8,6 +8,7 @@ import javax.ws.rs.NotFoundException;
 
 import de.htw.ai.kbe.bean.User;
 
+@Deprecated
 public class UserStorageForTesting implements IUser {
 	
 	private static UserStorageForTesting instance;

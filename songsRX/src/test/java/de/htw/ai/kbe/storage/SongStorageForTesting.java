@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 import de.htw.ai.kbe.bean.Song;
 
+@Deprecated
 public class SongStorageForTesting implements ISongs {
 
 	private Map<Integer, Song> miniSongDB;

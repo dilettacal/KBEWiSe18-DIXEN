@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import de.htw.ai.kbe.bean.User;
 import de.htw.ai.kbe.storage.UserStorageForTesting;
 
+@Deprecated
 public class AuthStorageForTesting implements IAuth{
 	
 	private static AuthStorageForTesting instance;
