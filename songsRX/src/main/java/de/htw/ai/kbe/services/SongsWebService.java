@@ -71,8 +71,10 @@ public class SongsWebService {
 	// Returns all contacts
 	// TODO: fuer xml klappt das mit return-Response noch nicht
 	@GET
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Collection<Song> getAllSongs() {
+		System.out.println("getAllSongs()...");
+		//songsStorage.getAllSongs().forEach(s -> System.out.println(s)); //Test - OK
 		return songsStorage.getAllSongs();
 	}
 
@@ -104,7 +106,7 @@ public class SongsWebService {
 	// das automatisch
 
 	@POST
-	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Produces(MediaType.TEXT_PLAIN) // TODO: brauchen wir das? POST schickt nur Location Header zurueck, siehe PUT
 									// und DELETE -> da gibt es auch kein Consumes
 	public Response createSong(Song song, @HeaderParam("Authorization") String key) {
@@ -123,14 +125,6 @@ public class SongsWebService {
 
 	}
 
-//     Besser: 
-//         Status Code 201 und URI fuer den neuen Eintrag im http-header 'Location' zurueckschicken, also:
-//         Location: /songsRX/rest/songs/neueID
-//    
-//     Dafuer: 
-//     @Context UriInfo uriInfo; // Dependency Injection (spaeter)
-//    
-//  @Context UriInfo uriInfo;	
 
 	@PUT
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -138,10 +132,31 @@ public class SongsWebService {
 	@Path("/{id}")
 	public Response updateSong(@PathParam("id") Integer id, Song song, @HeaderParam("Authorization") String key) {
 
-		if(song.getId() == null || song == null ||  song.getTitle() == null || (song.getTitle().trim()).isEmpty()) {
-			return  Response.status(Response.Status.NOT_FOUND)
-					.entity(Response.Status.NOT_FOUND + ": Fail to updated Song").build();
+		//Dieser Check ist notwendig:
+		//PUT Request --> ...../rest/songs/7
+		//Body: 
+		/*
+		 * {
+			  "id" : 7,
+			  "title" : "Man on the Moon",
+			  "artist" : "REM",
+			  "album" : "REM Collection",
+			  "released" : 1998
+			}
+}
+		 */
+		if(!song.getId().equals(id) || song == null) {
+			return  Response.status(Response.Status.BAD_REQUEST)
+					.entity("Id does not correspond to Id in payload ").build();
 		}
+		
+		//Ein Song mit gueltigem ID wurde uebergeben. Titelcheck:
+		if(song.getTitle() == null || (song.getTitle().trim()).isEmpty()) { 
+			//README: Ich wuerde eher BAD Request zurueckschicke, wenn Song-Format ungueltig
+			return  Response.status(Response.Status.BAD_REQUEST)
+					.entity(Response.Status.BAD_REQUEST + ": Fail to updated Song").build();
+		}
+		
 		boolean updated = songsStorage.updateSong(id, song);
 		if(!updated) {
 			return Response.status(Response.Status.NOT_FOUND)
@@ -157,9 +172,7 @@ public class SongsWebService {
 	@Path("/{id}")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response delete(@PathParam("id") Integer id, @HeaderParam("Authorization") String key) {
-
 		Song song = songsStorage.deleteSong(id);
-		
 		if(song == null) {
 			return Response.status(Response.Status.NOT_FOUND)
 					.entity(Response.Status.NOT_FOUND + ": Song ID was not found or not successfully deleted.").build();
@@ -167,6 +180,5 @@ public class SongsWebService {
 		else {
 			return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Delete successful.").build();
 		}
-
 	}
 }

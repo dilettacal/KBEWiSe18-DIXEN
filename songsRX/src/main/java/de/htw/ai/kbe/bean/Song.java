@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "song")
-public class Song {
+public class Song implements Comparable<Song>  {
 
 	// Titel MUSS kommen
 	private String title;
@@ -118,6 +118,11 @@ public class Song {
 	public String toString() {
 		return "Song [id=" + id + ", title=" + title + ", artist=" + artist + ", album=" + album + ", released="
 				+ released + "]";
+	}
+
+	@Override
+	public int compareTo(Song o) {
+		return this.getId().compareTo(o.getId());
 	}
 
 }

@@ -15,18 +15,12 @@ private static final String AUTHENTICATION_HEADER = "Authorization";
 
 	@Inject
 	private IAuth authContainer;
-	
-	/*public AuthenticationFilter(IAuth authContainer) {
-		this.authContainer = authContainer;
-	}*/
 
 	@Override
 	public void filter(ContainerRequestContext containerRequest) throws WebApplicationException {
 		System.out.println("Ich bin im Filter");
 		
 		String path = containerRequest.getUriInfo().getPath();
-		//wenn sich User authorisieren will, wird Authentication-Header nicht gecheckt
-		//laeuft durch wenn Anfrage fuer SongsWebService kommt
 		if(path.contains("auth")) {
 			return;
 		}

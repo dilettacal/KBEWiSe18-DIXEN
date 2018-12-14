@@ -6,7 +6,9 @@ import java.io.InputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.BufferedInputStream;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,25 +30,38 @@ public class SongsStorage implements ISongs{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		initSongsFromFile(songs);
+		boolean initFromFileOK = initSongsFromFile(songs);
+		if(initFromFileOK == false) {
+			initSomeSongs();
+		}
 	}
 
 
-	private void initSongsFromFile(List<Song> songsFromJsonFile) {
+	public SongsStorage(Song[] songs) {
+		storage = new ConcurrentHashMap<Integer, Song>();
+		if(songs == null) {
+			initSomeSongs();
+		} else {
+			Arrays.sort(songs); //id aufsteigend, es gab 1 problem in den Tests
+			for(Song s: songs) {
+				storage.put(s.getId(), s);
+			}
+		}
+	}
+	private boolean initSongsFromFile(List<Song> songsFromJsonFile) {
 		if(songsFromJsonFile == null){
-			//TODO: Songs anderswie initialisieren ODER Programm abbrechen
-			System.out.println("Es sind keine Songs in der Datei vorhanden.");
+			//TODO: Songs anderswie initialisieren --> FIXED: false + ein paar Songs manuell hingefuegt
+			return false;
 		}
 		else {
 			for (Song s: songsFromJsonFile) {
 				if(s.getTitle() != null && !(s.getTitle().trim()).isEmpty())
 					addSong(s);
 			}
+			return true;
 		}	
 	}
 	
-
-	//TODO: Evtl. erweitern, damit DB nicht null bleibt
 	private static void initSomeSongs() {
 		Song song1 = new Song.Builder("A love song").album("A love album").artist("An empty artist").released(2008).build();
 		storage.put(1, song1);

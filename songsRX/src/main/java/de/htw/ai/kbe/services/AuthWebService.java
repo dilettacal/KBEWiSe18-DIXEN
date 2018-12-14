@@ -20,6 +20,7 @@ import de.htw.ai.kbe.storage.UserStorage;
 //URL fuer diesen Service ist: http://localhost:8080/songsRX/rest/auth?userId=schueler --> ghahoeho4
 @Path("/auth")
 public class AuthWebService {
+	private final String AUTHENTICATION_HEADER = "Authentication";
 
 	//Konstruktor INjection hat nicht funktioniert -> Field Injection
 	@Inject
@@ -48,7 +49,8 @@ public class AuthWebService {
 					.build();
 		}
 		else {
-			return Response.status(Response.Status.OK).entity(token).build();
+			//FIXME: Anfragen mit curl zeigen keinen Token an
+			return Response.status(Response.Status.OK).header(AUTHENTICATION_HEADER, token).entity(token).build();
 		}
 
 	}
