@@ -26,10 +26,11 @@ public class AuthTokenStorage implements IAuth {
 	public synchronized String authenticate(String userId) {
 		User user = null;
 		user = userStorage.getUser(userId);
+		//userStorage.getAllUsers().forEach(u -> System.out.println(u)); //Test - enthaelt nur 2 User
 		if(user != null) {
 			String token = generateToken();
-			//TODO: Was wenn der User schon authentifiziert ist? Token ersetzen oder user mit mehreren Token gespeichert?
 			userToken.put(userId, token);
+			System.out.println(userToken.get(userId)); //Als Test, dass Token mit entsprechendem userId gespeichert wurde
 			return token;
 		}
 		return null;

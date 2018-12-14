@@ -33,8 +33,9 @@ public class AuthWebService {
 	@Path("/")
 	@Produces({ MediaType.TEXT_PLAIN })
 	public Response getToken(@QueryParam("userId") String userID) {
-		
-		if(userID == null || (userID.trim()).isEmpty()) {
+		System.out.println("USERID: " + userID); //liefert eschuler
+		System.out.println(userID.trim()); //liefert eschuler
+		if(userID == null || (userID.isEmpty())) {
 			return Response.status(Response.Status.BAD_REQUEST).entity(
 					Response.Status.BAD_REQUEST + ": No username given!")
 					.build();
@@ -47,8 +48,7 @@ public class AuthWebService {
 					.build();
 		}
 		else {
-			//TODO: Reicht das oder soll Token explizit in den Request-Body?
-			return Response.status(Response.Status.OK).entity("Token: " + token).build();
+			return Response.status(Response.Status.OK).entity(token).build();
 		}
 
 	}
