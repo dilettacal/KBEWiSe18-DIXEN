@@ -22,9 +22,24 @@ import javax.ws.rs.core.UriInfo;
 import de.htw.ai.kbe.bean.Song;
 import de.htw.ai.kbe.storage.ISongs;
 
+/**
+ * 
+ * @author dilet
+ *
+ */
 // URL fuer diesen Service ist: http://localhost:8080/songsRX/rest/songs 
 @Path("/songs")
 public class SongsWebService {
+	
+	/*
+	 * TODO:
+	 * 1. Test UPDATE songs without content
+	 * 2. FIXME: Check if "id" is a number, if not return BAD REQUEST or other message
+	 * 3. FIXME: When id as param does not correspond to id in body, also returns the Response number with the message 
+	 * 	Actually: "Id does not correspond" --> BAD Req 
+	 * 4. FIXME: Review bad payloads, what if it is whether JSON or XML?
+	 * 5. FIXME: Some tests still return SocketException 
+	 */
 
 	// Referenz auf InMemory-DB
 	@Inject
