@@ -4,29 +4,21 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import de.htw.ai.kbe.bean.Song;
-import de.htw.ai.kbe.filter.AuthStorageForTesting;
 import de.htw.ai.kbe.storage.ISongs;
-import de.htw.ai.kbe.storage.SongStorageForTesting;
 import de.htw.ai.kbe.storage.SongsStorage;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import javax.inject.Singleton;
-import javax.validation.Valid;
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 public class SongsWebServiceTest extends JerseyTest {
 
