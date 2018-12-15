@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * POJO - represents a song in the Database
  */
-@XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "song")
 public class Song implements Comparable<Song>  {
 
@@ -69,7 +68,6 @@ public class Song implements Comparable<Song>  {
 		this.id = builder.builderId;
 	}
 
-	@XmlElement
 	public String getTitle() {
 		return title;
 	}
@@ -78,7 +76,6 @@ public class Song implements Comparable<Song>  {
 		this.title = title;
 	}
 
-	@XmlElement
 	public String getArtist() {
 		return artist;
 	}
@@ -87,7 +84,6 @@ public class Song implements Comparable<Song>  {
 		this.artist = artist;
 	}
 
-	@XmlElement
 	public String getAlbum() {
 		return album;
 	}
@@ -96,7 +92,6 @@ public class Song implements Comparable<Song>  {
 		this.album = album;
 	}
 
-	@XmlElement
 	public int getReleased() {
 		return released;
 	}
@@ -105,7 +100,6 @@ public class Song implements Comparable<Song>  {
 		this.released = released;
 	}
 
-	@XmlElement
 	public Integer getId() {
 		return id;
 	}

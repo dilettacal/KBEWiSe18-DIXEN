@@ -39,7 +39,7 @@ public class SongsWebServiceTest extends JerseyTest {
 	}
 	
 
-    @Test
+@Test
 public void updateSongWithNonExistingIDShouldReturn404 () {
 	Song testSong = new Song();
 	testSong.setId(14);
@@ -48,7 +48,7 @@ public void updateSongWithNonExistingIDShouldReturn404 () {
 	testSong.setAlbum("TestAlbum");
 	testSong.setReleased(2015);
 	Response response = target("/songs/14").request().header("authorization", "testToken").put(Entity.json(testSong));
-	System.out.println("Update with no provided ID: " + response.getStatus());
+	System.out.println(response.getStatus());
 	Assert.assertEquals(404, response.getStatus());
 }
 
@@ -56,13 +56,13 @@ public void updateSongWithNonExistingIDShouldReturn404 () {
 	public void updateSongWithExistingIdShouldReturn204XML () {
     	//FIXME: 500 internal server error
     	Song testSong = new Song();
-    	testSong.setId(14);
+    	testSong.setId(2);
     	testSong.setArtist("Test");
     	testSong.setTitle("TestTitle");
     	testSong.setAlbum("TestAlbum");
     	testSong.setReleased(2015);
-		Response response = target("/songs/10").request().header("authorization", "testToken").put(Entity.xml(testSong));
-		System.out.println("Update with matching ID: " + response.getStatus());
+		Response response = target("/songs/2").request().header("authorization", "testToken").put(Entity.xml(testSong));
+		System.out.println(response.getStatus());
 		Assert.assertEquals(204, response.getStatus());
 	}
     
@@ -75,7 +75,7 @@ public void updateSongWithNonExistingIDShouldReturn404 () {
     	testSong.setAlbum("TestAlbum");
     	testSong.setReleased(2015);
 		Response response = target("/songs/14").request().header("authorization", "testToken").put(Entity.json(testSong));
-		System.out.println("Update with non matching ID: " + response.getStatus());
+		System.out.println( response.getStatus());
 		Assert.assertEquals(400, response.getStatus());
 	}	
     
@@ -89,7 +89,7 @@ public void updateSongWithNonExistingIDShouldReturn404 () {
      	testSong.setAlbum("TestAlbum");
      	testSong.setReleased(2015);
  		Response response = target("/songs/14").request().header("authorization", "testToken").put(Entity.xml(testSong));
- 		System.out.println("Update with non matching ID: " + response.getStatus());
+ 		System.out.println(response.getStatus());
  		Assert.assertEquals(400, response.getStatus());
  	}	
     
@@ -100,7 +100,7 @@ public void updateSongWithNonExistingIDShouldReturn404 () {
 
 		Response output = target("songs/" + song.getId()).request().header("authorization", "testToken")
 				.put(Entity.json(song));
-		assertEquals("Should return status 204", 204, output.getStatus());
+		assertEquals(204, output.getStatus());
 	}
 
 	@Test
@@ -116,22 +116,22 @@ public void updateSongWithNonExistingIDShouldReturn404 () {
 
 	@Test
 	public void updateSongJsonWithUnknownIDShouldReturn() { //TODO: Should return?
-		//FIXME: SocketException???
+		//FIXME: SocketException - connection reset
 		Song song = new Song.Builder("Ein neuer Titel JSON").artist("Ein neuer Artist JSON").album("JSON Album")
 				.released(2005).build();
 
 		Response output = target("songs/" + song.getId()).request().header("authorization", "testToken")
 				.put(Entity.json(song));
-		assertEquals("Should return status 404", 404, output.getStatus());
+		assertEquals(404, output.getStatus());
 	}
 
 	@Test
 	public void updateSongXMLWithUnknownIDShouldReturn() { //TODO: Should return?
 		Song song = new Song.Builder("Ein neuer Titel XML").artist("Ein neuer Artist XML").album("XML Album")
 				.released(2005).build();
-
-		Response output = target("songs/" + song.getId()).request().header("authorization", "testToken").put(Entity.xml(song));
-		assertEquals("Should return status 404", 404, output.getStatus()); //FIXME: 500 Error XML!
+		//FIXME: SocketException - Connection reset?
+		Response output = target("songs/" + "").request().header("authorization", "testToken").put(Entity.xml(song));
+		assertEquals(404, output.getStatus()); 
 	}
 
 

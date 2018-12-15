@@ -42,10 +42,10 @@ public class SongsWebService {
 
 	// GET http://localhost:8080/songsRX/rest/songs
 	// Returns all contacts
-	// TODO: fuer xml klappt das mit return-Response noch nicht
+	
 	@GET
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Collection<Song> getAllSongs() {
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public Collection<Song> getAllSongs( @HeaderParam("Authorization") String key) {
 		System.out.println("getAllSongs()...");
 		//songsStorage.getAllSongs().forEach(s -> System.out.println(s)); //Test - OK
 		return songsStorage.getAllSongs();
@@ -75,8 +75,7 @@ public class SongsWebService {
 
 	@POST
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@Produces(MediaType.TEXT_PLAIN) // TODO: brauchen wir das? POST schickt nur Location Header zurueck, siehe PUT
-									// und DELETE -> da gibt es auch kein Consumes
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response createSong(Song song, @HeaderParam("Authorization") String key) {
 
 		Integer newID = songsStorage.addSong(song);
