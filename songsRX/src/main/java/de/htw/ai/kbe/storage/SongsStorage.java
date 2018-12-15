@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.BufferedInputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,8 @@ public class SongsStorage implements ISongs{
 		List<Song> songs = null;
 		try {
 			songs = readJSONToSongs("songs.json");
+			//JSON File: First song has id 10
+			//Collections.reverse(songs); //Reverse so that first song in our in memory storage has the id 1
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

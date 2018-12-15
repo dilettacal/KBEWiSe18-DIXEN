@@ -3,6 +3,7 @@ package de.htw.ai.kbe.services;
 import java.util.Collection;
 
 import javax.inject.Inject;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -73,10 +74,6 @@ public class SongsWebService {
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response getSong(@PathParam("id") Integer id, @HeaderParam("Authorization") String key) {
-		// TODO || FIXME: Test mit "OLD", id ist schon als Integer, sollte ID lieber als
-		// String gespeichert werden? und hier zieht man den Wert mit
-		// Integer.parseInt(id)?
-
 		Song song = songsStorage.getSong(id);
 		if(song == null) {
 			return Response.status(Response.Status.NOT_FOUND).entity(Response.Status.NOT_FOUND + ": No song found with id " + id).build();
@@ -114,39 +111,43 @@ public class SongsWebService {
 	@Path("/{id}")
 	public Response updateSong(@PathParam("id") Integer id, Song song, @HeaderParam("Authorization") String key) {
 
-		//Dieser Check ist notwendig:
-		//PUT Request --> ...../rest/songs/7
-		//Body: 
+		//System.out.println("Update with song: " + song);
+		
+		
+		
 		/*
-		 * {
-			  "id" : 7,
-			  "title" : "Man on the Moon",
-			  "artist" : "REM",
-			  "album" : "REM Collection",
-			  "released" : 1998
-			}
-}
+		 * Fall: Beide IDs sind uebergeben, aber sie stimmen nicht ueberein
+		 * Ueberpruefung: !id.equals(song.getId()) && song.getId() != null
+		 * deckt den Fall ab, dass PUT-Anfrage gueltig (rest/songs/1) 
+		 * aber Benutzer hat ID im Body gesetzt (z.B. 2) [song.getId() != null]
 		 */
-		if(!song.getId().equals(id) || song == null) {
+		if(!id.equals(song.getId()) && song.getId() != null) {
+			System.out.println("Different IDs");
 			return  Response.status(Response.Status.BAD_REQUEST)
-					.entity("Id does not correspond to Id in payload ").build();
+					.entity("ID does not correspond to ID in payload ").build();
 		}
 		
-		//Ein Song mit gueltigem ID wurde uebergeben. Titelcheck:
-		if(song.getTitle() == null || (song.getTitle().trim()).isEmpty()) { 
-			//README: Ich wuerde eher BAD Request zurueckschicke, wenn Song-Format ungueltig
+		//Ein Song mit gueltigem ID wurde uebergeben. Pruefe ob Song gueltig (mit Titel ist):
+		if(song == null || song.getTitle() == null || (song.getTitle().trim()).isEmpty()) { 
+			System.out.println("Not valid prerequisite (title) for song");
 			return  Response.status(Response.Status.BAD_REQUEST)
 					.entity(Response.Status.BAD_REQUEST + ": Fail to updated Song").build();
 		}
 		
+		/*
+		 * Fall: Alles passt aber ID im Payload wurde vergessen
+		 */
+		if(song.getId() == null) {
+			song.setId(id); // Song braucht eine ID, sonst wird er mit der folgenden Anweisung mit ID==null gespeichert
+		}		
 		boolean updated = songsStorage.updateSong(id, song);
 		if(!updated) {
 			return Response.status(Response.Status.NOT_FOUND)
 					.entity(Response.Status.NOT_FOUND + ": Fail to updated Song").build();		
 		}
-		else {
-			return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Update successful.").build();
-		}
+		System.out.println("Update successful");			
+		return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Update successful.").build();
+	
 
 	}
 
