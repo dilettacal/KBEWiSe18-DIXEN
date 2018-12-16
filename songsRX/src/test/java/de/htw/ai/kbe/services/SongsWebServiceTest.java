@@ -27,6 +27,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 public class SongsWebServiceTest extends JerseyTest {
+	//works on linux
 
 	private static final String JSON_TITLE = "JSON title";
 	private static final String JSON_ARTIST = "JSON artist";
@@ -420,9 +421,13 @@ public class SongsWebServiceTest extends JerseyTest {
 	//UPDATE Wrong path
 	@Test
 	@Ignore
-	public void updateSongWithWrongPath() {
-		//XXX: This test leads to Socket Exception (Connection reset) while executing singularly or within the whole test class
-		//Bsp. rest/song/asd
+	public void updateSongWithWrongPathShouldReturn404() {
+		/*
+		 * Test rest/songs/asd (wrong Path)
+		 * This test leads in Windows to a SocketException. 
+		 * In Ubuntu it was tested 3 times and it was successful.
+		 * However it is set to Ignore to avoid Build Failures during the presentation
+		 */
 		Song testSong = new Song(); //No id set for testSong
 		testSong.setArtist(JSON_ARTIST);
 		testSong.setTitle(JSON_TITLE);
@@ -435,7 +440,7 @@ public class SongsWebServiceTest extends JerseyTest {
 
 	
 	@Test
-	public void updateSongWithWrongPayload() {
+	public void updateSongWithWrongPayloadShouldReturn400() {
 		//XXX: This test can lead to Socket Exception (Connection reset) while executing singularly or within the whole test class
 		Song testSong = new Song();
 		testSong.setAlbum("Ein Album");

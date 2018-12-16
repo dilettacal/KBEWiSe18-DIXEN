@@ -21,6 +21,8 @@ import de.htw.ai.kbe.storage.UserStorage;
 
 public class AuthWebServiceTest extends JerseyTest {
 
+	//Works on linux
+	
 	@Override
 	protected Application configure() {
 		return new ResourceConfig(AuthWebService.class).register(new AbstractBinder() {
