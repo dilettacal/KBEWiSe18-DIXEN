@@ -43,7 +43,6 @@ public class AuthWebService {
 					.build();
 		}
 		else {
-			//FIXME: Anfragen mit curl zeigen keinen Token an
 			return Response.status(Response.Status.OK).header(AUTHENTICATION_HEADER, token).entity(token).build();
 		}
 

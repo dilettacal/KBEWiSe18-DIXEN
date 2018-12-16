@@ -6,10 +6,7 @@ import java.io.InputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.BufferedInputStream;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,29 +38,19 @@ public class SongsStorage implements ISongs{
 		}
 	}
 
-
-	public SongsStorage(Song[] songs) {
-		storage = new ConcurrentHashMap<Integer, Song>();
-		if(songs == null) {
-			initSomeSongs();
-		} else {
-			Arrays.sort(songs); //id aufsteigend, es gab 1 problem in den Tests
-			for(Song s: songs) {
-				storage.put(s.getId(), s);
-			}
-		}
-	}
 	private boolean initSongsFromFile(List<Song> songsFromJsonFile) {
 		if(songsFromJsonFile == null){
-			//TODO: Songs anderswie initialisieren --> FIXED: false + ein paar Songs manuell hingefuegt
 			return false;
 		}
 		else {
 			for (Song s: songsFromJsonFile) {
 				if(s.getTitle() != null && !(s.getTitle().trim()).isEmpty())
+					//addSong(song) only for POST-Requests, here song is added directly
 					storage.put(s.getId(), s);
 			}
+			//Keeps track of the number of songs in the DB
 			int valuesDB = (int) storage.keySet().stream().count();
+			//initializes lastID as AtomicInteger
 			lastID = new AtomicInteger(valuesDB);
 			return true;
 		}	
@@ -75,6 +62,11 @@ public class SongsStorage implements ISongs{
 		
 		Song song2 = new Song.Builder("Song 2").album("Keine Ahnung").artist("A singer").released(1900).build();
 		storage.put(2, song2);	
+		
+		//Keeps track of the number of songs in DB
+		int valuesDB = (int) storage.keySet().stream().count();
+		//initializes lastID as AtomicInteger
+		lastID = new AtomicInteger(valuesDB);
 	}
 	
 	@SuppressWarnings("unchecked")

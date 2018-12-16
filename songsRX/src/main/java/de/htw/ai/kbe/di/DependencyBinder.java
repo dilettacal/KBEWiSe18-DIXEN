@@ -15,7 +15,7 @@ public class DependencyBinder extends AbstractBinder {
 
 	@Override
 	protected void configure() {
-		//FIXME: Nach Auth-Implementierung geht DI schief		
+		
 		bind(SongsStorage.class).to(ISongs.class).in(Singleton.class);
 		bind(UserStorage.class).to(IUser.class); //.in(Singleton.class);
 		bind(AuthTokenStorage.class).to(IAuth.class).in(Singleton.class);

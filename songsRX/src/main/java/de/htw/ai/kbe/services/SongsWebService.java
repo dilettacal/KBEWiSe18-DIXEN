@@ -3,7 +3,6 @@ package de.htw.ai.kbe.services;
 import java.util.Collection;
 
 import javax.inject.Inject;
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -80,6 +79,11 @@ public class SongsWebService {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response createSong(Song song, @HeaderParam("Authorization") String key) {
 
+		if(!(song instanceof Song)) {
+			return Response.status(Response.Status.BAD_REQUEST)
+					.entity(Response.Status.BAD_REQUEST + "Payload is malformed. Please provide a valid song").build();
+		}
+		
 		Integer newID = songsStorage.addSong(song);
 		
 		if(newID == null) {
@@ -103,7 +107,10 @@ public class SongsWebService {
 
 		//System.out.println("Update with song: " + song);
 		
-		
+		if(!(song instanceof Song)) {
+			return Response.status(Response.Status.BAD_REQUEST)
+					.entity(Response.Status.BAD_REQUEST + "Payload is malformed. Please provide a valid song").build();
+		}
 		
 		/*
 		 * Fall: Beide IDs sind uebergeben, aber sie stimmen nicht ueberein
@@ -118,7 +125,7 @@ public class SongsWebService {
 		}
 		
 		//Ein Song mit gueltigem ID wurde uebergeben. Pruefe ob Song gueltig (mit Titel ist):
-		if(song == null || song.getTitle() == null || (song.getTitle().trim()).isEmpty()) { 
+		if(song.getTitle() == null || (song.getTitle().trim()).isEmpty()) { 
 			System.out.println("Not valid prerequisite (title) for song");
 			return  Response.status(Response.Status.BAD_REQUEST)
 					.entity(Response.Status.BAD_REQUEST + ": Fail to updated Song").build();

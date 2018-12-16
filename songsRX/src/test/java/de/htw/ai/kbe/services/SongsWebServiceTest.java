@@ -14,6 +14,12 @@ import de.htw.ai.kbe.storage.SongsStorage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import javax.inject.Singleton;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
@@ -55,10 +61,10 @@ public class SongsWebServiceTest extends JerseyTest {
 		Song songBeforeUpdate = target("/songs/" + idToChange).request(MediaType.APPLICATION_JSON).get(Song.class);
 		System.out.println(songBeforeUpdate);
 		// First song ist the first song in the songs.json file
-		assertTrue(songBeforeUpdate.getArtist().equalsIgnoreCase("Lukas Graham"));
-		assertTrue(songBeforeUpdate.getAlbum().equalsIgnoreCase("Lukas Graham (Blue Album)"));
-		assertTrue(songBeforeUpdate.getReleased() == 2015);
-		assertTrue(songBeforeUpdate.getTitle().equalsIgnoreCase(("7 Years")));
+		assertTrue(songBeforeUpdate.getArtist().equalsIgnoreCase("Justin Timberlake"));
+		assertTrue(songBeforeUpdate.getAlbum().equalsIgnoreCase("Trolls"));
+		assertTrue(songBeforeUpdate.getReleased() == 2016);
+		assertTrue(songBeforeUpdate.getTitle().contains(("Stop the Feeling")));
 
 		Song newSong = new Song.Builder(JSON_TITLE).artist(JSON_ARTIST).album(JSON_ALBUM).released(JSON_RELEASED)
 				.id(idToChange).build();
@@ -86,10 +92,10 @@ public class SongsWebServiceTest extends JerseyTest {
 
 		// the original song
 		Song songBeforeUpdate = target("/songs/" + idToChange).request(MediaType.APPLICATION_JSON).get(Song.class);
-		assertTrue(songBeforeUpdate.getArtist().equalsIgnoreCase("Lukas Graham"));
-		assertTrue(songBeforeUpdate.getAlbum().equalsIgnoreCase("Lukas Graham (Blue Album)"));
-		assertTrue(songBeforeUpdate.getReleased() == 2015);
-		assertTrue(songBeforeUpdate.getTitle().equalsIgnoreCase(("7 Years")));
+		assertTrue(songBeforeUpdate.getArtist().equalsIgnoreCase("Justin Timberlake"));
+		assertTrue(songBeforeUpdate.getAlbum().equalsIgnoreCase("Trolls"));
+		assertTrue(songBeforeUpdate.getReleased() == 2016);
+		assertTrue(songBeforeUpdate.getTitle().contains(("Stop the Feeling")));
 
 		Song newSong = new Song.Builder(XML_TITLE).artist(XML_ARTIST).album(XML_ALBUM).released(XML_RELEASED)
 				.id(idToChange).build();
@@ -121,10 +127,10 @@ public class SongsWebServiceTest extends JerseyTest {
 		// the original song
 		Song songBeforeUpdate = target("/songs/" + idToChange).request(MediaType.APPLICATION_JSON).get(Song.class);
 		System.out.println(songBeforeUpdate);
-		assertTrue(songBeforeUpdate.getArtist().equalsIgnoreCase("Britney Spears"));
-		assertTrue(songBeforeUpdate.getAlbum().equalsIgnoreCase("Glory"));
+		assertTrue(songBeforeUpdate.getArtist().equalsIgnoreCase("Meghan Trainor, Kelli Trainor"));
+		assertTrue(songBeforeUpdate.getAlbum().equalsIgnoreCase("Thank You"));
 		assertTrue(songBeforeUpdate.getReleased() == 2016);
-		assertTrue(songBeforeUpdate.getTitle().equalsIgnoreCase(("Private Show")));
+		assertTrue(songBeforeUpdate.getTitle().equalsIgnoreCase(("Mom")));
 
 		Song newSong = new Song.Builder(JSON_TITLE).id(idToChange).build();
 
@@ -151,10 +157,10 @@ public class SongsWebServiceTest extends JerseyTest {
 		// the original song
 		Song songBeforeUpdate = target("/songs/" + idToChange).request(MediaType.APPLICATION_JSON).get(Song.class);
 		System.out.println(songBeforeUpdate);
-		assertTrue(songBeforeUpdate.getArtist().equalsIgnoreCase("Britney Spears"));
-		assertTrue(songBeforeUpdate.getAlbum().equalsIgnoreCase("Glory"));
+		assertTrue(songBeforeUpdate.getArtist().equalsIgnoreCase("Meghan Trainor, Kelli Trainor"));
+		assertTrue(songBeforeUpdate.getAlbum().equalsIgnoreCase("Thank You"));
 		assertTrue(songBeforeUpdate.getReleased() == 2016);
-		assertTrue(songBeforeUpdate.getTitle().equalsIgnoreCase(("Private Show")));
+		assertTrue(songBeforeUpdate.getTitle().equalsIgnoreCase(("Mom")));
 
 		Song newSong = new Song.Builder(XML_TITLE).id(idToChange).build();
 
@@ -208,10 +214,10 @@ public class SongsWebServiceTest extends JerseyTest {
 		int dbValidID = 2;
 		Song songBeforeUpdate = target("/songs/" + dbValidID).request(MediaType.APPLICATION_JSON).get(Song.class);
 		System.out.println(songBeforeUpdate);
-		assertTrue(songBeforeUpdate.getArtist().equalsIgnoreCase("Britney Spears"));
-		assertTrue(songBeforeUpdate.getAlbum().equalsIgnoreCase("Glory"));
+		assertTrue(songBeforeUpdate.getArtist().equalsIgnoreCase("Meghan Trainor, Kelli Trainor"));
+		assertTrue(songBeforeUpdate.getAlbum().equalsIgnoreCase("Thank You"));
 		assertTrue(songBeforeUpdate.getReleased() == 2016);
-		assertTrue(songBeforeUpdate.getTitle().equalsIgnoreCase(("Private Show")));
+		assertTrue(songBeforeUpdate.getTitle().equalsIgnoreCase(("Mom")));
 		
 		Song testSong = new Song();
 		testSong.setId(10); //10 in Body
@@ -227,10 +233,10 @@ public class SongsWebServiceTest extends JerseyTest {
 		
 		Song songAfterUpdate = target("/songs/" + dbValidID).request(MediaType.APPLICATION_JSON).get(Song.class);
 		//Nothing happened
-		assertTrue(songAfterUpdate.getArtist().equalsIgnoreCase("Britney Spears"));
-		assertTrue(songAfterUpdate.getAlbum().equalsIgnoreCase("Glory"));
+		assertTrue(songAfterUpdate.getArtist().equalsIgnoreCase("Meghan Trainor, Kelli Trainor"));
+		assertTrue(songAfterUpdate.getAlbum().equalsIgnoreCase("Thank You"));
 		assertTrue(songAfterUpdate.getReleased() == 2016);
-		assertTrue(songAfterUpdate.getTitle().equalsIgnoreCase(("Private Show")));
+		assertTrue(songAfterUpdate.getTitle().equalsIgnoreCase(("Mom")));
 		
 	}
 
@@ -241,10 +247,10 @@ public class SongsWebServiceTest extends JerseyTest {
 		int dbValidID = 2;
 		Song songBeforeUpdate = target("/songs/" + dbValidID).request(MediaType.APPLICATION_JSON).get(Song.class);
 		System.out.println(songBeforeUpdate);
-		assertTrue(songBeforeUpdate.getArtist().equalsIgnoreCase("Britney Spears"));
-		assertTrue(songBeforeUpdate.getAlbum().equalsIgnoreCase("Glory"));
+		assertTrue(songBeforeUpdate.getArtist().equalsIgnoreCase("Meghan Trainor, Kelli Trainor"));
+		assertTrue(songBeforeUpdate.getAlbum().equalsIgnoreCase("Thank You"));
 		assertTrue(songBeforeUpdate.getReleased() == 2016);
-		assertTrue(songBeforeUpdate.getTitle().equalsIgnoreCase(("Private Show")));
+		assertTrue(songBeforeUpdate.getTitle().equalsIgnoreCase(("Mom")));
 		
 		Song testSong = new Song();
 		testSong.setId(1);
@@ -259,10 +265,10 @@ public class SongsWebServiceTest extends JerseyTest {
 		
 		Song songAfterUpdate = target("/songs/" + dbValidID).request(MediaType.APPLICATION_JSON).get(Song.class);
 		//Nothing happened
-		assertTrue(songAfterUpdate.getArtist().equalsIgnoreCase("Britney Spears"));
-		assertTrue(songAfterUpdate.getAlbum().equalsIgnoreCase("Glory"));
+		assertTrue(songAfterUpdate.getArtist().equalsIgnoreCase("Meghan Trainor, Kelli Trainor"));
+		assertTrue(songAfterUpdate.getAlbum().equalsIgnoreCase("Thank You"));
 		assertTrue(songAfterUpdate.getReleased() == 2016);
-		assertTrue(songAfterUpdate.getTitle().equalsIgnoreCase(("Private Show")));
+		assertTrue(songAfterUpdate.getTitle().equalsIgnoreCase(("Mom")));
 		
 	}
 	
@@ -272,10 +278,10 @@ public class SongsWebServiceTest extends JerseyTest {
 		int dbValidID = 2;
 		Song songBeforeUpdate = target("/songs/" + dbValidID).request(MediaType.APPLICATION_JSON).get(Song.class);
 		System.out.println(songBeforeUpdate);
-		assertTrue(songBeforeUpdate.getArtist().equalsIgnoreCase("Britney Spears"));
-		assertTrue(songBeforeUpdate.getAlbum().equalsIgnoreCase("Glory"));
+		assertTrue(songBeforeUpdate.getArtist().equalsIgnoreCase("Meghan Trainor, Kelli Trainor"));
+		assertTrue(songBeforeUpdate.getAlbum().equalsIgnoreCase("Thank You"));
 		assertTrue(songBeforeUpdate.getReleased() == 2016);
-		assertTrue(songBeforeUpdate.getTitle().equalsIgnoreCase(("Private Show")));
+		assertTrue(songBeforeUpdate.getTitle().equalsIgnoreCase(("Mom")));
 		
 		Song testSong = new Song(); //No id set for testSong
 		testSong.setArtist(JSON_ARTIST);
@@ -304,10 +310,10 @@ public class SongsWebServiceTest extends JerseyTest {
 		int dbValidID = 2;
 		Song songBeforeUpdate = target("/songs/" + dbValidID).request(MediaType.APPLICATION_JSON).get(Song.class);
 		System.out.println(songBeforeUpdate);
-		assertTrue(songBeforeUpdate.getArtist().equalsIgnoreCase("Britney Spears"));
-		assertTrue(songBeforeUpdate.getAlbum().equalsIgnoreCase("Glory"));
+		assertTrue(songBeforeUpdate.getArtist().equalsIgnoreCase("Meghan Trainor, Kelli Trainor"));
+		assertTrue(songBeforeUpdate.getAlbum().equalsIgnoreCase("Thank You"));
 		assertTrue(songBeforeUpdate.getReleased() == 2016);
-		assertTrue(songBeforeUpdate.getTitle().equalsIgnoreCase(("Private Show")));
+		assertTrue(songBeforeUpdate.getTitle().equalsIgnoreCase(("Mom")));
 		
 		Song testSong = new Song(); //No id set for testSong
 		testSong.setArtist(XML_ARTIST);
@@ -329,6 +335,88 @@ public class SongsWebServiceTest extends JerseyTest {
 		assertTrue(songAfterUpdate.getTitle().equalsIgnoreCase((XML_TITLE)));
 	}
 	
+	@Test
+	public void updateSongWithNotValidTextPayloadShouldReturnBadRequest400JSON() {
+		String content = null;
+		ClassLoader classLoader = getClass().getClassLoader();
+		Path pathToFile = null;
+		try {
+			pathToFile = Paths.get(classLoader.getResource("payload/notValidSong.txt").toURI());
+		} catch (URISyntaxException e1) {
+			System.out.println(e1.getMessage());
+		}
+		try {
+			content = new String(Files.readAllBytes(pathToFile));
+			System.out.println("Content: " + content);
+		} catch (IOException e) {
+			content = "Not valid song"; //default value
+		}
+		Response JSONresponse = target("/songs/1").request().header("authorization", "testToken").put(Entity.json(content));
+		Assert.assertEquals(400, JSONresponse.getStatus());
+	}
+	
+	@Test
+	public void updateSongWithNotValidTextPayloadShouldReturnBadRequest400XML() {
+		String content = null;
+		ClassLoader classLoader = getClass().getClassLoader();
+		Path pathToFile = null;
+		try {
+			pathToFile = Paths.get(classLoader.getResource("payload/notValidSong.txt").toURI());
+		} catch (URISyntaxException e1) {
+			System.out.println(e1.getMessage());
+		}
+		try {
+			content = new String(Files.readAllBytes(pathToFile));
+			System.out.println("Content: " + content);
+		} catch (IOException e) {
+			content = "Not valid song"; //default value
+		}
+		Response XMLResponse = target("/songs/1").request().header("authorization", "testToken").put(Entity.xml(content));
+		Assert.assertEquals(400, XMLResponse.getStatus());
+	}
+	
+	@Test
+	public void testEmptyPayloadShouldReturn400BadRequestJSON() {
+		String content = null;
+		ClassLoader classLoader = getClass().getClassLoader();
+		Path pathToFile = null;
+		try {
+			pathToFile = Paths.get(classLoader.getResource("payload/empty.txt").toURI());
+		} catch (URISyntaxException e1) {
+			System.out.println(e1.getMessage());
+		}
+		try {
+			content = new String(Files.readAllBytes(pathToFile));
+			System.out.println("Content: " + content);
+		} catch (IOException e) {
+			content = "";
+		}
+		
+		Response JSONresponse = target("/songs/1").request().header("authorization", "testToken").put(Entity.json(content));
+		Assert.assertEquals(400, JSONresponse.getStatus());
+	}
+	
+	@Test
+	public void testEmptyPayloadShouldReturn400BadRequestXML() {
+		String content = null;
+		ClassLoader classLoader = getClass().getClassLoader();
+		Path pathToFile = null;
+		try {
+			pathToFile = Paths.get(classLoader.getResource("payload/empty.txt").toURI());
+		} catch (URISyntaxException e1) {
+			System.out.println(e1.getMessage());
+		}
+		try {
+			content = new String(Files.readAllBytes(pathToFile));
+			System.out.println("Content: " + content);
+		} catch (IOException e) {
+			content = "";
+		}
+		
+		Response XMLresponse = target("/songs/1").request().header("authorization", "testToken").put(Entity.xml(content));
+		Assert.assertEquals(400, XMLresponse.getStatus());
+	}
+	
 	//UPDATE Wrong path
 	@Test
 	@Ignore
@@ -347,18 +435,17 @@ public class SongsWebServiceTest extends JerseyTest {
 
 	
 	@Test
-	@Ignore
 	public void updateSongWithWrongPayload() {
-		//XXX: This test leads to Socket Exception (Connection reset) while executing singularly or within the whole test class
+		//XXX: This test can lead to Socket Exception (Connection reset) while executing singularly or within the whole test class
 		Song testSong = new Song();
 		testSong.setAlbum("Ein Album");
-		Response response = target("/songs/asd").request().header("authorization", "testToken").put(Entity.json(testSong));
+		Response response = target("/songs/1").request().header("authorization", "testToken").put(Entity.json(testSong));
 		System.out.println(response.getStatus());
-		Assert.assertEquals(404, response.getStatus());
+		Assert.assertEquals(400, response.getStatus());
 		
-		response = target("/songs/asd").request().header("authorization", "testToken").put(Entity.xml(testSong));
+		response = target("/songs/1").request().header("authorization", "testToken").put(Entity.xml(testSong));
 		System.out.println(response.getStatus());
-		Assert.assertEquals(404, response.getStatus());
+		Assert.assertEquals(400, response.getStatus());
 	}
 	
 }
