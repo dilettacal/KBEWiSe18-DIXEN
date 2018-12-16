@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +23,7 @@ import de.htw.ai.kbe.bean.Song;
 public class SongsStorage implements ISongs{
 	
 	private Map<Integer, Song> storage;
+	private AtomicInteger lastID;
 	
 	public SongsStorage() {
 		storage = new ConcurrentHashMap<Integer, Song>();
@@ -59,8 +61,10 @@ public class SongsStorage implements ISongs{
 		else {
 			for (Song s: songsFromJsonFile) {
 				if(s.getTitle() != null && !(s.getTitle().trim()).isEmpty())
-					addSong(s);
+					storage.put(s.getId(), s);
 			}
+			int valuesDB = (int) storage.keySet().stream().count();
+			lastID = new AtomicInteger(valuesDB);
 			return true;
 		}	
 	}
@@ -99,7 +103,9 @@ public class SongsStorage implements ISongs{
 	@Override
 	public synchronized Integer addSong(Song song) {
 		if(song.getTitle() != null && !(song.getTitle().trim()).isEmpty()) {
-			song.setId((int) storage.keySet().stream().count()+1);
+			int newID = lastID.incrementAndGet();
+			System.out.println("Neues ID: " + newID);
+			song.setId(newID);
 			storage.put(song.getId(), song);
 			//liefert neu vergebene ID zurueck
 			return song.getId();
