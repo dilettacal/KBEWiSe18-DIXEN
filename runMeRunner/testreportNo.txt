@@ -1,0 +1,10 @@
+Methodennamen ohne @RunMe: 
+
+Methodennamen mit @RunMe: 
+myMethod
+
+Nicht-invokierbare Methoden mit @RunMe: 
+
+myMethod: InvocationTargetException <- java.lang.NullPointerException
+
+
