@@ -32,7 +32,6 @@ local.properties
 .loadpath
 .recommenders
 
-
 ### Eclipse Patch ###
 # Eclipse Core
 .project
