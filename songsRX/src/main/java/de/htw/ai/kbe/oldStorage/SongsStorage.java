@@ -6,11 +6,12 @@ import java.io.InputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.BufferedInputStream;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -84,17 +85,17 @@ public class SongsStorage implements ISongs{
 
 
 	@Override
-	public synchronized Song getSong(Integer id) {
+	public synchronized Song getSongById(int id) {
 		return storage.get(id);
 	}
 
 	@Override
-	public synchronized Collection<Song> getAllSongs() {
-		return storage.values();
+	public synchronized List<Song> getAllSongs() {
+		return storage.values().stream().collect(Collectors.toList());
 	}
 
 	@Override
-	public synchronized Integer addSong(Song song) {
+	public synchronized int addSong(Song song) {
 		if(song.getTitle() != null && !(song.getTitle().trim()).isEmpty()) {
 			int newID = lastID.incrementAndGet();
 			System.out.println("Neues ID: " + newID);
@@ -104,11 +105,11 @@ public class SongsStorage implements ISongs{
 			return song.getId();
 		}
 		else
-			return null;
+			return -1;
 	}
 
 	@Override
-	public synchronized boolean updateSong(Integer id, Song song) {
+	public synchronized boolean updateLocalSong(Integer id, Song song) {
 		Song oldSong = storage.get(id);
 		if(oldSong != null && song.getTitle() != null && !(song.getTitle().trim()).isEmpty()) {
 			song.setId(oldSong.getId());
@@ -119,8 +120,18 @@ public class SongsStorage implements ISongs{
 	}
 
 	@Override
-	public synchronized Song deleteSong(Integer id) {
-		return storage.remove(id);
+	public synchronized void deleteSong(int id) {
+		storage.remove(id);
+	}
+
+	@Override
+	public void updateSong(Song song) {
+		return;
+	}
+
+	@Override
+	public Song getSongByTitle(String title) throws NoSuchElementException {
+		return (Song) storage.values().stream().filter(s -> s.getTitle().equals(title)).toArray()[0];
 	}
 
 }

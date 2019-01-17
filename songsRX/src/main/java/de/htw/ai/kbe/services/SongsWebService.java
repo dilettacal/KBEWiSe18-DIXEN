@@ -63,7 +63,7 @@ public class SongsWebService {
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response getSong(@PathParam("id") Integer id, @HeaderParam("Authorization") String key) {
-		Song song = songsStorage.getSong(id);
+		Song song = songsStorage.getSongById(id);
 		if(song == null) {
 			return Response.status(Response.Status.NOT_FOUND).entity(Response.Status.NOT_FOUND + ": No song found with id " + id).build();
 		}			
@@ -137,7 +137,7 @@ public class SongsWebService {
 		if(song.getId() == null) {
 			song.setId(id); // Song braucht eine ID, sonst wird er mit der folgenden Anweisung mit ID==null gespeichert
 		}		
-		boolean updated = songsStorage.updateSong(id, song);
+		boolean updated = songsStorage.updateLocalSong(id, song);
 		if(!updated) {
 			return Response.status(Response.Status.NOT_FOUND)
 					.entity(Response.Status.NOT_FOUND + ": Fail to updated Song").build();		
