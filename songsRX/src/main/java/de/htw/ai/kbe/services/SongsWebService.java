@@ -106,6 +106,7 @@ public class SongsWebService {
 		// System.out.println("Update with song: " + song);
 
 		if (!(song instanceof Song)) {
+			System.out.println("Song is not valid");
 			return Response.status(Response.Status.BAD_REQUEST)
 					.entity(Response.Status.BAD_REQUEST + "Payload is malformed. Please provide a valid song").build();
 		}
@@ -116,7 +117,8 @@ public class SongsWebService {
 		 * Fall ab, dass PUT-Anfrage gueltig (rest/songs/1) aber Benutzer hat ID im Body
 		 * gesetzt (z.B. 2) [song.getId() != null]
 		 */
-		if (!id.equals(song.getId()) && song.getId() != null) {
+		//Beleg 3: !id.equals(song.getId()) && song.getId() != null
+		if (!id.equals(song.getId()) && song.getId() != 0) { 
 			System.out.println("Different IDs");
 			return Response.status(Response.Status.BAD_REQUEST).entity("ID does not correspond to ID in payload ")
 					.build();
@@ -134,6 +136,7 @@ public class SongsWebService {
 		 * Fall: Alles passt aber ID im Payload wurde vergessen
 		 */
 		if (song.getId() == null) {
+			System.out.println("Song ID in payload is null");
 			song.setId(id); // Song braucht eine ID, sonst wird er mit der folgenden Anweisung mit ID==null
 							// gespeichert
 		}
