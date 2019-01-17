@@ -25,7 +25,7 @@ public class AuthTokenStorage implements IAuth {
 	@Override
 	public synchronized String authenticate(String userId) {
 		User user = null;
-		user = userStorage.getUser(userId);
+		user = userStorage.getUserByStringID(userId);
 		// userStorage.getAllUsers().forEach(u -> System.out.println(u)); //Test -
 		// enthaelt nur 2 User
 		if (user != null) {
