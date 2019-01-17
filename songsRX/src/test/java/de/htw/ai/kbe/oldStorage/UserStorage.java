@@ -34,7 +34,7 @@ public class UserStorage implements IUser{
 	}
 
 	@Override
-	public User getUser(String userID) {
+	public User getUserByUserId(String userID) {
 		for(User u: storage.values()) {
 			if(u.getId().equals(userID))
 				return u;

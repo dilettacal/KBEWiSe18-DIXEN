@@ -12,10 +12,10 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.htw.ai.kbe.database.interfaces.IAuth;
 import de.htw.ai.kbe.database.interfaces.ISongs;
 import de.htw.ai.kbe.database.interfaces.IUser;
-import de.htw.ai.kbe.filter.AuthTokenStorage;
-import de.htw.ai.kbe.filter.IAuth;
+import de.htw.ai.kbe.oldStorage.AuthTokenStorage;
 import de.htw.ai.kbe.oldStorage.SongsStorage;
 import de.htw.ai.kbe.oldStorage.UserStorage;
 

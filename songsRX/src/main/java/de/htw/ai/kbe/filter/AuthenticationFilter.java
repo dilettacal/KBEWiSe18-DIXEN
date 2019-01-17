@@ -7,6 +7,8 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
 
+import de.htw.ai.kbe.database.interfaces.IAuth;
+
 @Provider
 public class AuthenticationFilter implements ContainerRequestFilter {
 	

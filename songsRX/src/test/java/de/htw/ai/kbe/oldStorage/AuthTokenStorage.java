@@ -1,13 +1,15 @@
-package de.htw.ai.kbe.filter;
+package de.htw.ai.kbe.oldStorage;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.ws.rs.NotFoundException;
 
+import de.htw.ai.kbe.bean.Token;
 import de.htw.ai.kbe.bean.User;
+import de.htw.ai.kbe.database.interfaces.IAuth;
 import de.htw.ai.kbe.database.interfaces.IUser;
 
 public class AuthTokenStorage implements IAuth {
@@ -25,7 +27,7 @@ public class AuthTokenStorage implements IAuth {
 	@Override
 	public synchronized String authenticate(String userId) {
 		User user = null;
-		user = userStorage.getUser(userId);
+		user = userStorage.getUserByUserId(userId);
 		//userStorage.getAllUsers().forEach(u -> System.out.println(u)); //Test - enthaelt nur 2 User
 		if(user != null) {
 			String token = generateToken();
@@ -46,5 +48,22 @@ public class AuthTokenStorage implements IAuth {
 		key = key.replaceAll("-", "");
 		return key;
 	}
+
+	@Override
+	public Token findTokenByUser(User user) throws NotFoundException {
+		throw new NotFoundException();
+	}
+
+	@Override
+	public void saveToken(Token token) {
+		return;
+	}
+
+	@Override
+	public void updateToken(Token token) {
+		return;		
+	}
+
+
 
 }

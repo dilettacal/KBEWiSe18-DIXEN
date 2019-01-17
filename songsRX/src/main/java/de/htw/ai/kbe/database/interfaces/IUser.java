@@ -6,7 +6,7 @@ import de.htw.ai.kbe.bean.User;
 
 public interface IUser {
 	
-	public User getUser(String userID);
+	public User getUserByUserId(String userID);
 	public Collection<User> getAllUsers();
 	//public boolean setAuthetificationKey();
 
