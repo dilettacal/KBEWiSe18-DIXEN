@@ -1,4 +1,4 @@
-package de.htw.ai.kbe.storage;
+package de.htw.ai.kbe.database.interfaces;
 
 import java.util.Collection;
 import java.util.List;

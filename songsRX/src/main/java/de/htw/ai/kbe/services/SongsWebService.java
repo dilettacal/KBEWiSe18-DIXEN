@@ -21,7 +21,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import de.htw.ai.kbe.bean.Song;
-import de.htw.ai.kbe.storage.ISongs;
+import de.htw.ai.kbe.database.interfaces.ISongs;
 
 /**
  * 
@@ -119,7 +119,8 @@ public class SongsWebService {
 		 * deckt den Fall ab, dass PUT-Anfrage gueltig (rest/songs/1) 
 		 * aber Benutzer hat ID im Body gesetzt (z.B. 2) [song.getId() != null]
 		 */
-		if(!id.equals(song.getId()) && song.getId() != null) {
+		//Beleg 3: !id.equals(song.getId()) && song.getId() != null
+		if (!id.equals(song.getId()) && song.getId() != 0) { 
 			System.out.println("Different IDs");
 			return  Response.status(Response.Status.BAD_REQUEST)
 					.entity("ID does not correspond to ID in payload ").build();

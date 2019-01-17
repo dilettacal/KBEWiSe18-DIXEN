@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.htw.ai.kbe.bean.Song;
+import de.htw.ai.kbe.database.interfaces.ISongs;
 
 public class SongsStorage implements ISongs{
 	

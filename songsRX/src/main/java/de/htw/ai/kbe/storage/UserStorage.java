@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import de.htw.ai.kbe.bean.User;
+import de.htw.ai.kbe.database.interfaces.IUser;
 
 public class UserStorage implements IUser{
 	
