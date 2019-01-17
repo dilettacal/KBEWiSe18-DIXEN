@@ -18,11 +18,11 @@ public class UserStorage implements IUser{
 
 	private void initUserDB() {
 		User user1 = new User.Builder("mmuster").firstName("Maxime").lastName("Muster").build();
-		user1.setId(1);
-		storage.put(user1.getId(), user1);
+		user1.setLocalID(1);
+		storage.put(user1.getLocalID(), user1);
 		User user2 = new User.Builder("eschuler").firstName("Elena").lastName("Schuler").build();
-		user2.setId(2);
-		storage.put(user2.getId(), user2);
+		user2.setLocalID(2);
+		storage.put(user1.getLocalID(), user2);
 		
 	}
 	
@@ -35,7 +35,7 @@ public class UserStorage implements IUser{
 	@Override
 	public User getUser(String userID) {
 		for(User u: storage.values()) {
-			if(u.getUserID().equals(userID))
+			if(u.getId().equals(userID))
 				return u;
 		}
 		return null;
