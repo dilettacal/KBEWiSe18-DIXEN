@@ -19,11 +19,17 @@ public interface IAuth {
 	//This method finds the token corresponding to the user
 	public Token findTokenByUser(User user) throws NotFoundException;
 	
+	public User findUserByToken(String token);
+	
+	//From token string 
+	public Token findToken(String token);
+	
 	//THis method persists the token in the DB
 	public void saveToken(Token token);
 	
 	//This method updates an existing token in the DB
 	public void updateToken(Token token);
+	
 	
 	
 

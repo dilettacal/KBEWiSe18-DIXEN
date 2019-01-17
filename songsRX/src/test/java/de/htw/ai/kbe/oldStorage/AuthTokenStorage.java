@@ -65,6 +65,19 @@ public class AuthTokenStorage implements IAuth {
 		return;		
 	}
 
+	@Override
+	public User findUserByToken(String token) {
+		String userId = userToken.get(token);
+		User u = new User();
+		u.setId(userId);
+		return u;
+	}
+
+	@Override
+	public Token findToken(String token) {
+		return null;
+	}
+
 
 
 }

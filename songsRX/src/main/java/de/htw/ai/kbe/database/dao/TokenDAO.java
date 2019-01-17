@@ -79,4 +79,37 @@ public class TokenDAO implements IAuth{
 			em.close();
 		}
 	}
+
+
+	@Override
+	public Token findToken(String token) {
+		EntityManager em = emf.createEntityManager();
+		try {
+			Query q = em.createQuery("SELECT t FROM Token t WHERE t.token = :token");
+			q.setParameter("token", token);
+			try {
+				return (Token) q.getSingleResult();
+			} catch (NoResultException e) {
+				return null;
+			}
+		} finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public User findUserByToken(String token) {
+		EntityManager em = emf.createEntityManager();
+		try {
+			Query q = em.createQuery("SELECT t.user FROM Token t WHERE t.token = :token");
+			q.setParameter("token", token);
+			try {
+				return (User) q.getSingleResult();
+			} catch (NoResultException e) {
+				return null;
+			}
+		} finally {
+			em.close();
+		}
+	}
 }
