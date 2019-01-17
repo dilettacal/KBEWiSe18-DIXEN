@@ -31,6 +31,7 @@ public class AuthTokenStorage implements IAuth {
 		//userStorage.getAllUsers().forEach(u -> System.out.println(u)); //Test - enthaelt nur 2 User
 		if(user != null) {
 			String token = generateToken();
+			System.out.println("Generated token: " + token);
 			userToken.put(userId, token);
 			System.out.println(userToken.get(userId)); //Als Test, dass Token mit entsprechendem userId gespeichert wurde
 			return token;

@@ -40,12 +40,12 @@ public class AuthWebServiceTest extends JerseyTest {
 	//rest/auth?userId=mmuster --> 200 and token
 	@Test
 	public void getWithvalidUserIdToAuthShouldReturn200AndAToken() {
-		Response response = target("/auth").queryParam("userId", "mmuster").request().get();
+		String validUser = "eschuler";
+		Response response = target("/auth").queryParam("userId", validUser).request().get();
 		System.out.println(response.getStatus());
 		Assert.assertEquals(200, response.getStatus());
 		String token = response.readEntity(String.class);
 		assertNotNull(token);
-		System.out.println(token);
 	}
 
 	
