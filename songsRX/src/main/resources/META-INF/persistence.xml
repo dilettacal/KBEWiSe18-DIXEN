@@ -1,130 +1,42 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	version="2.0">
 
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>de.htw.ai.kbe</groupId>
-	<artifactId>songsRX</artifactId>
-	<packaging>war</packaging>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>songsRX</name>
-	<url>http://maven.apache.org</url>
+	<persistence-unit name="song-persistence"
+		transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-	<!-- For tomcat8-maven-plugin -->
-	<repositories>
-		<repository>
-			<id>alfresco</id>
-			<name>alfresco</name>
-			<url>https://artifacts.alfresco.com/nexus/content/repositories/public/</url>
-		</repository>
-	</repositories>
+		<class>de.htw.ai.kbe.bean.Song</class>
+		<class>de.htw.ai.kbe.bean.SongList</class>
+		<class>de.htw.ai.kbe.bean.User</class>
+		<class>de.htw.ai.kbe.bean.Token</class>
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>alfresco</id>
-			<name>alfresco</name>
-			<url>https://artifacts.alfresco.com/nexus/content/repositories/public/</url>
-		</pluginRepository>
-	</pluginRepositories>
+		<properties>
+			<property name="javax.persistence.jdbc.user"
+				value="s0559842" />
+			<property name="javax.persistence.jdbc.password"
+				value="kbedixen" />
 
-	<dependencies>
-		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>javax.ws.rs-api</artifactId>
-			<version>2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.containers</groupId>
-			<artifactId>jersey-container-servlet</artifactId>
-			<version>2.26</version>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.core</groupId>
-			<artifactId>jersey-server</artifactId>
-			<version>2.26</version>
-		</dependency>
-		<dependency>
-			<!-- For Dependency injection -->
-			<groupId>org.glassfish.jersey.inject</groupId>
-			<artifactId>jersey-hk2</artifactId>
-			<version>2.26</version>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.core</groupId>
-			<artifactId>jersey-client</artifactId>
-			<version>2.26</version>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.media</groupId>
-			<artifactId>jersey-media-json-jackson</artifactId>
-			<version>2.26</version>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.test-framework.providers</groupId>
-			<artifactId>jersey-test-framework-provider-jdk-http</artifactId>
-			<version>2.26</version>
-		</dependency>
-		<!-- Persistence for Java -->
-		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.1-api</artifactId>
-			<version>1.0.0.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>5.2.12.Final</version>
-		</dependency>
-		<!-- Vorlesungstipp - Connection pool -->
-			<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-c3p0</artifactId>
-			<version>5.2.12.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.39 </version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>2.18.3</version>
-			<scope>test</scope>
-		</dependency>
-		<!-- Tests -->
-		<dependency>
-			<groupId>org.hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<version>2.4.0</version>
-			<scope>test</scope>
-</dependency>
-	</dependencies>
+			<!--Hibernate properties -->
+			<property
+				name="hibernate.hbm2ddl.import_files_sql_extractor"
+				value="org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor" />
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="false" />
+			<property name="hibernate.dialect"
+				value="org.hibernate.dialect.MySQL5InnoDBDialect" />
+			<property name="javax.persistence.jdbc.driver"
+				value="com.mysql.jdbc.Driver" />
+			<property name="javax.persistence.jdbc.url"
+				value="jdbc:mysql://db.f4.htw-berlin.de:3306/_s0559842__database" />
 
-	<build>
-		<finalName>songsRX</finalName>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.0.2</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
-			<!-- mvn tomcat8:run-war -->
-			<plugin>
-				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat8-maven-plugin</artifactId>
-				<version>3.0-r1756463</version>
-			</plugin>
-		</plugins>
-	</build>
-</project>
+			<property name="hibernate.c3p0.min_size" value="4" />
+			<property name="hibernate.c3p0.max_size" value="8" />
+			<property name="hibernate.c3p0.timeout" value="1800" />
+			<property name="hibernate.c3p0.max_statements" value="50" />
+			<property name="hibernate.connection.release_mode" value="after_statement"></property>
+
+		</properties>
+	</persistence-unit>
+</persistence>

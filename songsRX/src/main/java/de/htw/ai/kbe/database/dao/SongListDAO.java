@@ -18,6 +18,7 @@ public class SongListDAO implements ISongList {
 	@Inject
 	private EntityManagerFactory emf;
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<SongList> getAllListsOfUser(User user) {
 		EntityManager em = emf.createEntityManager();
