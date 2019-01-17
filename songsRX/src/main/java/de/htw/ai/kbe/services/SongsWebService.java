@@ -1,6 +1,7 @@
 package de.htw.ai.kbe.services;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -151,14 +152,14 @@ public class SongsWebService {
 	@DELETE
 	@Path("/{id}")
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response delete(@PathParam("id") Integer id, @HeaderParam("Authorization") String key) {
-		Song song = songsStorage.deleteSong(id);
-		if(song == null) {
+	public Response delete(@PathParam("id") int id, @HeaderParam("Authorization") String key) {
+		songsStorage.deleteSong(id);
+		try {
+			songsStorage.getSongById(id);
+			return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Delete successful.").build();
+		} catch (NoSuchElementException e) {
 			return Response.status(Response.Status.NOT_FOUND)
 					.entity(Response.Status.NOT_FOUND + ": Song ID was not found or not successfully deleted.").build();
-		}
-		else {
-			return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Delete successful.").build();
 		}
 	}
 }

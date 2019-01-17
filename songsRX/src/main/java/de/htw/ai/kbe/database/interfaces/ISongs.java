@@ -7,7 +7,7 @@ import de.htw.ai.kbe.bean.Song;
 
 public interface ISongs {
 
-	public Song getSongById(int id); //method further specified as we can need a method getSongByTitle
+	public Song getSongById(int id) throws NoSuchElementException; //method further specified as we can need a method getSongByTitle
 	public List<Song> getAllSongs();
 	public int addSong(Song song); //Primitive data types 
 	public boolean updateLocalSong(Integer id,Song song);
