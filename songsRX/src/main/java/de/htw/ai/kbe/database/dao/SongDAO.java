@@ -23,6 +23,7 @@ public class SongDAO implements ISongs {
 	@Inject
 	private EntityManagerFactory emf;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Song> getAllSongs() {
 		EntityManager em = emf.createEntityManager();

@@ -27,11 +27,13 @@ private static final String AUTHENTICATION_HEADER = "Authorization";
 			return;
 		}
 		String authToken = containerRequest.getHeaderString(AUTHENTICATION_HEADER);
+		System.out.println(authToken);
 		if(authToken == null) {
 			//angezeigt im Postman als: The request has not been applied because it lacks valid authentication credentials for the target resource.
 			throw new WebApplicationException(Status.UNAUTHORIZED);
 		}
 		boolean valid = authContainer.isValid(authToken);
+		System.out.println("Valid: " + valid);
 		
 		if(!valid) {
 			//angezeigt im Postman als: The request has not been applied because it lacks valid authentication credentials for the target resource.

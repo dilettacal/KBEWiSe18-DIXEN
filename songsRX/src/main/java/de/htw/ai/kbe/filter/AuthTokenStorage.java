@@ -1,10 +1,15 @@
-package de.htw.ai.kbe.oldStorage;
+package de.htw.ai.kbe.filter;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 
 import de.htw.ai.kbe.bean.Token;
@@ -26,14 +31,15 @@ public class AuthTokenStorage implements IAuth {
 
 	@Override
 	public synchronized String authenticate(String userId) {
+		System.out.println("Local authentication");
 		User user = null;
 		user = userStorage.getUserByUserId(userId);
 		//userStorage.getAllUsers().forEach(u -> System.out.println(u)); //Test - enthaelt nur 2 User
 		if(user != null) {
 			String token = generateToken();
-			System.out.println("Generated token: " + token);
+			System.out.println("Locally generated token: " + token);
 			userToken.put(userId, token);
-			System.out.println(userToken.get(userId)); //Als Test, dass Token mit entsprechendem userId gespeichert wurde
+			//System.out.println(userToken.get(userId)); //Als Test, dass Token mit entsprechendem userId gespeichert wurde
 			return token;
 		}
 		return null;
@@ -75,6 +81,22 @@ public class AuthTokenStorage implements IAuth {
 
 	@Override
 	public Token findToken(String token) {
+		return null;
+	}
+
+	@Override
+	public List<Token> getAll() {
+		List<Token> allToks = Collections.emptyList();
+		allToks = userToken.values().stream().map(val -> {
+			Token t = new Token();
+			t.setToken(val);
+			return t;
+		}).collect(Collectors.toList());
+		return allToks;
+	}
+
+	@Override
+	public String verify(String token) throws NotAuthorizedException {
 		return null;
 	}
 

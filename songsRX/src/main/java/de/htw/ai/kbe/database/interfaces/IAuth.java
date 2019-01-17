@@ -1,5 +1,7 @@
 package de.htw.ai.kbe.database.interfaces;
 
+import java.util.List;
+
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 
@@ -29,6 +31,10 @@ public interface IAuth {
 	
 	//This method updates an existing token in the DB
 	public void updateToken(Token token);
+	
+	public List<Token> getAll();
+	
+	public String verify (String token);
 	
 	
 	

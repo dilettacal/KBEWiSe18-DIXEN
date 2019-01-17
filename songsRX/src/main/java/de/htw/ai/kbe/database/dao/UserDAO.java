@@ -18,6 +18,7 @@ public class UserDAO implements IUser{
 
 	@Override
 	public User getUserByUserId(String userID) {
+		System.out.println(userID);
 		EntityManager em = emf.createEntityManager();
 		try {
 			User u = em.find(User.class, userID);

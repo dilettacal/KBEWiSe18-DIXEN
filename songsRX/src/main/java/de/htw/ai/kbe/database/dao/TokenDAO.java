@@ -1,9 +1,13 @@
 package de.htw.ai.kbe.database.dao;
 
+import java.util.List;
+import java.util.UUID;
+
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 
 import javax.persistence.Query;
@@ -38,6 +42,7 @@ public class TokenDAO implements IAuth{
 
 	@Override
 	public void saveToken(Token token) {
+		System.out.println("Persist token");
 		EntityManager em = emf.createEntityManager();
 		try {
 			em.getTransaction().begin();
@@ -50,6 +55,7 @@ public class TokenDAO implements IAuth{
 
 	@Override
 	public void updateToken(Token token) {
+		System.out.println("Update token");
 		EntityManager em = emf.createEntityManager();
 		try {
 			em.getTransaction().begin();
@@ -64,7 +70,20 @@ public class TokenDAO implements IAuth{
 	// Beleg 3 ====
 	@Override
 	public String authenticate(String userId) {
-		return "";
+		System.out.println("DB Authentication");
+		User u = new User();
+		u.setId(userId);
+		Token t = findTokenByUser(u);
+		String token = generateToken();
+		//userStorage.getAllUsers().forEach(u -> System.out.println(u)); //Test - enthaelt nur 2 User
+		if(t == null) {			
+			saveToken(t);
+			
+		} else {			
+			updateToken(t);
+		}
+		return token;
+		
 	}
 
 
@@ -73,8 +92,10 @@ public class TokenDAO implements IAuth{
 	public boolean isValid(String token) {
 		EntityManager em = emf.createEntityManager();
 		try {
-			Token q = em.find(Token.class, token);
-			return (q != null)? true: false;
+			Query q = em.createQuery("SELECT t FROM Token t WHERE t.token = :token");
+			q.setParameter("token", token);
+			Token t = (Token) q.getSingleResult();
+			return (t != null)? true: false;
 		} finally {
 			em.close();
 		}
@@ -112,4 +133,33 @@ public class TokenDAO implements IAuth{
 			em.close();
 		}
 	}
+	
+	
+	private String generateToken() {
+		String key = UUID.randomUUID().toString();
+		key = key.replaceAll("-", "");
+		return key;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Token> getAll() {
+		EntityManager em = emf.createEntityManager();
+		try {
+			Query query = em.createQuery("SELECT t FROM Token t");
+			return query.getResultList();
+		} finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public String verify(String token) {
+		Token t = findToken(token);
+        if(t == null || t.getUser() == null) {
+            throw new NotAuthorizedException("Token invalid");
+        }
+        return t.getUser().getId();
+	}
+
 }

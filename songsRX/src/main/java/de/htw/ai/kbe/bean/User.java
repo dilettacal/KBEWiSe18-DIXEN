@@ -29,9 +29,6 @@ public class User {
 	private String lastName;
 	private String firstName;
 	
-	@JsonIgnore
-	@XmlTransient
-	private int oldID;
 
 	public String getId() {
 		return id;
@@ -93,12 +90,4 @@ public class User {
 		this.firstName = builder.firstName;
 	}
 
-	//Sets ID for local Storage
-	public void setLocalID(int i) {
-		this.oldID = i;
-	}
-	
-	public int getLocalID() {
-		return this.oldID;
-	}
 }

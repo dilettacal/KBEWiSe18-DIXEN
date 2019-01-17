@@ -34,6 +34,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import de.htw.ai.kbe.bean.Song;
 import de.htw.ai.kbe.bean.SongList;
+import de.htw.ai.kbe.bean.Token;
 import de.htw.ai.kbe.bean.User;
 import de.htw.ai.kbe.database.interfaces.IAuth;
 import de.htw.ai.kbe.database.interfaces.ISongList;
@@ -93,9 +94,34 @@ public class SongListWebService {
 
 		
 		// User ist authentifiziert?
-
-		String idFromToken = tokenDB.findUserByToken(token).getId();
-		
+//		List<Token> allToks = tokenDB.getAll();
+//		allToks.forEach(t -> System.out.println(t.getToken()));
+//		List<String> userIDs = allToks.stream().map(tok -> tok.getUser().getId()).collect(Collectors.toList());
+//		boolean userIdAlreadyStored = userIDs.stream().filter(s -> s.equals(userID)).findFirst() != null;
+//		if(userIdAlreadyStored) {
+//			User u = userPersistence.getUserByUserId(userID);
+//			List<SongList> lists = songListPersistence.getListByUser(u);
+//			GenericEntity<List<SongList>> generic = new GenericEntity<List<SongList>>(lists) {
+//			};
+//			return Response.ok(generic).build();
+//		}
+//		else {
+//			//Der Authentifizierte Benutzer fragt nach den Listen von userID
+//			User u = userPersistence.getUserByUserId(userID);
+//
+//			List<SongList> lists = songListPersistence.getListByUser(u);
+//			List<SongList> publicLists = new ArrayList<SongList>();
+//			for (SongList sl: lists) {
+//				if(sl.isPublic()) {
+//					publicLists.add(sl);
+//				}
+//			}
+//			
+//			GenericEntity<List<SongList>> generic = new GenericEntity<List<SongList>>(publicLists) {
+//			};
+//			return Response.ok(generic).build();
+//		}
+		String idFromToken = tokenDB.verify(token);
 
 		if (idFromToken.equals(userID)) {
 			User u = userPersistence.getUserByUserId(userID);
