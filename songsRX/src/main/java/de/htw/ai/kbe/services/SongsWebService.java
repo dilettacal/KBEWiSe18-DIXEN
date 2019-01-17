@@ -35,25 +35,25 @@ public class SongsWebService {
 	// Referenz auf InMemory-DB
 	@Inject
 	private ISongs songsStorage;
-	
+
 	@Context
 	UriInfo uriInfo;
 
 	// Konstruktor bekommt Verweis auf DB-Instanz
 	public SongsWebService() {
-		
+
 	}
 
 	/* METHODEN DES WEBSERVICE */
 
 	// GET http://localhost:8080/songsRX/rest/songs
 	// Returns all contacts
-	
+
 	@GET
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Collection<Song> getAllSongs( @HeaderParam("Authorization") String key) {
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public Collection<Song> getAllSongs(@HeaderParam("Authorization") String key) {
 		System.out.println("getAllSongs()...");
-		//songsStorage.getAllSongs().forEach(s -> System.out.println(s)); //Test - OK
+		// songsStorage.getAllSongs().forEach(s -> System.out.println(s)); //Test - OK
 		return songsStorage.getAllSongs();
 	}
 
@@ -65,40 +65,37 @@ public class SongsWebService {
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response getSong(@PathParam("id") Integer id, @HeaderParam("Authorization") String key) {
 		Song song = songsStorage.getSongById(id);
-		if(song == null) {
-			return Response.status(Response.Status.NOT_FOUND).entity(Response.Status.NOT_FOUND + ": No song found with id " + id).build();
-		}			
-		else {
+		if (song == null) {
+			return Response.status(Response.Status.NOT_FOUND)
+					.entity(Response.Status.NOT_FOUND + ": No song found with id " + id).build();
+		} else {
 			return Response.ok(song).build();
 		}
-		
+
 	}
 
-
 	@POST
-	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response createSong(Song song, @HeaderParam("Authorization") String key) {
 
-		if(!(song instanceof Song)) {
+		if (!(song instanceof Song)) {
 			return Response.status(Response.Status.BAD_REQUEST)
 					.entity(Response.Status.BAD_REQUEST + "Payload is malformed. Please provide a valid song").build();
 		}
-		
-		Integer newID = songsStorage.addSong(song);
-		
-		if(newID == null) {
+
+		int newID = songsStorage.addSong(song);
+
+		if (newID > 0) {
+			UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
+			uriBuilder.path(String.valueOf(newID));
+			return Response.created(uriBuilder.build()).status(Status.CREATED)
+					.entity(Status.CREATED + ": Song added (new id: " + newID + ")").build();
+		} else {
 			return Response.status(Response.Status.NOT_FOUND)
 					.entity(Response.Status.NOT_FOUND + ": " + ": Adding new song failed for some reason.").build();
 		}
-		else {
-			UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
-	        uriBuilder.path(newID.toString());
-	        return Response.created(uriBuilder.build()).status(Status.CREATED).entity(Status.CREATED + ": Song added (new id: " + newID + ")").build();
-		}
-
 	}
-
 
 	@PUT
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -106,46 +103,48 @@ public class SongsWebService {
 	@Path("/{id}")
 	public Response updateSong(@PathParam("id") Integer id, Song song, @HeaderParam("Authorization") String key) {
 
-		//System.out.println("Update with song: " + song);
-		
-		if(!(song instanceof Song)) {
+		// System.out.println("Update with song: " + song);
+
+		if (!(song instanceof Song)) {
 			return Response.status(Response.Status.BAD_REQUEST)
 					.entity(Response.Status.BAD_REQUEST + "Payload is malformed. Please provide a valid song").build();
 		}
-		
+
 		/*
 		 * Fall: Beide IDs sind uebergeben, aber sie stimmen nicht ueberein
-		 * Ueberpruefung: !id.equals(song.getId()) && song.getId() != null
-		 * deckt den Fall ab, dass PUT-Anfrage gueltig (rest/songs/1) 
-		 * aber Benutzer hat ID im Body gesetzt (z.B. 2) [song.getId() != null]
+		 * Ueberpruefung: !id.equals(song.getId()) && song.getId() != null deckt den
+		 * Fall ab, dass PUT-Anfrage gueltig (rest/songs/1) aber Benutzer hat ID im Body
+		 * gesetzt (z.B. 2) [song.getId() != null]
 		 */
-		if(!id.equals(song.getId()) && song.getId() != null) {
+		if (!id.equals(song.getId()) && song.getId() != null) {
 			System.out.println("Different IDs");
-			return  Response.status(Response.Status.BAD_REQUEST)
-					.entity("ID does not correspond to ID in payload ").build();
+			return Response.status(Response.Status.BAD_REQUEST).entity("ID does not correspond to ID in payload ")
+					.build();
 		}
-		
-		//Ein Song mit gueltigem ID wurde uebergeben. Pruefe ob Song gueltig (mit Titel ist):
-		if(song.getTitle() == null || (song.getTitle().trim()).isEmpty()) { 
+
+		// Ein Song mit gueltigem ID wurde uebergeben. Pruefe ob Song gueltig (mit Titel
+		// ist):
+		if (song.getTitle() == null || (song.getTitle().trim()).isEmpty()) {
 			System.out.println("Not valid prerequisite (title) for song");
-			return  Response.status(Response.Status.BAD_REQUEST)
+			return Response.status(Response.Status.BAD_REQUEST)
 					.entity(Response.Status.BAD_REQUEST + ": Fail to updated Song").build();
 		}
-		
+
 		/*
 		 * Fall: Alles passt aber ID im Payload wurde vergessen
 		 */
-		if(song.getId() == null) {
-			song.setId(id); // Song braucht eine ID, sonst wird er mit der folgenden Anweisung mit ID==null gespeichert
-		}		
-		boolean updated = songsStorage.updateLocalSong(id, song);
-		if(!updated) {
-			return Response.status(Response.Status.NOT_FOUND)
-					.entity(Response.Status.NOT_FOUND + ": Fail to updated Song").build();		
+		if (song.getId() == null) {
+			song.setId(id); // Song braucht eine ID, sonst wird er mit der folgenden Anweisung mit ID==null
+							// gespeichert
 		}
-		System.out.println("Update successful");			
-		return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Update successful.").build();
-	
+		boolean updated = songsStorage.updateLocalSong(id, song);
+		if (!updated) {
+			return Response.status(Response.Status.NOT_FOUND)
+					.entity(Response.Status.NOT_FOUND + ": Fail to updated Song").build();
+		}
+		System.out.println("Update successful");
+		return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Update successful.")
+				.build();
 
 	}
 
@@ -156,7 +155,8 @@ public class SongsWebService {
 		songsStorage.deleteSong(id);
 		try {
 			songsStorage.getSongById(id);
-			return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Delete successful.").build();
+			return Response.status(Response.Status.NO_CONTENT)
+					.entity(Response.Status.NO_CONTENT + ": Delete successful.").build();
 		} catch (NoSuchElementException e) {
 			return Response.status(Response.Status.NOT_FOUND)
 					.entity(Response.Status.NOT_FOUND + ": Song ID was not found or not successfully deleted.").build();
