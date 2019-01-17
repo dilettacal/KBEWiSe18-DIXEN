@@ -20,7 +20,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import de.htw.ai.kbe.bean.Song;
-import de.htw.ai.kbe.storage.ISongs;
+import de.htw.ai.kbe.database.interfaces.ISongs;
 
 /**
  * 

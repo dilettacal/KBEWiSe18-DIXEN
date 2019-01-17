@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import de.htw.ai.kbe.bean.User;
-import de.htw.ai.kbe.storage.IUser;
+import de.htw.ai.kbe.database.interfaces.IUser;
 
 public class AuthTokenStorage implements IAuth {
 

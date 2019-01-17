@@ -1,4 +1,4 @@
-package de.htw.ai.kbe.storage;
+package de.htw.ai.kbe.oldStorage;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.htw.ai.kbe.bean.Song;
+import de.htw.ai.kbe.database.interfaces.ISongs;
 
 public class SongsStorage implements ISongs{
 	

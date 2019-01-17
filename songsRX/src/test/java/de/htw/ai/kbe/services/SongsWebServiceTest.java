@@ -8,8 +8,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import de.htw.ai.kbe.bean.Song;
-import de.htw.ai.kbe.storage.ISongs;
-import de.htw.ai.kbe.storage.SongsStorage;
+import de.htw.ai.kbe.database.interfaces.ISongs;
+import de.htw.ai.kbe.oldStorage.SongsStorage;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
