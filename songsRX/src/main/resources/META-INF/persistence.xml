@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	version="2.0">
+
+	<persistence-unit name="song-persistence"
+		transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+		<class>de.htw.ai.kbe.bean.Song</class>
+		<class>de.htw.ai.kbe.bean.SongList</class>
+		<class>de.htw.ai.kbe.bean.User</class>
+		<class>de.htw.ai.kbe.bean.Token</class>
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+		<properties>
+			<property name="javax.persistence.jdbc.user"
+				value="s0559842" />
+			<property name="javax.persistence.jdbc.password"
+				value="kbedixen" />
+
+			<!--Hibernate properties -->
+			<property
+				name="hibernate.hbm2ddl.import_files_sql_extractor"
+				value="org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor" />
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="false" />
+			<property name="hibernate.dialect"
+				value="org.hibernate.dialect.MySQL5InnoDBDialect" />
+			<property name="javax.persistence.jdbc.driver"
+				value="com.mysql.jdbc.Driver" />
+			<property name="javax.persistence.jdbc.url"
+				value="jdbc:mysql://db.f4.htw-berlin.de:3306/_s0559842__songsrx" />
+
+			<property name="hibernate.c3p0.min_size" value="4" />
+			<property name="hibernate.c3p0.max_size" value="8" />
+			<property name="hibernate.c3p0.timeout" value="1800" />
+			<property name="hibernate.c3p0.max_statements" value="50" />
+			<property name="hibernate.connection.release_mode" value="after_statement"></property>
+
+		</properties>
+	</persistence-unit>
+</persistence>
