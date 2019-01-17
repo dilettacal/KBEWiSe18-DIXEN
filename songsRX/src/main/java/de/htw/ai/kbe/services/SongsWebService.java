@@ -1,6 +1,7 @@
 package de.htw.ai.kbe.services;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -53,7 +54,7 @@ public class SongsWebService {
 	public Collection<Song> getAllSongs( @HeaderParam("Authorization") String key) {
 		System.out.println("getAllSongs()...");
 		//songsStorage.getAllSongs().forEach(s -> System.out.println(s)); //Test - OK
-		return songsStorage.getAllSongs();
+		return songsStorage.getAll();
 	}
 
 	// GET http://localhost:8080/songsRX/rest/songs/1
@@ -63,7 +64,7 @@ public class SongsWebService {
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response getSong(@PathParam("id") Integer id, @HeaderParam("Authorization") String key) {
-		Song song = songsStorage.getSong(id);
+		Song song = songsStorage.getSongById(id);
 		if(song == null) {
 			return Response.status(Response.Status.NOT_FOUND).entity(Response.Status.NOT_FOUND + ": No song found with id " + id).build();
 		}			
@@ -84,15 +85,15 @@ public class SongsWebService {
 					.entity(Response.Status.BAD_REQUEST + "Payload is malformed. Please provide a valid song").build();
 		}
 		
-		Integer newID = songsStorage.addSong(song);
+		int newID = songsStorage.addSong(song);
 		
-		if(newID == null) {
+		if(newID >0) {
 			return Response.status(Response.Status.NOT_FOUND)
 					.entity(Response.Status.NOT_FOUND + ": " + ": Adding new song failed for some reason.").build();
 		}
 		else {
 			UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
-	        uriBuilder.path(newID.toString());
+	        uriBuilder.path(String.valueOf(newID));
 	        return Response.created(uriBuilder.build()).status(Status.CREATED).entity(Status.CREATED + ": Song added (new id: " + newID + ")").build();
 		}
 
@@ -136,15 +137,16 @@ public class SongsWebService {
 		 */
 		if(song.getId() == null) {
 			song.setId(id); // Song braucht eine ID, sonst wird er mit der folgenden Anweisung mit ID==null gespeichert
+			System.out.println("Update successful");			
+			return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Update successful.").build();
 		}		
-		boolean updated = songsStorage.updateSong(id, song);
-		if(!updated) {
+		try{
+			songsStorage.updateSong(song);
+			return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Update successful.").build();
+		} catch(NoSuchElementException e) {
 			return Response.status(Response.Status.NOT_FOUND)
 					.entity(Response.Status.NOT_FOUND + ": Fail to updated Song").build();		
 		}
-		System.out.println("Update successful");			
-		return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Update successful.").build();
-	
 
 	}
 
@@ -152,13 +154,12 @@ public class SongsWebService {
 	@Path("/{id}")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response delete(@PathParam("id") Integer id, @HeaderParam("Authorization") String key) {
-		Song song = songsStorage.deleteSong(id);
-		if(song == null) {
+		try{
+			songsStorage.deleteSong(id);
+			return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Delete successful.").build();
+		} catch (NoSuchElementException e) {
 			return Response.status(Response.Status.NOT_FOUND)
 					.entity(Response.Status.NOT_FOUND + ": Song ID was not found or not successfully deleted.").build();
-		}
-		else {
-			return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Delete successful.").build();
 		}
 	}
 }

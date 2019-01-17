@@ -9,8 +9,12 @@ import java.io.BufferedInputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
+import javax.ws.rs.NotFoundException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -81,45 +85,39 @@ public class SongsStorage implements ISongs{
 		}
 }
 
+	@Override
+	public List<Song> getAll() {
+		return storage.values().stream().collect(Collectors.toList());
+	}
 
 	@Override
-	public synchronized Song getSong(Integer id) {
+	public Song getSongById(int id) throws NoSuchElementException {
 		return storage.get(id);
 	}
 
 	@Override
-	public synchronized Collection<Song> getAllSongs() {
-		return storage.values();
+	public synchronized void deleteSong(int id) throws NoSuchElementException {
+		if (storage.remove(id) == null) {
+            throw new NotFoundException("No song with id '" + id + "'!");
+        }
 	}
 
 	@Override
-	public synchronized Integer addSong(Song song) {
-		if(song.getTitle() != null && !(song.getTitle().trim()).isEmpty()) {
-			int newID = lastID.incrementAndGet();
-			System.out.println("Neues ID: " + newID);
-			song.setId(newID);
-			storage.put(song.getId(), song);
-			//liefert neu vergebene ID zurueck
-			return song.getId();
-		}
-		else
-			return null;
+	public synchronized int addSong(Song s) {
+		int id = lastID.incrementAndGet();
+		s.setId(id);
+        storage.put(s.getId(), s);
+        return s.getId();
 	}
 
 	@Override
-	public synchronized boolean updateSong(Integer id, Song song) {
-		Song oldSong = storage.get(id);
-		if(oldSong != null && song.getTitle() != null && !(song.getTitle().trim()).isEmpty()) {
-			song.setId(oldSong.getId());
-			return storage.replace(oldSong.getId(), oldSong, song);
-		}
-		else
-			return false;
+	public void updateSong(Song s) throws NoSuchElementException {
+		if (s.getId() == null || !storage.containsKey(s.getId())) {
+            throw new NotFoundException("No song with id '" + s.getId() + "'!");
+        }
+        storage.put(s.getId(), s);
 	}
 
-	@Override
-	public synchronized Song deleteSong(Integer id) {
-		return storage.remove(id);
-	}
 
+	
 }
