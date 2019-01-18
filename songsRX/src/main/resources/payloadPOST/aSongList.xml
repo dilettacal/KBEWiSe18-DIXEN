@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<songList>
+   <id>6</id>
+   <isPublic>true</isPublic>
+   <owner>
+      <id>mmuster</id>
+      <lastName>Muster</lastName>
+      <firstName>Maxime</firstName>
+   </owner>
+   <songs>
+      <song>
+         <id>7</id>
+         <title>i hate u, i love u</title>
+         <artist>Gnash</artist>
+         <album>Top Hits 2017</album>
+         <released>2017</released>
+      </song>
+      <song>
+         <id>10</id>
+         <title>7 Years</title>
+         <artist>Lukas Graham</artist>
+         <album>Lukas Graham (Blue Album)</album>
+         <released>2015</released>
+      </song>
+   </songs>
+</songList>

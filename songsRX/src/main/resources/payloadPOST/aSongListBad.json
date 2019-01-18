@@ -1,0 +1,20 @@
+{
+   "songList" : {
+      "id" : 13,
+      "private" : true,
+      "besitzer" : {
+         "id" : "mmuster",
+         "lastName" : "Muster",
+         "firstName" : "Maxime"
+      },
+      "new_songs" : {
+         "song" : {
+            "id" : 7,
+            "title" : "i hate u, i love u",
+            "artist" : "Gnash",
+            "album" : "Top Hits 2017",
+            "released" : 2017
+         }
+      }
+   }
+}
