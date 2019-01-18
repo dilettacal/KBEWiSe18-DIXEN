@@ -60,7 +60,7 @@
 			<version>2.26</version>
 		</dependency>
 		<!-- https://stackoverflow.com/questions/29136404/severe-messagebodywriter-not-found-for-media-type-application-json-type-class -->
-		<!-- Wegen:  SCHWERWIEGEND: MessageBodyWriter not found for media type=text/plain...-->
+		<!-- Wegen: SCHWERWIEGEND: MessageBodyWriter not found for media type=text/plain... -->
 		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-moxy</artifactId>
@@ -107,7 +107,12 @@
 			<artifactId>org.eclipse.persistence.moxy</artifactId>
 			<version>2.5.2</version>
 		</dependency>
-
+		<!-- Postgresql -->
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.1-901-1.jdbc4</version>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -49,8 +49,8 @@ public class SongList {
     @ManyToMany(fetch = FetchType.EAGER) //solves problem of lazy list creation
 //    @JoinTable(name = "listSongRelation", joinColumns = { @JoinColumn(name = "list_id") }, inverseJoinColumns = {
 //            @JoinColumn(name = "song_id") })
-    @JoinTable(name = "listSongRelation", joinColumns = { @JoinColumn(name = "song_id") }, inverseJoinColumns = {
-            @JoinColumn(name = "list_id") })
+    @JoinTable(name = "listsongrelation", joinColumns = { @JoinColumn(name = "list_id") }, inverseJoinColumns = {
+            @JoinColumn(name = "song_id") })
     @XmlElementWrapper(name = "songs")
     @XmlElement(name = "song")
     @JsonProperty(value = "songs")

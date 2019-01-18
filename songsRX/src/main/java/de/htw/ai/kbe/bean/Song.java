@@ -160,5 +160,12 @@ public class Song implements Comparable<Song> {
 	public int compareTo(Song arg0) {
 		return this.title.compareTo(arg0.title);
 	}
+	
+	public void updateSong(Song newSong) {
+		this.album = newSong.getAlbum();
+		this.artist = newSong.getArtist();
+		this.title = newSong.getTitle();
+		this.released = newSong.getReleased();
+	}
 
 }

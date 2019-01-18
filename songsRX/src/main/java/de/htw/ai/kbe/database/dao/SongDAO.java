@@ -6,7 +6,9 @@ import java.util.NoSuchElementException;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
+import javax.persistence.TypedQuery;
 
 
 import de.htw.ai.kbe.bean.Song;
@@ -17,12 +19,11 @@ public class SongDAO implements ISongs {
 	@Inject
 	private EntityManagerFactory emf;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Song> getAll() {
 		EntityManager em = emf.createEntityManager();
 		try {
-			javax.persistence.Query query = em.createQuery("SELECT s FROM Song s");
+			TypedQuery<Song> query = em.createQuery("SELECT s FROM Song s ORDER BY s.id", Song.class);
 			return query.getResultList();
 		} finally {
 			em.close();
@@ -69,13 +70,14 @@ public class SongDAO implements ISongs {
 	@Override
 	public int addSong(Song s) {
 		EntityManager em = emf.createEntityManager();
+		EntityTransaction transaction = em.getTransaction();
 		try {
-			em.getTransaction().begin();
+			transaction.begin();
 			em.persist(s);
-			em.getTransaction().commit();
+			transaction.commit();
 			return s.getId();
 		} catch (Exception e) {
-			em.getTransaction().rollback();
+			transaction.rollback();
 			throw new PersistenceException("Could not persist entity: " + e.toString());
 		} finally {
 			em.close();
@@ -85,6 +87,7 @@ public class SongDAO implements ISongs {
 	@Override
 	public void updateSong(Song s) throws NoSuchElementException {
 		EntityManager em = emf.createEntityManager();
+		EntityTransaction transaction = em.getTransaction();
 		if (s.getId() == null) {
 			throw new NoSuchElementException();
 		}
@@ -92,12 +95,16 @@ public class SongDAO implements ISongs {
 		// check if song exists in database
 		getSongById(s.getId());
 		try {
-			em.getTransaction().begin();
-			em.merge(s);
-			em.getTransaction().commit();
+			transaction.begin();
+			Song song = em.find(Song.class, s.getId());
+			if(song != null) {
+				song.updateSong(s);
+			}
+			//em.merge(s);
+			transaction.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
-			em.getTransaction().rollback();
+			transaction.rollback();
 			throw new PersistenceException("Problem while updating this entity: " + e.toString());
 		} finally {
 			em.close();

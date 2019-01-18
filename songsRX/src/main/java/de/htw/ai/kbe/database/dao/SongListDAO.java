@@ -10,6 +10,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import de.htw.ai.kbe.bean.Song;
 import de.htw.ai.kbe.bean.SongList;
@@ -21,14 +22,15 @@ public class SongListDAO implements ISongList {
 	@Inject
 	private EntityManagerFactory emf;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<SongList> getAllListsOfUser(User user) {
 		EntityManager em = emf.createEntityManager();
 		try {
-			Query q = em.createQuery("SELECT l FROM SongList l WHERE l.owner = :user");
-			q.setParameter("user", user);
-			return q.getResultList();
+			TypedQuery<SongList> query = em
+					.createQuery("SELECT s FROM SongList s WHERE s.owner = :user ORDER BY s.id",
+							SongList.class)
+					.setParameter("user", user);
+			return query.getResultList();
 		} finally {
 			em.close();
 }
@@ -50,20 +52,21 @@ public class SongListDAO implements ISongList {
 	}
 
 	@Override
-	public void deleteSongList(SongList list) throws NoSuchElementException {
+	public boolean deleteSongList(SongList list) throws NoSuchElementException {
 		EntityManager em = emf.createEntityManager();
+		EntityTransaction transaction = em.getTransaction();
 		try {
-			em.getTransaction().begin();
-			if(em.contains(list)) {
-				em.remove(list);
-			} else {
-				em.remove(em.merge(list));
-			}
-			em.getTransaction().commit();
-
+			transaction.begin();
+			int id = list.getId();
+			SongList songList = em.find(SongList.class, id);
+			
+			em.remove(songList);
+		
+			transaction.commit();
+			return true;
 		} catch (Exception e) {
-			em.getTransaction().rollback();
-			throw new NoSuchElementException("Could not persist entity: " + e.toString());
+			transaction.rollback();
+			return false;
 		} finally {
 			em.close();
 }
@@ -71,7 +74,7 @@ public class SongListDAO implements ISongList {
 	}
 
 	@Override
-	public void saveSongList(SongList list) throws PersistenceException{
+	public boolean saveSongList(SongList list) throws PersistenceException{
 		System.out.println("SongListDAO - saveSongList...");
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction transaction = em.getTransaction();
@@ -99,9 +102,10 @@ public class SongListDAO implements ISongList {
 			System.out.println("Commit transaction...");
 			transaction.commit();
 			System.out.println("Transaction completed...");
+			return true;
 		} catch (Exception e) {
 			transaction.rollback();
-			throw new PersistenceException("Could not persist entity: " + e.getCause().getMessage());
+			return false;
 		} finally {
 			em.close();
 }

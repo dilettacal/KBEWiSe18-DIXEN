@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <songList>
-	<id>7</id>
-	<isPublic>true</isPublic>
+	<isPublic>false</isPublic>
 	<owner>
-		<id>mmuster</id>
-		<lastName>Muster</lastName>
-		<firstName>Maxime</firstName>
+		<id>eschuler</id>
+		<lastName>Elena</lastName>
+		<firstName>Schuler</firstName>
 	</owner>
 	<songs>
 		<song>
@@ -14,13 +13,6 @@
 			<artist>Gnash</artist>
 			<album>Top Hits 2017</album>
 			<released>2017</released>
-		</song>
-		<song>
-				<id>9</id>
-			<title>Private Show</title>
-			<artist>Britney Spears</artist>
-			<album>Glory</album>
-			<released>2016</released>
 		</song>
 		<song>
 			<id>10</id>

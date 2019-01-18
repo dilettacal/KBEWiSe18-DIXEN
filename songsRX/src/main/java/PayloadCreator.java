@@ -42,7 +42,6 @@ public class PayloadCreator {
 		 	songToList.add(random1);
 		 	//Java object. We will convert it to XML.
 		 	SongList list = new SongList();
-		 	list.setId(7);
 		 	User owner = new User();
 		 	owner.setId("mmuster");
 		 	owner.setFirstName("Maxime");

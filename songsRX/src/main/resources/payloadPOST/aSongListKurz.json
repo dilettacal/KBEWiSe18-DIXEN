@@ -1,0 +1,14 @@
+{
+   "isPublic" : true,
+      "owner" : {
+         "id" : "eschuler",
+         "isPublic": "True"
+      },
+      "songs" : {
+         "song" : [ {
+            "id" : 10
+         }, {
+            "id" : 1
+         } ]
+      }
+}
