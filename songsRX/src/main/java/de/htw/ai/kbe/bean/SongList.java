@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Table(name = "songlists")
 @XmlRootElement(name = "songList") 
 @XmlAccessorType(XmlAccessType.FIELD)
-@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIgnoreProperties(ignoreUnknown = true)
 public class SongList {
 	/*
 	 * Unrecognized field "songList" (class de.htw.ai.kbe.bean.SongList), not marked as ignorable (4 known properties: "id", "songs", "isPublic", "owner"])

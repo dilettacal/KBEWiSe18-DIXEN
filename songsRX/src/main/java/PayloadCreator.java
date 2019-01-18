@@ -56,6 +56,7 @@ public class PayloadCreator {
 	        jaxbObjectToXML(list);
 	        System.out.println(System.getProperty("line.separator") +"JSON Payload: ");
 	        jaxbObjectToJSON(list);
+	        System.out.println("End Payload");
 	    }
 	 
 	 //XML Payload wird in der Console ausgegeben

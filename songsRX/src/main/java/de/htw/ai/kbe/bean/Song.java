@@ -28,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Table(name = "songs")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name="song")
-@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIgnoreProperties(ignoreUnknown = true)
 public class Song implements Comparable<Song> {
 	
 	//Attribute nach Beleg 4 angepasst

@@ -156,12 +156,14 @@ public class SongsWebService {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response delete(@PathParam("id") Integer id, @HeaderParam("Authorization") String key) {
 		//Beleg 4 - This should not work		
-		try{
-			songsStorage.deleteSong(id);
-			return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Delete successful.").build();
-		} catch (NoSuchElementException e) {
-			return Response.status(Response.Status.NOT_FOUND)
-					.entity(Response.Status.NOT_FOUND + ": Song ID was not found or not successfully deleted.").build();
-		}
+//		try{
+//			songsStorage.deleteSong(id);
+//			return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Delete successful.").build();
+//		} catch (NoSuchElementException e) {
+//			return Response.status(Response.Status.NOT_FOUND)
+//					.entity(Response.Status.NOT_FOUND + ": Song ID was not found or not successfully deleted.").build();
+//		}
+		//Beleg 4: Nutzer koennen neue Songs anlegen und updaten, aber duerfen keine Songs mehr loeschen
+		return Response.status(Response.Status.UNAUTHORIZED).entity(Response.Status.UNAUTHORIZED + ": You are not allowed to delete any song!").build();
 	}
 }

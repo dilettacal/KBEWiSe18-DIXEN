@@ -7,9 +7,11 @@ import java.util.NoSuchElementException;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
+import de.htw.ai.kbe.bean.Song;
 import de.htw.ai.kbe.bean.SongList;
 import de.htw.ai.kbe.bean.User;
 import de.htw.ai.kbe.database.interfaces.ISongList;
@@ -69,22 +71,46 @@ public class SongListDAO implements ISongList {
 	}
 
 	@Override
-	public void saveSongList(SongList list) {
+	public void saveSongList(SongList list) throws PersistenceException{
+		System.out.println("SongListDAO - saveSongList...");
 		EntityManager em = emf.createEntityManager();
+		EntityTransaction transaction = em.getTransaction();
+		// ===== DEBUG ====== // 
+		//If these infos are displayed, payload has been correctly transferred :-)
+		User owner = list.getOwner();
+		System.out.println("List for user: " + owner);
+		List<Song> songInList = list.getSongs();
+		System.out.println("Song in the list: " + owner);
+		songInList.stream().forEach(s -> System.out.println(s));
+		System.out.println("List infos: ");
+		System.out.println(list.getId());
+		System.out.println(list.isPublic());
+		//  === END DEBUG ==== //
 		try {
-			em.getTransaction().begin();
+			System.out.println("Begin transaction...");
+			transaction.begin();
+			System.out.println("Trying to persist entity...");
+			//====== BELEG 4 --- Probleme hier:
+			//TODO: Post haengt hier! geht nicht weiter. Folgender Aufruf liefert 500!
+			//XXX: In Eclipse: MessageBodyWriter not found for media type=text/plain, type=class javax.ws.rs.core.Response$Status, genericType=class javax.ws.rs.core.Response$Status.
 			em.persist(list);
-			em.getTransaction().commit();
+			
+			//Hier wird das nicht ausgefuehrt
+			System.out.println("Commit transaction...");
+			transaction.commit();
+			System.out.println("Transaction completed...");
 		} catch (Exception e) {
-			em.getTransaction().rollback();
-			throw new PersistenceException("Could not persist entity: " + e.toString());
+			transaction.rollback();
+			throw new PersistenceException("Could not persist entity: " + e.getCause().getMessage());
 		} finally {
 			em.close();
 }
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<SongList> findSongListByAccessType(User user, boolean isPublic) {
+		//OLD METHOD not used
 		EntityManager em = emf.createEntityManager();
 		boolean isUserNull = user == null;
 		if (!isUserNull) {

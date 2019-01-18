@@ -66,6 +66,7 @@ public class SongListWebService {
 	@Context
 	private UriInfo uriInfo;
 
+
 	// =========== GET Requests ========== //
 
 	@GET
@@ -92,7 +93,6 @@ public class SongListWebService {
 		 *
 		 */
 
-		
 		// User ist authentifiziert?
 
 		String idFromToken = tokenDB.getUserIdFromToken(token);
@@ -108,18 +108,18 @@ public class SongListWebService {
 			return Response.ok(generic).build();
 		} else {
 			System.out.println("Public SongLists for User: " + userID);
-			//Der Authentifizierte Benutzer fragt nach den Listen von userID
+			// Der Authentifizierte Benutzer fragt nach den Listen von userID
 			User u = userDB.getUserByStringID(userID);
 
 			List<SongList> lists = songListDB.getAllListsOfUser(u);
 			System.out.println("Found some song lists: " + !lists.isEmpty());
 			List<SongList> publicLists = new ArrayList<SongList>();
-			for (SongList sl: lists) {
-				if(sl.isPublic()) {
+			for (SongList sl : lists) {
+				if (sl.isPublic()) {
 					publicLists.add(sl);
 				}
 			}
-			
+
 			GenericEntity<List<SongList>> generic = new GenericEntity<List<SongList>>(publicLists) {
 			};
 			return Response.ok(generic).build();
@@ -139,77 +139,149 @@ public class SongListWebService {
 		 * 
 		 */
 		SongList list = null;
-		try{
+		try {
 			list = songListDB.getSongListByID(id);
-		} catch (NoResultException e ) {
+		} catch (NoResultException e) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 
-		if(list == null) {
+		if (list == null) {
 			return Response.status(Status.NOT_FOUND).build();
-		} else if(list.getOwner().getId().equals(tokenDB.getUserIdFromToken(token)) || list.isPublic()){
-			 return Response.ok(list).build();		
+		} else if (list.getOwner().getId().equals(tokenDB.getUserIdFromToken(token)) || list.isPublic()) {
+			return Response.ok(list).build();
 		} else if (!list.isPublic()) {
 			return Response.status(Status.FORBIDDEN).build();
 		}
-		//wenn etwas schief geht
+		// wenn etwas schief geht
 		return Response.status(Status.BAD_REQUEST).build();
 
-		
-		
 	}
 
 	// ======== POST====== //
 
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	@Produces(MediaType.TEXT_PLAIN)
-	@JsonIgnoreProperties(ignoreUnknown = true)
+	//@Produces(MediaType.TEXT_PLAIN) //gibt Probleme (Writer fuer TEXT.Plain)
+	//@JsonIgnoreProperties(ignoreUnknown = true)
 	public Response addSongList(@HeaderParam("Authorization") String token, SongList songList) {
-		
-		//Payload wird geprueft
-		if(songList == null) {
-			return Response.status(Response.Status.BAD_REQUEST).entity("You must provide payload").build();
-		}
-		if(songList.getSongs() == null) {
-			return Response.status(Status.BAD_REQUEST).entity("No songs in the list!").build();
-		}
-		
-		//Hier wird geprueft, ob Songs in SongList tatsaechlich existieren
-		Set<Song> songs = songList.getSongs().stream().collect(Collectors.toSet());
-		for(Song s: songs) {
-			System.out.println("Song: " + s);
-			if(songsDB.getSongById(s.getId()) == null) {
-				return Response.status(Response.Status.BAD_REQUEST).entity("Song not found in the DB").build();
-			}
-		}
-		
-		//Liste kann jetzt hinzugefuegt werden
+//		
+//		//Payload wird geprueft
+//		if(songList == null) {
+//			return Response.status(Response.Status.BAD_REQUEST).entity("You must provide payload").build();
+//		}
+//		if(songList.getSongs() == null) {
+//			return Response.status(Status.BAD_REQUEST).entity("No songs in the list!").build();
+//		}
+//		
+//		//Hier wird geprueft, ob Songs in SongList tatsaechlich existieren
+//		Set<Song> songs = songList.getSongs().stream().collect(Collectors.toSet());
+//		for(Song s: songs) {
+//			System.out.println("Song: " + s);
+//			if(songsDB.getSongById(s.getId()) == null) {
+//				return Response.status(Response.Status.BAD_REQUEST).entity("Song not found in the DB").build();
+//			}
+//		}
+//		
+//		//Liste kann jetzt hinzugefuegt werden
+//		String idFromToken = tokenDB.getUserIdFromToken(token);
+//		User u;
+//        try {
+//            u = userDB.getUserByStringID(idFromToken);
+//        } catch (NotFoundException e) {
+//        	return Response.status(Status.NOT_FOUND).build();
+//        }
+//        if(!u.getId().equals(idFromToken)) {
+//        	return Response.status(Status.UNAUTHORIZED).build();
+//        } 
+//        //Liste wird fuer authentifizierten Benutzer angelegt
+//        songList.setOwner(u);
+//        try {
+//        	
+//        	songListDB.saveSongList(songList);
+//
+//    		UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
+//    		uriBuilder.path(Integer.toString(songList.getId()));
+//    
+//            return Response.created(uriBuilder.build()).entity("List added (new id: " + songList.getId() + ")").build();
+//
+//        } catch (NoSuchElementException | PersistenceException | IllegalArgumentException e) {
+//            return Response.status(Status.BAD_REQUEST).build();
+//        }
+//        
 		String idFromToken = tokenDB.getUserIdFromToken(token);
-		User u;
-        try {
-            u = userDB.getUserByStringID(idFromToken);
-        } catch (NotFoundException e) {
-        	return Response.status(Status.NOT_FOUND).build();
-        }
-        if(!u.getId().equals(idFromToken)) {
-        	return Response.status(Status.UNAUTHORIZED).build();
-        } 
-        //Liste wird fuer authentifizierten Benutzer angelegt
-        songList.setOwner(u);
-        try {
-        	
-        	songListDB.saveSongList(songList);
+		if (idFromToken != "" || idFromToken != null) {
+			User user;
+			try {
+				// User der uber AuthT-Token authentifiziert ist
+				user = userDB.getUserByStringID(idFromToken);
+				User owner = songList.getOwner();
+				if (owner != null) {
+					if (owner.getId().equals(user.getId())) {
+						songList.setOwner(user);
+						List<Song> songsFromPayload = songList.getSongs();
+						if (songsFromPayload == null || songsFromPayload.isEmpty()) {
+							return Response.status(Status.BAD_REQUEST).entity("No songs provided!").build();
+						} else {
+							System.out.println("Number of songs contained in Payload: " + songsFromPayload.size());
+							// Check if all songs are in the DB - Check only by IDs, otherwise we get "false"
+							List<Integer> allSongsIDs = songsDB.getAll().stream().map(s -> s.getId()).collect(Collectors.toList());
+							allSongsIDs.forEach(s -> System.out.println(s));
+							System.out.println("Songs from payload:");
+							songsFromPayload.forEach(s -> System.out.println(s.getId()));
+							List<Integer> idsFromPayload = songsFromPayload.stream().map(s -> s.getId()).collect(Collectors.toList());
+							//Wenn true, dann persist wird gestartet
+							System.out.println(allSongsIDs.containsAll(idsFromPayload));
+							
+							if(allSongsIDs.containsAll(idsFromPayload)) {
+								System.out.println("Persisting song list....");
+								try {
+									songListDB.saveSongList(songList); //Hier okay
+									System.out.println("SongList persisted");
+								} catch(PersistenceException e) {
+									return Response.status(Status.BAD_REQUEST)
+											.entity(Status.BAD_REQUEST).build();
+								}
+							}
+							else {
+								return Response.status(Status.BAD_REQUEST)
+										.entity("All songs in the list must be already stored in the DB!").build();
+							}
+//							for (Song s : songsFromPayload) {
+//								System.out.println("Checking song: " + s);
+//								if (songsDB.getSongById(s.getId()) == null) {
+//									return Response.status(Status.BAD_REQUEST)
+//											.entity("All songs in the list must be already stored in the DB!").build();
+//								}
+//							}
+//							System.out.println("Persisting song list....");
+//							try {
+//								songListDB.saveSongList(songList);
+//								System.out.println("SongList persisted");
+//							} catch(PersistenceException e) {
+//								return Response.status(Status.BAD_REQUEST)
+//										.entity(Status.BAD_REQUEST).build();
+//							}
+							
+							UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
+							uriBuilder.path(Integer.toString(songList.getId()));
+							return Response.created(uriBuilder.build())
+									.entity("List added (new id: " + songList.getId() + ")").build();
 
-    		UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
-    		uriBuilder.path(Integer.toString(songList.getId()));
-    
-            return Response.created(uriBuilder.build()).entity("List added (new id: " + songList.getId() + ")").build();
+						}
+					} else {
+						return Response.status(Status.UNAUTHORIZED).entity("POST is only for own lists allowed!")
+								.build();
+					}
+				}
+			} catch (NotFoundException e) {
+				return Response.status(Status.UNAUTHORIZED)
+						.entity("Not existing user is not allowed to perform operation!").build();
+			}
 
-        } catch (NoSuchElementException | PersistenceException | IllegalArgumentException e) {
-            return Response.status(Status.BAD_REQUEST).build();
-        }
-        
+		}
+		//If something unexpected happens - JSON payload landet hier direkt
+		return Response.status(Status.BAD_REQUEST).entity("Something went wrong! Please try again").build();
+
 	}
 
 	// ======= DELETE ====== //
@@ -218,21 +290,21 @@ public class SongListWebService {
 	@Path("/{id}")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response delete(@PathParam("id") Integer id, @HeaderParam("Authorization") String token) {
-		//String userFromToken = tokenDB.getUserIdByToken(token);
+		// String userFromToken = tokenDB.getUserIdByToken(token);
 
-				SongList list = songListDB.getSongListByID(id);
-				if(list == null) {
-					return Response.status(Status.NOT_FOUND).build();
-				} 
-				String idFromToken = tokenDB.getUserIdFromToken(token);
+		SongList list = songListDB.getSongListByID(id);
+		if (list == null) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
+		String idFromToken = tokenDB.getUserIdFromToken(token);
 
-				if(list.getOwner().getId().equals(idFromToken)){
-					songListDB.deleteSongList(list);
-					return Response.status(Response.Status.OK).build();
-				} 
-				//wenn etwas schief geht
-				else return Response.status(Status.FORBIDDEN).build();
+		if (list.getOwner().getId().equals(idFromToken)) {
+			songListDB.deleteSongList(list);
+			return Response.status(Response.Status.OK).build();
+		}
+		// wenn etwas schief geht
+		else
+			return Response.status(Status.FORBIDDEN).build();
 	}
-
 
 }
