@@ -50,17 +50,22 @@ public class PayloadCreator {
 		 	list.setOwner(owner);
 		 	list.setPublic(true);
 		 	list.setSongs(songToList);
+		 	
+		 	System.setProperty("javax.xml.bind.context.factory","org.eclipse.persistence.jaxb.JAXBContextFactory");
 	     
 	        System.out.println("XML Payload:" + System.getProperty("line.separator"));	         
 	        //Method which uses JAXB to convert object to XML
-	        jaxbObjectToXML(list);
+	        jaxbObjectToXML(null, null, null, list);
 	        System.out.println(System.getProperty("line.separator") +"JSON Payload: ");
-	        jaxbObjectToJSON(list);
+	        jaxbObjectToJSON(owner, random1, songToList, list);
 	        System.out.println("End Payload");
 	    }
 	 
+	 
+	 
+	 
 	 //XML Payload wird in der Console ausgegeben
-	    private static void jaxbObjectToXML(SongList list)
+	    private static void jaxbObjectToXML(User user, Song song, List<Song> songlist, SongList list)
 	    {
 	        try
 	        {
@@ -89,24 +94,65 @@ public class PayloadCreator {
 	    }
 	    
 	    //https://howtodoinjava.com/jaxb/convert-object-to-json-moxy/ 	
-	    private static void jaxbObjectToJSON(SongList list)
+	    private static void jaxbObjectToJSON(User user, Song song, List<Song> songlist, SongList list)
 	    {
 	        try
 	        {
-	        	JAXBContext jaxbContext = JAXBContext.newInstance(SongList.class);
-	            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+	        	JAXBContext jaxbContextSongList = JAXBContext.newInstance(SongList.class);
+	            Marshaller jaxbMarshallerSongList = jaxbContextSongList.createMarshaller();
 	 
 	            // To format JSON
-	            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+	            jaxbMarshallerSongList.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 	             
 	            //Set JSON type
-	            jaxbMarshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-	            jaxbMarshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, true);
+	            jaxbMarshallerSongList.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
+	            jaxbMarshallerSongList.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, true);
 	 
 	            //Print JSON String to Console
 	            StringWriter sw = new StringWriter();
-	            jaxbMarshaller.marshal(list, sw);
+	            jaxbMarshallerSongList.marshal(list, sw);
+	            System.out.println("Ganze Liste");
 	            System.out.println(sw.toString());
+	            System.out.println("===========================================");
+	            
+	            //===================
+	            
+	            JAXBContext jaxbContextSong = JAXBContext.newInstance(Song.class);
+	            Marshaller jaxbMarshallerSong = jaxbContextSong.createMarshaller();
+	 
+	            // To format JSON
+	            jaxbMarshallerSong.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+	             
+	            //Set JSON type
+	            jaxbMarshallerSong.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
+	            jaxbMarshallerSong.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, true);
+	 
+	            //Print JSON String to Console
+	            StringWriter sw2= new StringWriter();
+	            jaxbMarshallerSong.marshal(song, sw2);
+	            System.out.println("Song");
+	            System.out.println(sw2.toString());
+	            System.out.println("===========================================");
+	            
+     //===================
+	            
+	            JAXBContext jaxbContextUser = JAXBContext.newInstance(User.class);
+	            Marshaller jaxbMarshallerUser = jaxbContextUser.createMarshaller();
+	 
+	            // To format JSON
+	            jaxbMarshallerUser.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+	             
+	            //Set JSON type
+	            jaxbMarshallerUser.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
+	            jaxbMarshallerUser.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, true);
+	 
+	            //Print JSON String to Console
+	            StringWriter sw3 = new StringWriter();
+	      
+	            jaxbMarshallerUser.marshal(user, sw3);
+	            System.out.println("User");
+	            System.out.println(sw3.toString());
+	            System.out.println("===========================================");
 	 
 	        } catch (JAXBException e) {
 	            e.printStackTrace();

@@ -28,7 +28,7 @@ public class DependencyBinder extends AbstractBinder {
 
 //		bind(SongsStorage.class).to(ISongs.class).in(Singleton.class);
 //		bind(UserStorage.class).to(IUser.class); //.in(Singleton.class);
-//		bind(AuthTokenStorage.class).to(IAuth.class).in(Singleton.class);
+		//bind(AuthTokenStorage.class).to(IAuth.class).in(Singleton.class);
 
 		// Binding angepasst nach Beleg 4 (DAO statt lokale InMemory-DBs
 		bind(Persistence.createEntityManagerFactory("song-persistence")).to(EntityManagerFactory.class);

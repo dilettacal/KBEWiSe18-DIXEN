@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Table(name = "songlists")
 @XmlRootElement(name = "songList") 
 @XmlAccessorType(XmlAccessType.FIELD)
-//@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SongList {
 	/*
 	 * Unrecognized field "songList" (class de.htw.ai.kbe.bean.SongList), not marked as ignorable (4 known properties: "id", "songs", "isPublic", "owner"])
@@ -47,8 +47,10 @@ public class SongList {
     private User owner;
 
     @ManyToMany(fetch = FetchType.EAGER) //solves problem of lazy list creation
-    @JoinTable(name = "listSongRelation", joinColumns = { @JoinColumn(name = "list_id") }, inverseJoinColumns = {
-            @JoinColumn(name = "song_id") })
+//    @JoinTable(name = "listSongRelation", joinColumns = { @JoinColumn(name = "list_id") }, inverseJoinColumns = {
+//            @JoinColumn(name = "song_id") })
+    @JoinTable(name = "listSongRelation", joinColumns = { @JoinColumn(name = "song_id") }, inverseJoinColumns = {
+            @JoinColumn(name = "list_id") })
     @XmlElementWrapper(name = "songs")
     @XmlElement(name = "song")
     @JsonProperty(value = "songs")
