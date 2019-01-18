@@ -19,6 +19,8 @@ public class User {
 	// Builder weggenommen
 	// Attribute nach DB und Beleg 4 angepasst
 
+	
+
 	public User() {
 
 	}
@@ -90,4 +92,10 @@ public class User {
 		this.firstName = builder.firstName;
 	}
 
+	
+	@Override
+	public String toString() {
+		String user = "[userID= "+ this.id + ", firstName=" + this.firstName + ", lastName=" + this.lastName +"]";
+		return user;
+	}
 }

@@ -32,6 +32,7 @@ public class AuthTokenDB implements IAuth {
 		  User user;
 	        try {
 	            user = userPersistence.getUserByStringID(userId);
+	            System.out.println("AuthTokenDB - Found this user: " + user);
 	        } catch (NotFoundException e) {
 	            throw new NotAuthorizedException("User does not exist");
 	        }

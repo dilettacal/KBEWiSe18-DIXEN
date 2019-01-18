@@ -1,5 +1,6 @@
 package de.htw.ai.kbe.database.dao;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -39,6 +40,7 @@ public class SongListDAO implements ISongList {
 			q.setParameter("id", listId);
 			q.setParameter("user", user);
 			SongList sl = (SongList) q.getSingleResult();
+			System.out.println("Retrieved this songlist from DB: " + sl);
 			return sl;
 		} finally {
 			em.close();
@@ -79,6 +81,48 @@ public class SongListDAO implements ISongList {
 		} finally {
 			em.close();
 }
+	}
+
+	@Override
+	public Collection<SongList> findSongListByAccessType(User user, boolean isPublic) {
+		EntityManager em = emf.createEntityManager();
+		boolean isUserNull = user == null;
+		if (!isUserNull) {
+			try { // Listen von user
+				Query q = em.createQuery("SELECT l FROM SongList l WHERE l.owner = :user AND l.isPublic = :isPublic");
+				q.setParameter("user", user);
+				q.setParameter("isPublic", isPublic);
+				return q.getResultList();
+			} finally {
+				em.close();
+			}
+		} else { // nur public Listen
+			try {
+
+				Query q = em.createQuery("SELECT l FROM SongList l WHERE l.isPublic = :isPublic");
+				q.setParameter("isPublic", isPublic);
+				return q.getResultList();
+
+			} finally {
+				em.close();
+
+			}
+		}
+	}
+
+	@Override
+	public SongList getSongListByID(int id) {
+		EntityManager em = emf.createEntityManager();
+		SongList songList = null;
+		try {
+			// Ansatz mit Query
+			Query q = em.createQuery("SELECT l FROM SongList l WHERE l.id = :id");
+			q.setParameter("id", id);
+			songList = (SongList) q.getSingleResult();
+		} finally {
+			em.close();
+		}
+		return songList;
 	}
 
 }

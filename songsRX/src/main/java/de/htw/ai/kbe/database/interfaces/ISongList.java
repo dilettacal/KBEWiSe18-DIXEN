@@ -1,5 +1,6 @@
 package de.htw.ai.kbe.database.interfaces;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -13,5 +14,7 @@ public interface ISongList {
     public SongList getListByIdAndUser(int listId, User user) throws NoSuchElementException;
     public void deleteSongList(SongList list) throws NoSuchElementException;
     public void saveSongList(SongList list);
+    public Collection<SongList> findSongListByAccessType(User user, boolean isPublic);
+    public SongList getSongListByID(int id);
 
 }
