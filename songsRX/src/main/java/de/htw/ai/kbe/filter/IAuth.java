@@ -5,11 +5,11 @@ import de.htw.ai.kbe.bean.User;
 
 public interface IAuth {
 	//Neuer Ansatz:
-	
+
 	//generiert anhand der userId einen Token
 	public String authenticate(String userId);
-	
+
 	//prueft ob Token gueltig ist
 	public String getUserIdFromToken(String token);
-	
+
 }

@@ -14,7 +14,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(
         name="tokens",
-        uniqueConstraints= @UniqueConstraint(columnNames= {"token", "user_id"}), 
+        uniqueConstraints= @UniqueConstraint(columnNames= {"token", "user_id"}),
         indexes = @Index(name="token_index", columnList="token")
 )
 public class Token {
@@ -22,13 +22,13 @@ public class Token {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
-    
+
     private String token;
-    
+
     @OneToOne
     @JoinColumn(name="user_id")
     private User user;
-    
+
     public Token() {
     }
 

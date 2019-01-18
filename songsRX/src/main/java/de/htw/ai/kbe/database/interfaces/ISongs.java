@@ -13,9 +13,9 @@ public interface ISongs {
 //	public Integer addSong(Song song);
 //	public boolean updateSong(Integer id,Song song);
 //	public Song deleteSong(Integer id);
-	
+
 	//Query Methoden meistens void - Interface angepasst
-	
+
     List<Song> getAll();
     Song getSongById(int id) throws NoSuchElementException;
     void deleteSong(int id) throws NoSuchElementException;

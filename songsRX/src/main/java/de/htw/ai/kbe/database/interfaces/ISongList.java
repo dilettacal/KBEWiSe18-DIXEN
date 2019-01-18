@@ -7,8 +7,8 @@ import de.htw.ai.kbe.bean.SongList;
 import de.htw.ai.kbe.bean.User;
 
 public interface ISongList {
-	
-	 
+
+
     public List<SongList> getAllListsOfUser(User user);
     public SongList getListByIdAndUser(int listId, User user) throws NoSuchElementException;
     public void deleteSongList(SongList list) throws NoSuchElementException;

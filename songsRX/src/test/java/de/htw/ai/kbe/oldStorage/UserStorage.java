@@ -1,4 +1,4 @@
-package de.htw.ai.kbe.storage;
+package de.htw.ai.kbe.oldStorage;
 
 import java.util.Collection;
 import java.util.Map;
@@ -8,10 +8,10 @@ import de.htw.ai.kbe.bean.User;
 import de.htw.ai.kbe.database.interfaces.IUser;
 
 public class UserStorage implements IUser{
-
+	
 	public static Map<String, User> storage;
 	private static UserStorage instance = null;
-
+	
 	public UserStorage() {
 		storage = new ConcurrentHashMap<String, User>();
 		initUserDB();
@@ -21,10 +21,10 @@ public class UserStorage implements IUser{
 		User user1 = new User.Builder("mmuster").firstName("Maxime").lastName("Muster").build();
 		storage.put(user1.getId(), user1);
 		User user2 = new User.Builder("eschuler").firstName("Elena").lastName("Schuler").build();
-		storage.put(user2.getId(), user2);
-
+		storage.put(user1.getId(), user2);
+		
 	}
-
+	
 	public static UserStorage getInstance() {
 		if(instance == null)
 			instance = new UserStorage();
@@ -32,7 +32,7 @@ public class UserStorage implements IUser{
 	}
 
 	@Override
-	public User getUserByStringID(String userID) {
+	public User getUserByUserId(String userID) {
 		for(User u: storage.values()) {
 			if(u.getId().equals(userID))
 				return u;

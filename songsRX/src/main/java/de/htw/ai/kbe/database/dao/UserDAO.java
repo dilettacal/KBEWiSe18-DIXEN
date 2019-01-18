@@ -15,7 +15,7 @@ public class UserDAO implements IUser{
 
 	@Inject
 	private EntityManagerFactory emf;
-	
+
 	@Override
 	public User getUserByStringID(String userID) {
 		EntityManager em = emf.createEntityManager();

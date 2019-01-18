@@ -17,7 +17,7 @@ public class SongListDAO implements ISongList {
 
 	@Inject
 	private EntityManagerFactory emf;
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SongList> getAllListsOfUser(User user) {
@@ -56,14 +56,14 @@ public class SongListDAO implements ISongList {
 				em.remove(em.merge(list));
 			}
 			em.getTransaction().commit();
-			
+
 		} catch (Exception e) {
 			em.getTransaction().rollback();
 			throw new NoSuchElementException("Could not persist entity: " + e.toString());
 		} finally {
 			em.close();
 }
-		
+
 	}
 
 	@Override
