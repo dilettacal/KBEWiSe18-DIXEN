@@ -8,8 +8,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import de.htw.ai.kbe.bean.Song;
-import de.htw.ai.kbe.database.interfaces.ISongs;
-import de.htw.ai.kbe.oldStorage.SongsStorage;
+import de.htw.ai.kbe.storage.ISongs;
+import de.htw.ai.kbe.storage.SongsStorage;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -146,7 +146,7 @@ public class SongsWebServiceTest extends JerseyTest {
 		assertTrue(afterUpdate.getAlbum() == null); // Null if not provided
 		assertTrue(afterUpdate.getArtist() == null);
 		assertTrue(afterUpdate.getTitle().equals(JSON_TITLE));
-		assertTrue(afterUpdate.getReleased() == null); // Standard value changed to null (Integer)
+		assertTrue(afterUpdate.getReleased() == (0)); // Standard value for int
 		assertTrue(afterUpdate.getId() == idToChange);
 	}
 
@@ -176,7 +176,7 @@ public class SongsWebServiceTest extends JerseyTest {
 		assertTrue(afterUpdate.getAlbum() == null); // Null if not provided
 		assertTrue(afterUpdate.getArtist() == null);
 		assertTrue(afterUpdate.getTitle().equals(XML_TITLE));
-		assertTrue(afterUpdate.getReleased() == null); // Standard value changed to null
+		assertTrue(afterUpdate.getReleased() == (0)); // Standard value for int
 		assertTrue(afterUpdate.getId() == idToChange);
 	}
 
@@ -317,7 +317,6 @@ public class SongsWebServiceTest extends JerseyTest {
 		assertTrue(songBeforeUpdate.getTitle().equalsIgnoreCase(("Mom")));
 		
 		Song testSong = new Song(); //No id set for testSong
-		System.out.println(testSong.getId());
 		testSong.setArtist(XML_ARTIST);
 		testSong.setTitle(XML_TITLE);
 		testSong.setAlbum(XML_ALBUM);

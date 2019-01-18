@@ -1,69 +1,36 @@
 package de.htw.ai.kbe.bean;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-@Entity
-@Table(name = "users")
-@XmlRootElement
+/**
+ * POJO - represents a song in the Database
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "user")
 public class User {
-
-	// Builder weggenommen
-	// Attribute nach DB und Beleg 4 angepasst
-
-	public User() {
-
-	}
-
-	@Id
-	private String id; // Foreign Key
-
+	
+	private String userID;
 	private String lastName;
 	private String firstName;
+	private Integer id;
 	
-
-	public String getId() {
-		return id;
+	public User() {
+		
 	}
-
-	public void setId(String userId) {
-		this.id = userId;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
+	
 	public static class Builder {
 		private String userID;
 		private String lastName;
 		private String firstName;
 		private Integer id;
-
+		
 		public Builder(String userID) {
 			this.userID = userID;
 		}
-
+		
 		public Builder lastName(String val) {
 			lastName = val;
 			return this;
@@ -78,16 +45,58 @@ public class User {
 			id = val;
 			return this;
 		}
-
+		
 		public User build() {
 			return new User(this);
 		}
 	}
-
+	
 	private User(Builder builder) {
-		this.id = builder.userID;
+		this.userID = builder.userID;
 		this.lastName = builder.lastName;
 		this.firstName = builder.firstName;
+		this.id = builder.id;
+	}
+
+	@XmlElement
+	public String getUserID() {
+		return userID;
+	}
+
+	public void setUserID(String userID) {
+		this.userID = userID;
+	}
+
+	@XmlElement
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	@XmlElement
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	@XmlElement
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	@Override
+	public String toString() {
+		return "User [userID=" + userID + ", lastName=" + lastName + ", firstName=" + firstName + ", id=" + id + "]";
 	}
 
 }

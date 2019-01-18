@@ -1,162 +1,122 @@
 package de.htw.ai.kbe.bean;
 
 import javax.xml.bind.annotation.XmlElement;
-
-import java.util.List;
-
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * POJO - represents a song in the Database
  */
-@Entity
-@Table(name = "songs")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement
-public class Song implements Comparable<Song> {
-	
-	//Attribute nach Beleg 4 angepasst
+@XmlRootElement(name = "song")
+public class Song implements Comparable<Song>  {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonProperty("id")
-	private int id;
-
-	@NotNull
-	@JsonProperty("title")
+	// Titel MUSS kommen
 	private String title;
-	@JsonProperty("artist")
+	// restliche Attribute nicht wichtig, Bsp. Volkslieder
 	private String artist;
-	@JsonProperty("album")
 	private String album;
-	@JsonProperty("released")
-	private Integer released;
-
-	@JsonIgnore
-    @XmlTransient
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy="songs")
-    private List<SongList> lists;
-
+	private int released;
+	private Integer id;
 	
 	public Song() {
+		
+	}
+
+	public static class Builder {
+		private String builderTitle;
+		private String builderArtist;
+		private String builderAlbum;
+		private int builderReleased;
+		private Integer builderId;
+
+		public Builder(String title) {
+			this.builderTitle = title;
+		}
+
+		public Builder artist(String val) {
+			builderArtist = val;
+			return this;
+		}
+
+		public Builder album(String val) {
+			builderAlbum = val;
+			return this;
+		}
+
+		public Builder released(int val) {
+			builderReleased = val;
+			return this;
+		}
+
+		public Builder id(Integer val) {
+			builderId = val;
+			return this;
+		}
+		
+		public Song build() {
+			return new Song(this);
+		}
 
 	}
 
 	private Song(Builder builder) {
-        this.id = builder.id;
-        this.title = builder.title;
-        this.artist = builder.artist;
-        this.album = builder.album;
-        this.released = builder.released;
-    }
+		this.title = builder.builderTitle;
+		this.artist = builder.builderArtist;
+		this.album = builder.builderAlbum;
+		this.released = builder.builderReleased;
+		this.id = builder.builderId;
+	}
 
-    public Integer getId() {
-        return id;
-    }
+	public String getTitle() {
+		return title;
+	}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public String getArtist() {
+		return artist;
+	}
 
-    public String getTitle() {
-        return title;
-    }
+	public void setArtist(String artist) {
+		this.artist = artist;
+	}
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	public String getAlbum() {
+		return album;
+	}
 
-    public String getArtist() {
-        return artist;
-    }
+	public void setAlbum(String album) {
+		this.album = album;
+	}
 
-    public void setArtist(String artist) {
-        this.artist = artist;
-    }
+	public int getReleased() {
+		return released;
+	}
 
-    public String getAlbum() {
-        return album;
-    }
+	public void setReleased(int released) {
+		this.released = released;
+	}
 
-    public void setAlbum(String album) {
-        this.album = album;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public Integer getReleased() {
-        return released;
-    }
-
-    public void setReleased(Integer released) {
-        this.released = released;
-    }
-    
-    public List<SongList> getLists() {
-        return lists;
-    }
-
-    @Override
-    public String toString() {
-        return "Song [id=" + id + ", title=" + title + ", artist=" + artist + ", album=" + album + ", released="
-                + released + "]";
-    }
-
-    public static class Builder {
-        private Integer id;
-        private String title;
-        private String artist;
-        private String album;
-        private Integer released;
-
-        public Builder(String title) {
-            this.title = title;
-        }
-
-        public Builder id(Integer val) {
-            id = val;
-            return this;
-        }
-        
-        public Builder artist(String val) {
-            artist = val;
-            return this;
-        }
-
-        public Builder album(String val) {
-            album = val;
-            return this;
-        }
-
-        public Builder released(Integer val) {
-            released = val;
-            return this;
-        }
-
-        public Song build() {
-            return new Song(this);
-        }
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
 	@Override
-	public int compareTo(Song arg0) {
-		return this.title.compareTo(arg0.title);
+	public String toString() {
+		return "Song [id=" + id + ", title=" + title + ", artist=" + artist + ", album=" + album + ", released="
+				+ released + "]";
+	}
+
+	@Override
+	public int compareTo(Song o) {
+		return this.getId().compareTo(o.getId());
 	}
 
 }

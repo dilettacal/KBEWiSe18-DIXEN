@@ -12,12 +12,12 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.htw.ai.kbe.database.interfaces.IAuth;
-import de.htw.ai.kbe.database.interfaces.ISongs;
-import de.htw.ai.kbe.database.interfaces.IUser;
 import de.htw.ai.kbe.filter.AuthTokenStorage;
-import de.htw.ai.kbe.oldStorage.SongsStorage;
-import de.htw.ai.kbe.oldStorage.UserStorage;
+import de.htw.ai.kbe.filter.IAuth;
+import de.htw.ai.kbe.storage.ISongs;
+import de.htw.ai.kbe.storage.IUser;
+import de.htw.ai.kbe.storage.SongsStorage;
+import de.htw.ai.kbe.storage.UserStorage;
 
 public class AuthWebServiceTest extends JerseyTest {
 
@@ -40,12 +40,12 @@ public class AuthWebServiceTest extends JerseyTest {
 	//rest/auth?userId=mmuster --> 200 and token
 	@Test
 	public void getWithvalidUserIdToAuthShouldReturn200AndAToken() {
-		String validUser = "eschuler";
-		Response response = target("/auth").queryParam("userId", validUser).request().get();
+		Response response = target("/auth").queryParam("userId", "mmuster").request().get();
 		System.out.println(response.getStatus());
 		Assert.assertEquals(200, response.getStatus());
 		String token = response.readEntity(String.class);
 		assertNotNull(token);
+		System.out.println(token);
 	}
 
 	

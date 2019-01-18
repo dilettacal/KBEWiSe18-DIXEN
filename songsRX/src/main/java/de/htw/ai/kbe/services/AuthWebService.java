@@ -10,7 +10,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import de.htw.ai.kbe.database.interfaces.IAuth;
+import de.htw.ai.kbe.filter.IAuth;
 
 //URL fuer diesen Service ist: http://localhost:8080/songsRX/rest/auth?userId=schueler --> ghahoeho4
 @Path("/auth")
