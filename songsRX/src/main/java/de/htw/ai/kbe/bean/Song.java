@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -27,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Table(name = "songs")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name="song")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Song implements Comparable<Song> {
 	
 	//Attribute nach Beleg 4 angepasst

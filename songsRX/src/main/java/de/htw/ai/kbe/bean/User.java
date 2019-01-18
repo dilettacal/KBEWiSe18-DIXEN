@@ -9,26 +9,29 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "users")
 @XmlRootElement(name="user")
 @XmlAccessorType(XmlAccessType.FIELD)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
-	// Builder weggenommen
 	// Attribute nach DB und Beleg 4 angepasst
-
-	
-
 	public User() {
 
 	}
 
 	@Id
+	@JsonProperty("id")
 	private String id; // Foreign Key
-
+	
+	@JsonProperty("lastName")
 	private String lastName;
+
+	@JsonProperty("firstName")
 	private String firstName;
 	
 
@@ -60,8 +63,6 @@ public class User {
 		private String userID;
 		private String lastName;
 		private String firstName;
-		private Integer id;
-
 		public Builder(String userID) {
 			this.userID = userID;
 		}
@@ -77,7 +78,6 @@ public class User {
 		}
 
 		public Builder id(Integer val) {
-			id = val;
 			return this;
 		}
 

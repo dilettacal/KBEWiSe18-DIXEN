@@ -1,0 +1,30 @@
+{
+"id":6,
+"isPublic":false,
+"owner":
+	{
+	"id":"mmuster",
+	"lastName":"Muster",
+	"firstName":"Maxime"
+	},
+
+"songs":
+[
+	{"id":1,
+	"title":"Can't Stop the Feeling",
+	"artist":"Justin Timberlake",
+	"album":"Trolls",
+	"released":2016},
+	{"id":2,
+	"title":"Mom",
+	"artist":"Meghan Trainor, Kelli Trainor",
+	"album":"Thank You",
+	"released":2016},
+	{"id":6,
+	"title":"I Took a Pill in Ibiza",
+	"artist":"Mike Posner",
+	"album":"At Night, Alone.",
+	"released":2016}
+]
+
+}

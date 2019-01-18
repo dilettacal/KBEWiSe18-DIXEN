@@ -17,6 +17,8 @@ import de.htw.ai.kbe.storage.SongsStorage;
 
 /**
  * Auxiliary Class to create valid payload from java objects
+ * 
+ * Needs the file: jaxb.properties in de.htw.ai.kbe.bean
  * @author dilet
  *
  */
@@ -52,7 +54,7 @@ public class PayloadCreator {
 	        System.out.println("XML Payload:" + System.getProperty("line.separator"));	         
 	        //Method which uses JAXB to convert object to XML
 	        jaxbObjectToXML(list);
-	        
+	        System.out.println(System.getProperty("line.separator") +"JSON Payload: ");
 	        jaxbObjectToJSON(list);
 	    }
 	 

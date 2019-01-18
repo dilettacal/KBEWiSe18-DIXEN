@@ -165,7 +165,7 @@ public class SongListWebService {
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	@Produces(MediaType.TEXT_PLAIN)
 	@JsonIgnoreProperties(ignoreUnknown = true)
-	public Response addSongList(@HeaderParam("Authorization") String token, @Valid SongList songList) {
+	public Response addSongList(@HeaderParam("Authorization") String token, SongList songList) {
 		
 		//Payload wird geprueft
 		if(songList == null) {
@@ -178,8 +178,9 @@ public class SongListWebService {
 		//Hier wird geprueft, ob Songs in SongList tatsaechlich existieren
 		Set<Song> songs = songList.getSongs().stream().collect(Collectors.toSet());
 		for(Song s: songs) {
+			System.out.println("Song: " + s);
 			if(songsDB.getSongById(s.getId()) == null) {
-				return Response.status(Response.Status.BAD_REQUEST).build();
+				return Response.status(Response.Status.BAD_REQUEST).entity("Song not found in the DB").build();
 			}
 		}
 		
