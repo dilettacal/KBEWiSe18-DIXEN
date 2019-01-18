@@ -4,15 +4,16 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
+import javax.persistence.Query;
+
 import de.htw.ai.kbe.bean.Token;
 import de.htw.ai.kbe.bean.User;
 import de.htw.ai.kbe.database.interfaces.IToken;
 
 public class TokenDAO implements IToken {
-	
+
 	@Inject
 	private EntityManagerFactory emf;
-
 
 	@Override
 	public Token findTokenByUser(User user) {
@@ -27,7 +28,7 @@ public class TokenDAO implements IToken {
 			}
 		} finally {
 			em.close();
-}
+		}
 	}
 
 	@Override
@@ -43,7 +44,7 @@ public class TokenDAO implements IToken {
 			}
 		} finally {
 			em.close();
-}
+		}
 	}
 
 	@Override
@@ -55,7 +56,7 @@ public class TokenDAO implements IToken {
 			em.getTransaction().commit();
 		} finally {
 			em.close();
-}
+		}
 	}
 
 	@Override
@@ -67,7 +68,24 @@ public class TokenDAO implements IToken {
 			em.getTransaction().commit();
 		} finally {
 			em.close();
-}
+		}
+	}
+
+	@Override
+	public Token findTokenByTokenString(String token) {
+		EntityManager em = emf.createEntityManager();
+		try {
+			Query q = em.createQuery("SELECT t FROM Token t WHERE t.token = :token");
+			q.setParameter("token", token);
+			try {
+				return (Token) q.getSingleResult();
+			} catch (NoResultException e) {
+				return null;
+			}
+		} finally {
+			em.close();
+		}
+
 	}
 
 }

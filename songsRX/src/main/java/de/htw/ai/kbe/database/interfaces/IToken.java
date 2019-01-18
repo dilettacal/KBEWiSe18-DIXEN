@@ -8,6 +8,7 @@ public interface IToken {
 	//Useful methods if token persisted in db
 		public Token findTokenByUser(User user);
 		public User findUserByToken(String token);
+		public Token findTokenByTokenString(String token);
 		public void saveToken(Token token);
 		public void updateToken(Token token);
 
