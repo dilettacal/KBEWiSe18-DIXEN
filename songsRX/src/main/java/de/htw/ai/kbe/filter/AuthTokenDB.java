@@ -19,9 +19,8 @@ public class AuthTokenDB implements IAuth {
 	@Inject
 	private IToken tokenPersistence;
 
-
-
 	private String generateToken() {
+		System.out.println("Token generation for use in DB...");
 		String key = UUID.randomUUID().toString();
 		key = key.replaceAll("-", "");
 		return key;

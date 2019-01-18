@@ -14,6 +14,7 @@ import de.htw.ai.kbe.database.interfaces.ISongList;
 import de.htw.ai.kbe.database.interfaces.ISongs;
 import de.htw.ai.kbe.database.interfaces.IToken;
 import de.htw.ai.kbe.database.interfaces.IUser;
+import de.htw.ai.kbe.filter.AuthTokenDB;
 import de.htw.ai.kbe.filter.AuthTokenStorage;
 import de.htw.ai.kbe.filter.AuthenticationFilter;
 import de.htw.ai.kbe.filter.IAuth;
@@ -34,7 +35,7 @@ public class DependencyBinder extends AbstractBinder {
 		bind(SongDAO.class).to(ISongs.class).in(Singleton.class);
 		bind(UserDAO.class).to(IUser.class).in(Singleton.class);
 		bind(TokenDAO.class).to(IToken.class).in(Singleton.class);
-		// bind(AuthTokenStorage.class).to(IAuth.class).in(Singleton.class);
+		bind(AuthTokenDB.class).to(IAuth.class).in(Singleton.class);
 		bind(SongListDAO.class).to(ISongList.class).in(Singleton.class);
 		
 		bind(AuthenticationFilter.class).to(IAuth.class);

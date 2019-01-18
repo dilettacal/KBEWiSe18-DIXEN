@@ -50,6 +50,7 @@ public class AuthTokenStorage implements IAuth {
 	}
 
 	private String generateToken() {
+		System.out.println("Token generation for local user...");
 		String key = UUID.randomUUID().toString();
 		key = key.replaceAll("-", "");
 		return key;
