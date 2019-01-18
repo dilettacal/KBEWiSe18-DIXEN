@@ -139,30 +139,23 @@ public class SongListWebService {
 		 * 
 		 */
 		SongList list = null;
-		list = songListDB.getListByIdAndUser(listId, user)
-		String idFromToken = tokenDB.getUserIdFromToken(token);
-		System.out.println("UserID corresponding to token: " + idFromToken);
-		User u = null;
-		try {
-			u = userDB.getUserByStringID(idFromToken);
-			System.out.println("Found this user: " + u);
-		} catch (Exception e) {
+		try{
+			list = songListDB.getSongListByID(id);
+		} catch (NoResultException e ) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
-		if(u != null) {
 
-			SongList list = songListDB.getListByIdAndUser(id, u );
-			if(list == null) {
-				return Response.status(Status.NOT_FOUND).build();
-			} else if(list.getOwner().getId().equals(tokenDB.getUserIdFromToken(token)) || list.isPublic()){
-				 return Response.ok(list).build();		
-			} else if (!list.isPublic()) {
-				return Response.status(Status.FORBIDDEN).build();
-			}
+		if(list == null) {
+			return Response.status(Status.NOT_FOUND).build();
+		} else if(list.getOwner().getId().equals(tokenDB.getUserIdFromToken(token)) || list.isPublic()){
+			 return Response.ok(list).build();		
+		} else if (!list.isPublic()) {
+			return Response.status(Status.FORBIDDEN).build();
 		}
-		
 		//wenn etwas schief geht
 		return Response.status(Status.BAD_REQUEST).build();
+
+		
 		
 	}
 
