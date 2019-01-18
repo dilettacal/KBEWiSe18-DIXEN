@@ -82,9 +82,4 @@ public class SongList {
         this.songs = songs;
     }
 
-
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> finalBeleg4
