@@ -4,36 +4,29 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceException;
-import javax.persistence.Query;
 
-import org.hibernate.cfg.NotYetImplementedException;
 
 import de.htw.ai.kbe.bean.Song;
 import de.htw.ai.kbe.database.interfaces.ISongs;
-@Singleton
-public class SongDAO implements ISongs {
 
-//	@Inject
-//    protected EntityManager em;
+public class SongDAO implements ISongs {
 
 	@Inject
 	private EntityManagerFactory emf;
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Song> getAllSongs() {
+	public List<Song> getAll() {
 		EntityManager em = emf.createEntityManager();
 		try {
-			Query query = em.createQuery("SELECT s FROM Song s");
+			javax.persistence.Query query = em.createQuery("SELECT s FROM Song s");
 			return query.getResultList();
 		} finally {
 			em.close();
 		}
-
 	}
 
 	@Override
@@ -52,67 +45,8 @@ public class SongDAO implements ISongs {
 		return s;
 	}
 
-	
-
 	@Override
-	public int addSong(Song song) {
-		EntityManager em = emf.createEntityManager();
-		try {
-			em.getTransaction().begin();
-			em.persist(song);
-			em.getTransaction().commit();
-			return song.getId();
-		} catch (Exception e) {
-			em.getTransaction().rollback();
-			throw new PersistenceException("Could not persist entity: " + e.toString());
-		} finally {
-			em.close();
-		}
-	}
-
-	@Override
-	public void updateSong(Song song) throws NoSuchElementException {
-		EntityManager em = emf.createEntityManager();
-		if (song.getId() == null) {
-			throw new NoSuchElementException();
-		}
-
-		// check if song exists in database
-		getSongById(song.getId());
-		try {
-			em.getTransaction().begin();
-			em.merge(song);
-			em.getTransaction().commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-			em.getTransaction().rollback();
-			throw new PersistenceException("Problem while updating this entity: " + e.toString());
-		} finally {
-			em.close();
-}
-		
-	}
-
-	@Override
-	public Song getSongByTitle(String title) throws NoSuchElementException {
-		EntityManager em = emf.createEntityManager();
-		Query query = em.createQuery("SELECT s FROM Song s WHERE s.title = :title");
-		query.setParameter("title", title);
-		Song song = (Song) query.getSingleResult();
-		if (song != null) {
-			return song;
-		} else
-			throw new NoSuchElementException("Song not found");
-
-	}
-
-	@Override
-	public boolean updateLocalSong(Integer id, Song song) {
-		throw new NotYetImplementedException();
-	}
-
-	@Override
-	public void deleteSong(int id) {
+	public void deleteSong(int id) throws NoSuchElementException {
 		EntityManager em = emf.createEntityManager();
 		Song s = getSongById(id);
 		try {
@@ -127,6 +61,44 @@ public class SongDAO implements ISongs {
 		} catch (Exception e) {
 			em.getTransaction().rollback();
 			throw new PersistenceException("Could not persist entity: " + e.toString());
+		} finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public int addSong(Song s) {
+		EntityManager em = emf.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			em.persist(s);
+			em.getTransaction().commit();
+			return s.getId();
+		} catch (Exception e) {
+			em.getTransaction().rollback();
+			throw new PersistenceException("Could not persist entity: " + e.toString());
+		} finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public void updateSong(Song s) throws NoSuchElementException {
+		EntityManager em = emf.createEntityManager();
+		if (s.getId() == null) {
+			throw new NoSuchElementException();
+		}
+
+		// check if song exists in database
+		getSongById(s.getId());
+		try {
+			em.getTransaction().begin();
+			em.merge(s);
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			em.getTransaction().rollback();
+			throw new PersistenceException("Problem while updating this entity: " + e.toString());
 		} finally {
 			em.close();
 		}

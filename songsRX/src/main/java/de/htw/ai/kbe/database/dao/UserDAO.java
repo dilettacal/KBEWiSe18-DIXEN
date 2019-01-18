@@ -5,20 +5,19 @@ import java.util.Collection;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
 import javax.ws.rs.NotFoundException;
+
 
 import de.htw.ai.kbe.bean.User;
 import de.htw.ai.kbe.database.interfaces.IUser;
 
 public class UserDAO implements IUser{
-	
+
 	@Inject
 	private EntityManagerFactory emf;
 
 	@Override
-	public User getUserByUserId(String userID) {
-		System.out.println(userID);
+	public User getUserByStringID(String userID) {
 		EntityManager em = emf.createEntityManager();
 		try {
 			User u = em.find(User.class, userID);
@@ -28,7 +27,7 @@ public class UserDAO implements IUser{
 			return u;
 		} finally {
 			em.close();
-		}
+}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -36,11 +35,11 @@ public class UserDAO implements IUser{
 	public Collection<User> getAllUsers() {
 		EntityManager em = emf.createEntityManager();
 		try {
-			Query query = em.createQuery("SELECT u FROM User u");
+			javax.persistence.Query query = em.createQuery("SELECT u FROM User u");
 			return query.getResultList();
 		} finally {
 			em.close();
-		}
+}
 	}
 
 }

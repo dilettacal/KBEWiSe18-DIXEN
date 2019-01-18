@@ -29,9 +29,9 @@ private static final String AUTHENTICATION_HEADER = "Authorization";
 			//angezeigt im Postman als: The request has not been applied because it lacks valid authentication credentials for the target resource.
 			throw new WebApplicationException(Status.UNAUTHORIZED);
 		}
-		boolean valid = authContainer.isValid(authToken);
+		String valid = authContainer.getUserIdFromToken(authToken);
 		
-		if(!valid) {
+		if(valid!=null) {
 			//angezeigt im Postman als: The request has not been applied because it lacks valid authentication credentials for the target resource.
 			throw new WebApplicationException(Status.UNAUTHORIZED);
 		}
