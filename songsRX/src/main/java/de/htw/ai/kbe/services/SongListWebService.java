@@ -217,32 +217,20 @@ public class SongListWebService {
 	@Path("/{id}")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response delete(@PathParam("id") Integer id, @HeaderParam("Authorization") String token) {
-		
-		User u = null;
-		try {
-			u = userDB.getUserByStringID(token);
-		} catch (Exception e) {
-			return Response.status(Status.NOT_FOUND).build();
-		}
-		if(u != null) {
+		//String userFromToken = tokenDB.getUserIdByToken(token);
 
-			SongList list = songListDB.getListByIdAndUser(id, u);
-			if(list == null) {
-				return Response.status(Status.NOT_FOUND).build();
-			} 
-			
-			String idFromToken = tokenDB.getUserIdFromToken(token);
+				SongList list = songListDB.getSongListByID(id);
+				if(list == null) {
+					return Response.status(Status.NOT_FOUND).build();
+				} 
+				String idFromToken = tokenDB.getUserIdFromToken(token);
 
-			if(list.getOwner().getId().equals(idFromToken)){
-				songListDB.deleteSongList(list);
-				return Response.status(Response.Status.OK).build();
-			} 
-			//wenn etwas schief geht
-			else return Response.status(Status.FORBIDDEN).build();
-		
-		}
-		//wenn etwas ueberhaupt schief geht
-		return Response.status(Status.BAD_REQUEST).build();
+				if(list.getOwner().getId().equals(idFromToken)){
+					songListDB.deleteSongList(list);
+					return Response.status(Response.Status.OK).build();
+				} 
+				//wenn etwas schief geht
+				else return Response.status(Status.FORBIDDEN).build();
 	}
 
 

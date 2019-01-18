@@ -24,7 +24,8 @@ import de.htw.ai.kbe.database.interfaces.ISongs;
 
 public class SongsStorage implements ISongs{
 
-	private Map<Integer, Song> storage;
+	private static Map<Integer, Song> storage;
+	private static SongsStorage instance = null;
 	private AtomicInteger lastID;
 
 	public SongsStorage() {
@@ -43,6 +44,12 @@ public class SongsStorage implements ISongs{
 		}
 	}
 
+	public static SongsStorage getInstance() {
+		if(instance == null)
+			instance = new SongsStorage();
+		return instance;
+	}
+	
 	private boolean initSongsFromFile(List<Song> songsFromJsonFile) {
 		if(songsFromJsonFile == null){
 			return false;

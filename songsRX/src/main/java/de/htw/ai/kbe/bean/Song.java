@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @Table(name = "songs")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement
+@XmlRootElement(name="song")
 public class Song implements Comparable<Song> {
 	
 	//Attribute nach Beleg 4 angepasst

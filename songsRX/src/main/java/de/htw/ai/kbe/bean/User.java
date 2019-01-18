@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "users")
-@XmlRootElement
+@XmlRootElement(name="user")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class User {
 
