@@ -43,6 +43,7 @@ public class SongList {
 
     @ManyToOne
     @JsonProperty("owner")
+    @JoinColumn(name = "owner_id")
     private User owner;
 
     @ManyToMany(fetch = FetchType.EAGER) //solves problem of lazy list creation

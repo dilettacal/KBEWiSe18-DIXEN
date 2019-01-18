@@ -1,0 +1,23 @@
+{ "owner" : {
+         "id" : "mmuster",
+         "lastName" : "Muster",
+         "firstName" : "Maxime"
+      },
+  "songList" : [
+     	 {
+            "id" : 5,
+            "title" : "Bad Things",
+            "artist" : "Camila Cabello, Machine Gun Kelly",
+            "album" : "Bloom",
+            "released" : 2017
+         }, {
+            "id" : 5,
+            "title" : "Bad Things",
+            "artist" : "Camila Cabello, Machine Gun Kelly",
+            "album" : "Bloom",
+            "released" : 2017
+         } ],
+         "id" : 7,
+      "isPublic" : true     
+   
+}
