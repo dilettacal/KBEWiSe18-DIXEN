@@ -60,9 +60,6 @@ public class SongListWebService {
 	@Inject
 	private IAuth tokenDB;
 
-	@Inject
-	private ContainerRequestContext ctx;
-
 	@Context
 	private UriInfo uriInfo;
 
@@ -93,7 +90,6 @@ public class SongListWebService {
 		 *
 		 */
 
-		// User ist authentifiziert?
 
 		String idFromToken = tokenDB.getUserIdFromToken(token);
 		System.out.println("ID from Token: " + idFromToken);
@@ -161,7 +157,7 @@ public class SongListWebService {
 
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	@Produces(MediaType.TEXT_PLAIN) //gibt Probleme (Writer fuer TEXT.Plain)
+	@Produces(MediaType.TEXT_PLAIN) 
 	//@JsonIgnoreProperties(ignoreUnknown = true)
 	public Response addSongList(@HeaderParam("Authorization") String token, SongList songList) {
 
@@ -192,7 +188,7 @@ public class SongListWebService {
 							if(allSongsIDs.containsAll(idsFromPayload)) {
 								System.out.println("Persisting song list....");
 								try {
-									boolean successful = songListDB.saveSongList(songList); //Hier okay
+									boolean successful = songListDB.saveSongList(songList); 
 									if(successful == false) {
 										return Response.status(Status.BAD_REQUEST)
 												.entity(Status.BAD_REQUEST + " Something went wrong!").build();
@@ -227,7 +223,7 @@ public class SongListWebService {
 			}
 
 		}
-		//If something unexpected happens - JSON payload landet hier direkt
+		//If something unexpected happens 
 		return Response.status(Status.BAD_REQUEST).entity("Something went wrong! Please try again").build();
 
 	}

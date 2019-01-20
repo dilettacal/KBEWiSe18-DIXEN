@@ -155,7 +155,8 @@ public class SongsWebService {
 	@Path("/{id}")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response delete(@PathParam("id") Integer id, @HeaderParam("Authorization") String key) {
-		//Beleg 4 - This should not work		
+		//Beleg 4 - Diese Funktionalitaet soll nicht implementiert werden
+		
 //		try{
 //			songsStorage.deleteSong(id);
 //			return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Delete successful.").build();

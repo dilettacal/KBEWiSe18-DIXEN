@@ -7,6 +7,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import de.htw.ai.kbe.bean.User;
 import de.htw.ai.kbe.database.interfaces.IUser;
 
+/**
+ * Lokale InMemory-DB fuer Users
+ *
+ */
 public class UserStorage implements IUser{
 
 	public static Map<String, User> storage;

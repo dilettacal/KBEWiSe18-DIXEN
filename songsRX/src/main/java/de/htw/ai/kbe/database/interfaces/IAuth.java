@@ -8,6 +8,11 @@ import javax.ws.rs.NotFoundException;
 import de.htw.ai.kbe.bean.Token;
 import de.htw.ai.kbe.bean.User;
 
+/**
+ * Interface fuer die Authentifizierung
+ * @author dc
+ *
+ */
 public interface IAuth {
 	//Adapted methods from beleg3 
 	//generiert anhand der userId einen Token

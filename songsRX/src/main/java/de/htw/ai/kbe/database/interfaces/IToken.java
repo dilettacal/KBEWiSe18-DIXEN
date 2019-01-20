@@ -3,6 +3,10 @@ package de.htw.ai.kbe.database.interfaces;
 import de.htw.ai.kbe.bean.Token;
 import de.htw.ai.kbe.bean.User;
 
+/**
+ * Interface fuer Tokenverwaltung (DB)
+ *
+ */
 public interface IToken {
 	
 	//Useful methods if token persisted in db

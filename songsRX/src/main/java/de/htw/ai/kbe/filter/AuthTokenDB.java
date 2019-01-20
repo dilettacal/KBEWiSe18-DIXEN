@@ -11,6 +11,10 @@ import de.htw.ai.kbe.bean.User;
 import de.htw.ai.kbe.database.interfaces.IToken;
 import de.htw.ai.kbe.database.interfaces.IUser;
 
+/**
+ * Tokenverwaltung in der DB auf FB4
+ *
+ */
 public class AuthTokenDB implements IAuth {
 
 	@Inject

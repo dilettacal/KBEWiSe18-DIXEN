@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <songList>
-	<isPublic>false</isPublic>
+	<isPublic>public</isPublic>
 	<owner>
-		<id>eschuler</id>
-		<lastName>Elena</lastName>
-		<firstName>Schuler</firstName>
+		<id>mmuster</id>
+		<lastName>Maxime</lastName>
+		<firstName>Muster</firstName>
 	</owner>
 	<songs>
 		<song>

@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.BufferedInputStream;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -22,6 +21,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.htw.ai.kbe.bean.Song;
 import de.htw.ai.kbe.database.interfaces.ISongs;
 
+/**
+ * Lokale InMemory-DB fuer Songs
+ *
+ */
 public class SongsStorage implements ISongs{
 
 	private static Map<Integer, Song> storage;

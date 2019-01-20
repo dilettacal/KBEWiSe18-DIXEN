@@ -12,6 +12,7 @@ import javax.persistence.TypedQuery;
 
 
 import de.htw.ai.kbe.bean.Song;
+import de.htw.ai.kbe.bean.SongList;
 import de.htw.ai.kbe.database.interfaces.ISongs;
 
 public class SongDAO implements ISongs {
@@ -48,23 +49,30 @@ public class SongDAO implements ISongs {
 
 	@Override
 	public void deleteSong(int id) throws NoSuchElementException {
-		EntityManager em = emf.createEntityManager();
-		Song s = getSongById(id);
-		try {
-			em.getTransaction().begin();
-			// delete song from lists
-			s.getLists().stream().forEach(l -> {
-				l.getSongs().remove(s);
-				em.merge(l);
-			});
-			em.remove(s);
-			em.getTransaction().commit();
-		} catch (Exception e) {
-			em.getTransaction().rollback();
-			throw new PersistenceException("Could not persist entity: " + e.toString());
-		} finally {
-			em.close();
-		}
+//		//Diese Methode wird nicht ausgefuehrt, da Loeschen von Songs unerlaubt ist
+		//Song Loeschen wird am Endpunkt verweigert
+		
+//		EntityManager em = emf.createEntityManager();
+//		Song s = getSongById(id);
+//		try {
+//			em.getTransaction().begin();
+//			// delete song from lists
+//			List<SongList> allListsWhereSongIsContainedIn = s.getLists();
+//			
+//			for(SongList sl: allListsWhereSongIsContainedIn) {
+//				sl.getSongs().remove(s);
+//				em.merge(sl);
+//			}
+//			em.remove(s);
+//			em.getTransaction().commit();
+//		} catch (Exception e) {
+//			em.getTransaction().rollback();
+//			throw new PersistenceException("Could not persist entity: " + e.toString());
+//		} finally {
+//			em.close();
+//		}
+		
+		return;
 	}
 
 	@Override

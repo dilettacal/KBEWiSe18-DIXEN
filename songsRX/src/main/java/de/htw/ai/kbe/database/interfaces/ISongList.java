@@ -7,6 +7,11 @@ import java.util.NoSuchElementException;
 import de.htw.ai.kbe.bean.SongList;
 import de.htw.ai.kbe.bean.User;
 
+/**
+ * Interface fuer SongList Entitaeten
+ * @author dc
+ *
+ */
 public interface ISongList {
 
 
@@ -15,7 +20,6 @@ public interface ISongList {
     public boolean deleteSongList(SongList list) throws NoSuchElementException;
     public boolean saveSongList(SongList list);
     public SongList getSongListByID(int id);
-  //this method not properly working
     public Collection<SongList> findSongListByAccessType(User user, boolean isPublic);
 
 }

@@ -10,6 +10,11 @@ import javax.inject.Singleton;
 import de.htw.ai.kbe.bean.User;
 import de.htw.ai.kbe.database.interfaces.IUser;
 
+/**
+ * InMemory Tokenverwaltung 
+ * (Beleg 3 und Tests)
+ *
+ */
 public class AuthTokenStorage implements IAuth {
 
 	// Neuer Ansatz:

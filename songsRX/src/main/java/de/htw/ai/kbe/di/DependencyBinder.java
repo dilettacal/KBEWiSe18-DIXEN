@@ -35,19 +35,30 @@ public class DependencyBinder extends AbstractBinder {
 //		bind(SongsStorage.class).to(ISongs.class).in(Singleton.class);
 //		bind(UserStorage.class).to(IUser.class); //.in(Singleton.class);
 	
-		//XXX: Diese Zeile aktiviert die LOKALE Tokenverwaltung
-		//bind(AuthTokenStorage.class).to(IAuth.class).in(Singleton.class);
+		
 
 		// Binding angepasst nach Beleg 4 (DAO statt lokale InMemory-DBs
 		bind(Persistence.createEntityManagerFactory("song-persistence")).to(EntityManagerFactory.class);
-		//XXX: Diese Zeile aktiviert die DB-Tokenverwaltung
-		bind(AuthTokenDB.class).to(IAuth.class).in(Singleton.class);
-		bind(SongDAO.class).to(ISongs.class).in(Singleton.class);
-		bind(UserDAO.class).to(IUser.class).in(Singleton.class);
-		bind(TokenDAO.class).to(IToken.class).in(Singleton.class);
 		
+		// === TOKENS ==== //
+		
+		//XXX: Diese Zeile aktiviert die LOKALE Tokenverwaltung
+		//bind(AuthTokenStorage.class).to(IAuth.class).in(Singleton.class);
+		
+		//XXX: Diese Zeilen aktivieren die DB-Tokenverwaltung
+		bind(AuthTokenDB.class).to(IAuth.class).in(Singleton.class);
+		bind(TokenDAO.class).to(IToken.class).in(Singleton.class);		
+		
+		// === SONGS === //
+		bind(SongDAO.class).to(ISongs.class).in(Singleton.class);
+		
+		// === USERS === //
+		bind(UserDAO.class).to(IUser.class).in(Singleton.class);
+		
+		// ==== SONGLISTS === //
 		bind(SongListDAO.class).to(ISongList.class).in(Singleton.class);
 		
+		// === AUTH-FILTER === ///
 		bind(AuthenticationFilter.class).to(IAuth.class);
 	}
 

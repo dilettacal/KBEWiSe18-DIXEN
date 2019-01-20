@@ -15,6 +15,7 @@ public interface ISongs {
 //	public Song deleteSong(Integer id);
 
 	//Query Methoden meistens void - Interface angepasst
+	//Probleme mit Integer, dann primitive Datentypen
 
     List<Song> getAll();
     Song getSongById(int id) throws NoSuchElementException;
