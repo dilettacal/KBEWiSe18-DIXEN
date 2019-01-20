@@ -26,6 +26,12 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+/**
+ * Test class for SongsWebService
+ * Uses Inmemory-DB from Assignment 3
+ * @author dc
+ *
+ */
 public class SongsWebServiceTest extends JerseyTest {
 	// works on linux
 
@@ -45,7 +51,6 @@ public class SongsWebServiceTest extends JerseyTest {
 			@Override
 			protected void configure() {
 				bind(SongsStorage.class).to(ISongs.class).in(Singleton.class);
-
 			}
 		});
 	}
@@ -275,7 +280,8 @@ public class SongsWebServiceTest extends JerseyTest {
 	// UPDATE JSON - No id in body but valid id as param
 	@Test
 	@Ignore
-	public void updateSongNoIdInBodyButValidParaIdAndPayloadJSON() {
+	public void updateSongValidParaIdAndPayloadJSON() {
+		//Socket Exception
 		int dbValidID = 2;
 		Song songBeforeUpdate = target("/songs/" + dbValidID).request(MediaType.APPLICATION_JSON).get(Song.class);
 		System.out.println(songBeforeUpdate);
@@ -285,6 +291,7 @@ public class SongsWebServiceTest extends JerseyTest {
 		assertTrue(songBeforeUpdate.getTitle().equalsIgnoreCase(("Mom")));
 
 		Song testSong = new Song(); // No id set for testSong
+		testSong.setId(dbValidID);
 		testSong.setArtist(JSON_ARTIST);
 		testSong.setTitle(JSON_TITLE);
 		testSong.setAlbum(JSON_ALBUM);
@@ -308,7 +315,8 @@ public class SongsWebServiceTest extends JerseyTest {
 	// UPDATE XML - No id in body but valid id as param
 	@Test
 	@Ignore
-	public void updateSongNoIdInBodyButValidParamIdAndPayloadXML() {
+	public void updateSongValidParamIdAndPayloadXML() {
+		//socket exception
 		int dbValidID = 2;
 		Song songBeforeUpdate = target("/songs/" + dbValidID).request(MediaType.APPLICATION_JSON).get(Song.class);
 		System.out.println(songBeforeUpdate);
@@ -319,6 +327,7 @@ public class SongsWebServiceTest extends JerseyTest {
 
 		Song testSong = new Song(); // No id set for testSong
 		System.out.println(testSong.getId());
+		testSong.setId(dbValidID);
 		testSong.setArtist(XML_ARTIST);
 		testSong.setTitle(XML_TITLE);
 		testSong.setAlbum(XML_ALBUM);

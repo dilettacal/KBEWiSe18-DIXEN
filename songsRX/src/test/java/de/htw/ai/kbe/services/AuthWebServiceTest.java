@@ -19,6 +19,12 @@ import de.htw.ai.kbe.filter.IAuth;
 import de.htw.ai.kbe.storage.SongsStorage;
 import de.htw.ai.kbe.storage.UserStorage;
 
+/**
+ * Test class for AuthWebService (Beleg 3)
+ * Uses InMemory-DBs from Assignment 3
+ * @author dc
+ *
+ */
 public class AuthWebServiceTest extends JerseyTest {
 
 	//Works on linux
