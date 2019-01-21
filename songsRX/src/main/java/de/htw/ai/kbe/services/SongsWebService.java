@@ -32,7 +32,7 @@ import de.htw.ai.kbe.database.interfaces.ISongs;
 @Path("/songs")
 public class SongsWebService {
 
-	// Referenz auf InMemory-DB
+	// Referenz auf Song-Datenbestand. Im DependencyBinder kann entweder DAO oder InMemory gebunden werden
 	@Inject
 	private ISongs songsStorage;
 	
