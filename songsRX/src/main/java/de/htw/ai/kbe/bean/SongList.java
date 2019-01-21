@@ -27,11 +27,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SongList {
-	/*
-	 * Unrecognized field "songList" (class de.htw.ai.kbe.bean.SongList), not marked as ignorable (4 known properties: "id", "songs", "isPublic", "owner"])
- at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@325091c8; line: 2, column: 18] (through reference chain: de.htw.ai.kbe.bean.SongList["songList"])
- 	Solution: @XmlRootElement(name = "songList") 
-	 */
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty("id")
@@ -47,8 +43,6 @@ public class SongList {
     private User owner;
 
     @ManyToMany(fetch = FetchType.EAGER) //solves problem of lazy list creation
-//    @JoinTable(name = "listSongRelation", joinColumns = { @JoinColumn(name = "list_id") }, inverseJoinColumns = {
-//            @JoinColumn(name = "song_id") })
     @JoinTable(name = "listsongrelation", joinColumns = { @JoinColumn(name = "list_id") }, inverseJoinColumns = {
             @JoinColumn(name = "song_id") })
     @XmlElementWrapper(name = "songs")

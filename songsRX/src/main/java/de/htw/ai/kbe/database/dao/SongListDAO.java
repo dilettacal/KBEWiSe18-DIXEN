@@ -93,12 +93,8 @@ public class SongListDAO implements ISongList {
 			System.out.println("Begin transaction...");
 			transaction.begin();
 			System.out.println("Trying to persist entity...");
-			//====== BELEG 4 --- Probleme hier:
-			//TODO: Post haengt hier! geht nicht weiter. Folgender Aufruf liefert 500!
-			//XXX: In Eclipse: MessageBodyWriter not found for media type=text/plain, type=class javax.ws.rs.core.Response$Status, genericType=class javax.ws.rs.core.Response$Status.
 			em.persist(list);
 			
-			//Hier wird das nicht ausgefuehrt
 			System.out.println("Commit transaction...");
 			transaction.commit();
 			System.out.println("Transaction completed...");
@@ -114,7 +110,7 @@ public class SongListDAO implements ISongList {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<SongList> findSongListByAccessType(User user, boolean isPublic) {
-		//OLD METHOD not used
+		//XXX: Alter Ansatz. Am Ende nicht mehr verwendet
 		EntityManager em = emf.createEntityManager();
 		boolean isUserNull = user == null;
 		if (!isUserNull) {

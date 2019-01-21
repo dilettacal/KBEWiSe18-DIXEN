@@ -3,7 +3,6 @@ package de.htw.ai.kbe.di;
 import javax.inject.Singleton;
 import javax.persistence.Persistence;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.glassfish.jersey.process.internal.RequestScoped;
 import javax.persistence.EntityManagerFactory;
 
 import de.htw.ai.kbe.database.dao.SongDAO;

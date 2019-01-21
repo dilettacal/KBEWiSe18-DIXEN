@@ -155,7 +155,7 @@ public class SongsWebService {
 	@Path("/{id}")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response delete(@PathParam("id") Integer id, @HeaderParam("Authorization") String key) {
-		//Beleg 4 - Diese Funktionalitaet soll nicht implementiert werden
+		//XXX: Beleg 4 - Diese Funktionalitaet soll nicht implementiert werden. User duerfen keine Songs mehr loeschen. 
 		
 //		try{
 //			songsStorage.deleteSong(id);
