@@ -12,13 +12,19 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.htw.ai.kbe.database.interfaces.ISongs;
+import de.htw.ai.kbe.database.interfaces.IUser;
 import de.htw.ai.kbe.filter.AuthTokenStorage;
 import de.htw.ai.kbe.filter.IAuth;
-import de.htw.ai.kbe.storage.ISongs;
-import de.htw.ai.kbe.storage.IUser;
 import de.htw.ai.kbe.storage.SongsStorage;
 import de.htw.ai.kbe.storage.UserStorage;
 
+/**
+ * Test class for AuthWebService (Beleg 3)
+ * Uses InMemory-DBs from Assignment 3
+ * @author dc
+ *
+ */
 public class AuthWebServiceTest extends JerseyTest {
 
 	//Works on linux

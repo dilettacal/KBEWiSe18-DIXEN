@@ -1,6 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <!-- For tomcat8-maven-plugin -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.htw.ai.kbe</groupId>
+	<artifactId>songsRX</artifactId>
+	<packaging>war</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>songsRX</name>
+	<url>http://maven.apache.org</url>
+
+	<!-- For tomcat8-maven-plugin -->
 	<repositories>
 		<repository>
 			<id>alfresco</id>
@@ -8,6 +18,7 @@
 			<url>https://artifacts.alfresco.com/nexus/content/repositories/public/</url>
 		</repository>
 	</repositories>
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>alfresco</id>
@@ -15,16 +26,8 @@
 			<url>https://artifacts.alfresco.com/nexus/content/repositories/public/</url>
 		</pluginRepository>
 	</pluginRepositories>
-	
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>de.htw.ai.kbe</groupId>
-  <artifactId>songsRX</artifactId>
-  <packaging>war</packaging>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>songsRX</name>
-  <url>http://maven.apache.org</url>
-  
-  <dependencies>
+
+	<dependencies>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
@@ -41,7 +44,7 @@
 			<version>2.26</version>
 		</dependency>
 		<dependency>
-		<!-- For Dependency injection -->
+			<!-- For Dependency injection -->
 			<groupId>org.glassfish.jersey.inject</groupId>
 			<artifactId>jersey-hk2</artifactId>
 			<version>2.26</version>
@@ -52,21 +55,71 @@
 			<version>2.26</version>
 		</dependency>
 		<dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-json-jackson</artifactId>
-            <version>2.26</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.test-framework.providers</groupId>
-            <artifactId>jersey-test-framework-provider-jdk-http</artifactId>
-            <version>2.26</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-jackson</artifactId>
+			<version>2.26</version>
+		</dependency>
+		<!-- https://stackoverflow.com/questions/29136404/severe-messagebodywriter-not-found-for-media-type-application-json-type-class -->
+		<!-- Wegen: SCHWERWIEGEND: MessageBodyWriter not found for media type=text/plain... -->
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-moxy</artifactId>
+			<version>2.27</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.test-framework.providers</groupId>
+			<artifactId>jersey-test-framework-provider-jdk-http</artifactId>
+			<version>2.26</version>
+		</dependency>
+		<!-- Persistence for Java -->
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.1-api</artifactId>
+			<version>1.0.0.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.2.12.Final</version>
+		</dependency>
+	<!--  Connection pool -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>5.2.12.Final</version>
+		</dependency>
+		<!-- Not in use after change to postgresql
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.39 </version>
+		</dependency> -->
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- Tests -->
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>2.4.0</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- JSON payload -->
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>org.eclipse.persistence.moxy</artifactId>
+			<version>2.5.2</version>
+		</dependency>
+		<!-- Postgresql -->
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.1-901-1.jdbc4</version>
+		</dependency>
 	</dependencies>
 
 	<build>

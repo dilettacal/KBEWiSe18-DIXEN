@@ -1,0 +1,16 @@
+{
+   "isPublic" : true,
+      "owner" : {
+         "id" : "mmuster"
+      },
+      "songs" : {
+         "song" : [ {
+            "id" : 11,
+            "title" : "Not existing song",
+            "artist" : "Not existing artist",
+            "album" : "Not existing album",
+            "released" : 2015
+         }
+          ]
+      }
+}

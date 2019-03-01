@@ -1,0 +1,21 @@
+{
+   "isPublic" : false,
+      "owner" : {
+         "id" : "mmuster"
+      },
+      "songs" : {
+         "song" : [ {
+            "id" : 10,
+            "title" : "7 Years",
+            "artist" : "Lukas Graham",
+            "album" : "Lukas Graham (Blue Album)",
+            "released" : 2015
+         }, {
+            "id" : 1,
+            "title" : "Can’t Stop the Feeling",
+            "artist" : "Justin Timberlake",
+            "album" : "Trolls",
+            "released" : 2016
+         } ]
+      }
+}

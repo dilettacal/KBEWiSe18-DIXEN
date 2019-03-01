@@ -1,6 +1,7 @@
 package de.htw.ai.kbe.services;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -20,7 +21,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import de.htw.ai.kbe.bean.Song;
-import de.htw.ai.kbe.storage.ISongs;
+import de.htw.ai.kbe.database.interfaces.ISongs;
 
 /**
  * 
@@ -31,7 +32,7 @@ import de.htw.ai.kbe.storage.ISongs;
 @Path("/songs")
 public class SongsWebService {
 
-	// Referenz auf InMemory-DB
+	// Referenz auf Song-Datenbestand. Im DependencyBinder kann entweder DAO oder InMemory gebunden werden
 	@Inject
 	private ISongs songsStorage;
 	
@@ -53,7 +54,7 @@ public class SongsWebService {
 	public Collection<Song> getAllSongs( @HeaderParam("Authorization") String key) {
 		System.out.println("getAllSongs()...");
 		//songsStorage.getAllSongs().forEach(s -> System.out.println(s)); //Test - OK
-		return songsStorage.getAllSongs();
+		return songsStorage.getAll();
 	}
 
 	// GET http://localhost:8080/songsRX/rest/songs/1
@@ -63,7 +64,7 @@ public class SongsWebService {
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response getSong(@PathParam("id") Integer id, @HeaderParam("Authorization") String key) {
-		Song song = songsStorage.getSong(id);
+		Song song = songsStorage.getSongById(id);
 		if(song == null) {
 			return Response.status(Response.Status.NOT_FOUND).entity(Response.Status.NOT_FOUND + ": No song found with id " + id).build();
 		}			
@@ -84,15 +85,15 @@ public class SongsWebService {
 					.entity(Response.Status.BAD_REQUEST + "Payload is malformed. Please provide a valid song").build();
 		}
 		
-		Integer newID = songsStorage.addSong(song);
+		int newID = songsStorage.addSong(song);
 		
-		if(newID == null) {
+		if(newID >0) {
 			return Response.status(Response.Status.NOT_FOUND)
 					.entity(Response.Status.NOT_FOUND + ": " + ": Adding new song failed for some reason.").build();
 		}
 		else {
 			UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
-	        uriBuilder.path(newID.toString());
+	        uriBuilder.path(String.valueOf(newID));
 	        return Response.created(uriBuilder.build()).status(Status.CREATED).entity(Status.CREATED + ": Song added (new id: " + newID + ")").build();
 		}
 
@@ -118,7 +119,8 @@ public class SongsWebService {
 		 * deckt den Fall ab, dass PUT-Anfrage gueltig (rest/songs/1) 
 		 * aber Benutzer hat ID im Body gesetzt (z.B. 2) [song.getId() != null]
 		 */
-		if(!id.equals(song.getId()) && song.getId() != null) {
+		//Beleg 3: !id.equals(song.getId()) && song.getId() != null
+		if (!id.equals(song.getId()) && song.getId() != 0) { 
 			System.out.println("Different IDs");
 			return  Response.status(Response.Status.BAD_REQUEST)
 					.entity("ID does not correspond to ID in payload ").build();
@@ -136,15 +138,16 @@ public class SongsWebService {
 		 */
 		if(song.getId() == null) {
 			song.setId(id); // Song braucht eine ID, sonst wird er mit der folgenden Anweisung mit ID==null gespeichert
+			System.out.println("Update successful");			
+			return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Update successful.").build();
 		}		
-		boolean updated = songsStorage.updateSong(id, song);
-		if(!updated) {
+		try{
+			songsStorage.updateSong(song);
+			return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Update successful.").build();
+		} catch(NoSuchElementException e) {
 			return Response.status(Response.Status.NOT_FOUND)
 					.entity(Response.Status.NOT_FOUND + ": Fail to updated Song").build();		
 		}
-		System.out.println("Update successful");			
-		return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Update successful.").build();
-	
 
 	}
 
@@ -152,13 +155,16 @@ public class SongsWebService {
 	@Path("/{id}")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response delete(@PathParam("id") Integer id, @HeaderParam("Authorization") String key) {
-		Song song = songsStorage.deleteSong(id);
-		if(song == null) {
-			return Response.status(Response.Status.NOT_FOUND)
-					.entity(Response.Status.NOT_FOUND + ": Song ID was not found or not successfully deleted.").build();
-		}
-		else {
-			return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Delete successful.").build();
-		}
+		//XXX: Beleg 4 - Diese Funktionalitaet soll nicht implementiert werden. User duerfen keine Songs mehr loeschen. 
+		
+//		try{
+//			songsStorage.deleteSong(id);
+//			return Response.status(Response.Status.NO_CONTENT).entity(Response.Status.NO_CONTENT + ": Delete successful.").build();
+//		} catch (NoSuchElementException e) {
+//			return Response.status(Response.Status.NOT_FOUND)
+//					.entity(Response.Status.NOT_FOUND + ": Song ID was not found or not successfully deleted.").build();
+//		}
+		//Beleg 4: Nutzer koennen neue Songs anlegen und updaten, aber duerfen keine Songs mehr loeschen
+		return Response.status(Response.Status.UNAUTHORIZED).entity(Response.Status.UNAUTHORIZED + ": You are not allowed to delete any song!").build();
 	}
 }

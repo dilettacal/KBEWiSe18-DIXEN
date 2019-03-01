@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	version="2.0">
+
+	<persistence-unit name="song-persistence"
+		transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+		<class>de.htw.ai.kbe.bean.Song</class>
+		<class>de.htw.ai.kbe.bean.SongList</class>
+		<class>de.htw.ai.kbe.bean.User</class>
+		<class>de.htw.ai.kbe.bean.Token</class>
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+		<properties>
+			 <property name="javax.persistence.jdbc.user" value="_s0559842__songrx_generic"/>
+            <property name="javax.persistence.jdbc.password" value="kbedixen"/>
+
+			<!--Hibernate properties -->
+			
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="false" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL91Dialect"/>
+			<property name="hibernate.hbm2ddl.auto" value="validate"/>
+			
+			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://db.f4.htw-berlin.de:5432/_s0559842__songrx"/>
+			
+			<!-- Connection pool  -->
+			<property name="hibernate.c3p0.min_size" value="4" />
+			<property name="hibernate.c3p0.max_size" value="8" />
+			<property name="hibernate.c3p0.timeout" value="1800" />
+			<property name="hibernate.c3p0.max_statements" value="50" />
+			<property name="hibernate.connection.release_mode" value="after_statement"></property>
+
+		</properties>
+	</persistence-unit>
+</persistence>

@@ -6,22 +6,31 @@ import java.io.InputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.BufferedInputStream;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
+import javax.ws.rs.NotFoundException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.htw.ai.kbe.bean.Song;
+import de.htw.ai.kbe.database.interfaces.ISongs;
 
+/**
+ * Lokale InMemory-DB fuer Songs
+ *
+ */
 public class SongsStorage implements ISongs{
-	
-	private Map<Integer, Song> storage;
+
+	private static Map<Integer, Song> storage;
+	private static SongsStorage instance = null;
 	private AtomicInteger lastID;
-	
+
 	public SongsStorage() {
 		storage = new ConcurrentHashMap<Integer, Song>();
 		List<Song> songs = null;
@@ -38,6 +47,12 @@ public class SongsStorage implements ISongs{
 		}
 	}
 
+	public static SongsStorage getInstance() {
+		if(instance == null)
+			instance = new SongsStorage();
+		return instance;
+	}
+	
 	private boolean initSongsFromFile(List<Song> songsFromJsonFile) {
 		if(songsFromJsonFile == null){
 			return false;
@@ -53,22 +68,22 @@ public class SongsStorage implements ISongs{
 			//initializes lastID as AtomicInteger
 			lastID = new AtomicInteger(valuesDB);
 			return true;
-		}	
+		}
 	}
-	
+
 	private void initSomeSongs() {
 		Song song1 = new Song.Builder("A love song").album("A love album").artist("An empty artist").released(2008).build();
 		storage.put(1, song1);
-		
+
 		Song song2 = new Song.Builder("Song 2").album("Keine Ahnung").artist("A singer").released(1900).build();
-		storage.put(2, song2);	
-		
+		storage.put(2, song2);
+
 		//Keeps track of the number of songs in DB
 		int valuesDB = (int) storage.keySet().stream().count();
 		//initializes lastID as AtomicInteger
 		lastID = new AtomicInteger(valuesDB);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private List<Song> readJSONToSongs(String filename) throws FileNotFoundException, IOException {
 		//Read file
@@ -81,45 +96,39 @@ public class SongsStorage implements ISongs{
 		}
 }
 
+	@Override
+	public List<Song> getAll() {
+		return storage.values().stream().collect(Collectors.toList());
+	}
 
 	@Override
-	public synchronized Song getSong(Integer id) {
+	public Song getSongById(int id) throws NoSuchElementException {
 		return storage.get(id);
 	}
 
 	@Override
-	public synchronized Collection<Song> getAllSongs() {
-		return storage.values();
+	public synchronized void deleteSong(int id) throws NoSuchElementException {
+		if (storage.remove(id) == null) {
+            throw new NotFoundException("No song with id '" + id + "'!");
+        }
 	}
 
 	@Override
-	public synchronized Integer addSong(Song song) {
-		if(song.getTitle() != null && !(song.getTitle().trim()).isEmpty()) {
-			int newID = lastID.incrementAndGet();
-			System.out.println("Neues ID: " + newID);
-			song.setId(newID);
-			storage.put(song.getId(), song);
-			//liefert neu vergebene ID zurueck
-			return song.getId();
-		}
-		else
-			return null;
+	public synchronized int addSong(Song s) {
+		int id = lastID.incrementAndGet();
+		s.setId(id);
+        storage.put(s.getId(), s);
+        return s.getId();
 	}
 
 	@Override
-	public synchronized boolean updateSong(Integer id, Song song) {
-		Song oldSong = storage.get(id);
-		if(oldSong != null && song.getTitle() != null && !(song.getTitle().trim()).isEmpty()) {
-			song.setId(oldSong.getId());
-			return storage.replace(oldSong.getId(), oldSong, song);
-		}
-		else
-			return false;
+	public void updateSong(Song s) throws NoSuchElementException {
+		if (s.getId() == null || !storage.containsKey(s.getId())) {
+            throw new NotFoundException("No song with id '" + s.getId() + "'!");
+        }
+        storage.put(s.getId(), s);
 	}
 
-	@Override
-	public synchronized Song deleteSong(Integer id) {
-		return storage.remove(id);
-	}
+
 
 }
