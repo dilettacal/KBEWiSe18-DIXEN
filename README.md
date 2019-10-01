@@ -1,5 +1,5 @@
 # KBEWiSe18-DIXEN
-Repository für Belege im Modul KBE - HTW Berlin WiSe2018.
+Repository für Belege im Modul Komponentenbasierte Entwicklung - HTW Berlin WiSe2018.
 
 Studentinnen:
 - Diletta Calussi
